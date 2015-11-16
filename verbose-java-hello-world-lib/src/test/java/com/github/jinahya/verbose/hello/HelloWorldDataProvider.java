@@ -29,13 +29,7 @@ class HelloWorldDataProvider {
 
     @DataProvider
     static Object[][] arrayNull() {
-        final Object[][] data = new Object[current().nextInt(1, 128)][];
-        for (int i = 0; i < data.length; i++) {
-            final byte[] array = null;
-            final int offset = current().nextInt(Integer.MAX_VALUE);
-            data[i] = new Object[]{array, offset};
-        }
-        return data;
+        return new Object[][]{new Object[]{null, 0}, new Object[]{null, 1}};
     }
 
     @DataProvider
@@ -51,7 +45,7 @@ class HelloWorldDataProvider {
     }
 
     @DataProvider
-    static Iterator<Object[]> spaceNotEnough() {
+    static Iterator<Object[]> capacityNotEnough() {
         final int size = current().nextInt(1, 128);
         final List<Object[]> data = new ArrayList<>(size);
         for (int i = 0; i < size; i++) {
@@ -64,4 +58,5 @@ class HelloWorldDataProvider {
         }
         return data.iterator();
     }
+
 }

@@ -25,4 +25,5 @@ public class HelloWorldMain {
         LOADED.set(array, offset);
         System.out.printf("%s\n", new String(array));
     }
+
 }

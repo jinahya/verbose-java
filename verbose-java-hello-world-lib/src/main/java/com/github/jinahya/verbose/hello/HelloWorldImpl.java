@@ -15,11 +15,13 @@
  */
 package com.github.jinahya.verbose.hello;
 
+
 /**
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 public class HelloWorldImpl implements HelloWorld {
+
 
     @Override
     public void set(final byte[] array, final int offset) {
@@ -27,12 +29,13 @@ public class HelloWorldImpl implements HelloWorld {
             throw new NullPointerException("null array");
         }
         if (offset < 0) {
-            throw new IllegalArgumentException("offset(" + offset + ") < 0");
+            throw new ArrayIndexOutOfBoundsException(
+                "offset(" + offset + ") < 0");
         }
         if (offset + HelloWorld.BYTES > array.length) {
             throw new ArrayIndexOutOfBoundsException(
-                    "offset(" + offset + ") + " + HelloWorld.BYTES
-                    + " > array.length(" + array.length + ")");
+                "offset(" + offset + ") + " + HelloWorld.BYTES
+                + " > array.length(" + array.length + ")");
         }
         array[0x0] = 0x68; // 'h'
         array[0x1] = 0x65; // 'e'
@@ -47,4 +50,7 @@ public class HelloWorldImpl implements HelloWorld {
         array[0xA] = 0x6C; // 'l';
         array[0xB] = 0x64; // 'd';
     }
+
+
 }
+

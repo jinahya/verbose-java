@@ -15,9 +15,11 @@
  */
 package com.github.jinahya.verbose.hello;
 
+
 import org.testng.annotations.Test;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
+
 
 /**
  * A test class testing {@link HelloWorldImpl}.
@@ -25,6 +27,7 @@ import static org.testng.Assert.assertTrue;
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 public class HelloWorldImplTest {
+
 
     @Test(expectedExceptions = {NullPointerException.class})
     public void expectingNullPointerExceptionWhenArrayIsNull() {
@@ -36,7 +39,8 @@ public class HelloWorldImplTest {
         new HelloWorldImpl().set(array, offset);
     }
 
-    @Test(expectedExceptions = {IllegalArgumentException.class})
+
+    @Test(expectedExceptions = {ArrayIndexOutOfBoundsException.class})
     public void expectingIllegalArgumentExceptionWhenOffsetIsNegative() {
         final byte[] array = new byte[HelloWorld.BYTES];
         final int offset = -1;
@@ -45,6 +49,7 @@ public class HelloWorldImplTest {
         assertTrue(offset + HelloWorld.BYTES <= array.length);
         new HelloWorldImpl().set(array, offset);
     }
+
 
     @Test(expectedExceptions = ArrayIndexOutOfBoundsException.class)
     public void expectIllegalArgumentExceptionWhenCapacityIsNotEnough() {
@@ -55,4 +60,7 @@ public class HelloWorldImplTest {
         assertFalse(offset + HelloWorld.BYTES <= array.length);
         new HelloWorldImpl().set(array, offset);
     }
+
+
 }
+
