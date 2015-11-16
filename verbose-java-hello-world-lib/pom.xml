@@ -5,11 +5,11 @@
   <modelVersion>4.0.0</modelVersion>
   <groupId>com.github.jinahya</groupId>
   <artifactId>verbose-java-hello-world-lib</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.0.1-SNAPSHOT</version>
   <parent>
     <groupId>com.github.jinahya</groupId>
     <artifactId>verbose-java</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.0.1-SNAPSHOT</version>
   </parent>
   <dependencies>
     <dependency>

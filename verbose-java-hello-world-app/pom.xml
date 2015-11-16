@@ -6,11 +6,11 @@
   <parent>
     <groupId>com.github.jinahya</groupId>
     <artifactId>verbose-java</artifactId>
-    <version>0.1-SNAPSHOT</version>
+    <version>0.0.1-SNAPSHOT</version>
   </parent>
   <groupId>com.github.jinahya</groupId>
   <artifactId>verbose-java-hello-world-app</artifactId>
-  <version>0.1-SNAPSHOT</version>
+  <version>0.0.1-SNAPSHOT</version>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>

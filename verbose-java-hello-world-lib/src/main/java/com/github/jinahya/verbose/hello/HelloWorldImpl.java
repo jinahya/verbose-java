@@ -15,42 +15,38 @@
  */
 package com.github.jinahya.verbose.hello;
 
-
 /**
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 public class HelloWorldImpl implements HelloWorld {
 
-
     @Override
-    public void set(final byte[] array, final int offset) {
+    public void set(final byte[] array, int offset) {
         if (array == null) {
             throw new NullPointerException("null array");
         }
         if (offset < 0) {
             throw new ArrayIndexOutOfBoundsException(
-                "offset(" + offset + ") < 0");
+                    "offset(" + offset + ") < 0");
         }
         if (offset + HelloWorld.BYTES > array.length) {
             throw new ArrayIndexOutOfBoundsException(
-                "offset(" + offset + ") + " + HelloWorld.BYTES
-                + " > array.length(" + array.length + ")");
+                    "offset(" + offset + ") + " + HelloWorld.BYTES
+                    + " > array.length(" + array.length + ")");
         }
-        array[0x0] = 0x68; // 'h'
-        array[0x1] = 0x65; // 'e'
-        array[0x2] = 0x6C; // 'l'
-        array[0x3] = 0x6C; // 'l'
-        array[0x4] = 0x6F; // 'o'
-        array[0x5] = 0x2C; // ','
-        array[0x6] = 0x20; // ' '
-        array[0x7] = 0x77; // 'w'
-        array[0x8] = 0x6F; // 'o'
-        array[0x9] = 0x72; // 'r'
-        array[0xA] = 0x6C; // 'l';
-        array[0xB] = 0x64; // 'd';
+        array[offset++] = 0x68; // 'h'
+        array[offset++] = 0x65; // 'e'
+        array[offset++] = 0x6C; // 'l'
+        array[offset++] = 0x6C; // 'l'
+        array[offset++] = 0x6F; // 'o'
+        array[offset++] = 0x2C; // ','
+        array[offset++] = 0x20; // ' '
+        array[offset++] = 0x77; // 'w'
+        array[offset++] = 0x6F; // 'o'
+        array[offset++] = 0x72; // 'r'
+        array[offset++] = 0x6C; // 'l';
+        array[offset++] = 0x64; // 'd';
     }
 
-
 }
-

@@ -31,9 +31,7 @@ public class HelloWorldDependencyInjectionTest extends HelloWorldTest {
 
     @BeforeClass
     protected void inject() {
-
         Guice.createInjector((b) -> {
-
             //b.bind(HelloWorld.class).to(HelloWorldImpl.class);
             //b.bind(HelloWorld.class).to(HelloWorldDemo.class);
             //b.bind(HelloWorld.class)
@@ -50,13 +48,11 @@ public class HelloWorldDependencyInjectionTest extends HelloWorldTest {
                     .annotatedWith(Demo.class)
                     .to(HelloWorldDemo.class);
         }).injectMembers(this);
-
         logger.log(INFO, "implementation injected: {0}", implementation);
     }
 
     @Override
     HelloWorld implementation() {
-
         return implementation;
     }
 

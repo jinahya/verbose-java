@@ -15,48 +15,35 @@
  */
 package com.github.jinahya.verbose.hello;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import static java.util.concurrent.ThreadLocalRandom.current;
-import org.testng.annotations.DataProvider;
-
 /**
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 class HelloWorldDataProvider {
 
-    @DataProvider
+    @org.testng.annotations.DataProvider
     static Object[][] arrayNull() {
-        return new Object[][]{new Object[]{null, 0}, new Object[]{null, 1}};
+        return new Object[][]{
+            new Object[]{null, 0},
+            new Object[]{null, 1}
+        };
     }
 
-    @DataProvider
+    @org.testng.annotations.DataProvider
     static Object[][] offsetNegative() {
-        final Object[][] data = new Object[current().nextInt(1, 128)][];
-        for (int i = 0; i < data.length; i++) {
-            final byte[] array = new byte[current().nextInt(
-                    HelloWorld.BYTES - 1, HelloWorld.BYTES * 2)];
-            final int offset = Integer.MIN_VALUE | current().nextInt();
-            data[i] = new Object[]{array, offset};
-        }
-        return data;
+        return new Object[][]{
+            new Object[]{new byte[HelloWorld.BYTES], -1},
+            new Object[]{new byte[HelloWorld.BYTES - 1], -2},
+            new Object[]{new byte[HelloWorld.BYTES - 2], -3},};
     }
 
-    @DataProvider
-    static Iterator<Object[]> capacityNotEnough() {
-        final int size = current().nextInt(1, 128);
-        final List<Object[]> data = new ArrayList<>(size);
-        for (int i = 0; i < size; i++) {
-            final byte[] array
-                    = new byte[current().nextInt(HelloWorld.BYTES * 2)];
-            final int offset = Math.max(
-                    0, current().nextInt(array.length - HelloWorld.BYTES + 1,
-                            array.length * 2));
-            data.add(new Object[]{array, offset});
-        }
-        return data.iterator();
+    @org.testng.annotations.DataProvider
+    static java.util.Iterator<Object[]> capacityNotEnough() {
+        return java.util.Arrays.asList(
+                new Object[]{new byte[HelloWorld.BYTES], 1},
+                new Object[]{new byte[HelloWorld.BYTES + 1], 2},
+                new Object[]{new byte[HelloWorld.BYTES + 2], 3},
+                new Object[]{new byte[HelloWorld.BYTES + 3], 4}
+        ).iterator();
     }
-
 }

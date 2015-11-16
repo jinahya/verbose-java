@@ -57,4 +57,5 @@ public class HelloWorldServiceProviderTest extends HelloWorldTest {
             = getLogger(lookup().lookupClass().getCanonicalName());
 
     private transient HelloWorld implementation;
+
 }
