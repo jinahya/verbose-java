@@ -34,5 +34,4 @@ import java.lang.annotation.Target;
 @Target({FIELD, PARAMETER, METHOD})
 @javax.inject.Qualifier
 public @interface Demo {
-
 }

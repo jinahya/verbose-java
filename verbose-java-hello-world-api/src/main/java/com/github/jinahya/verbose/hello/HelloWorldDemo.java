@@ -26,7 +26,6 @@ public class HelloWorldDemo implements HelloWorld {
     @Override
     public void set(final byte[] array, final int offset) {
         final byte[] src = "hello, world".getBytes(US_ASCII);
-        System.arraycopy(src, 0, array, 0, src.length);
+        System.arraycopy(src, 0, array, offset, src.length);
     }
-
 }

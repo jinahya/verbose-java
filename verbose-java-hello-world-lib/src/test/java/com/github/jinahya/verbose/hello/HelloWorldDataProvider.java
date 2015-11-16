@@ -34,7 +34,8 @@ class HelloWorldDataProvider {
         return new Object[][]{
             new Object[]{new byte[HelloWorld.BYTES], -1},
             new Object[]{new byte[HelloWorld.BYTES - 1], -2},
-            new Object[]{new byte[HelloWorld.BYTES - 2], -3},};
+            new Object[]{new byte[HelloWorld.BYTES - 2], -3}
+        };
     }
 
     @org.testng.annotations.DataProvider

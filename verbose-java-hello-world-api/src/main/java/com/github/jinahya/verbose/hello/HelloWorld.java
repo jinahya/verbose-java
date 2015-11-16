@@ -15,7 +15,7 @@
  */
 package com.github.jinahya.verbose.hello;
 
-import java.nio.charset.StandardCharsets;
+import java.nio.ByteBuffer;
 
 /**
  * An interface generating {@code hello, world}.
@@ -28,8 +28,7 @@ public interface HelloWorld {
      * Number of bytes for representing {@code hello, world} in
      * {@code US-ASCII}.
      */
-    static final int BYTES
-            = "hello, world".getBytes(StandardCharsets.US_ASCII).length;
+    static final int BYTES = 12; // "hello, world".getBytes(US_ASCII).length;
 
     /**
      * Sets {@code hello, world} on given byte array starting at specified
@@ -39,4 +38,24 @@ public interface HelloWorld {
      * @param offset the starting offset
      */
     void set(byte[] array, int offset);
+
+    /**
+     * Put bytes representing {@code hello, world} on given byte buffer.
+     *
+     * @param buffer the byte buffer
+     * @return given byte buffer
+     */
+    default ByteBuffer put(final ByteBuffer buffer) {
+
+        if (buffer.hasArray()) {
+            set(buffer.array(), buffer.arrayOffset() + buffer.position());
+            buffer.position(buffer.position() + HelloWorld.BYTES);
+            return buffer;
+        }
+        final byte[] array = new byte[BYTES];
+        final int offset = 0;
+        set(array, offset);
+        buffer.put(array);
+        return buffer;
+    }
 }

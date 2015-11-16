@@ -15,23 +15,26 @@
  */
 package com.github.jinahya.verbose.hello;
 
-import java.lang.annotation.Documented;
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import java.lang.annotation.Inherited;
-import java.lang.annotation.Retention;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-import java.lang.annotation.Target;
+import static java.util.Objects.isNull;
+import java.util.function.BiPredicate;
+import java.util.function.IntPredicate;
+import java.util.function.Predicate;
 
 /**
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-@Documented
-@Inherited
-@Retention(RUNTIME)
-@Target({FIELD, PARAMETER, METHOD})
-@javax.inject.Qualifier
-public @interface Impl {
+public final class HelloWorldParameterPredicates {
+
+    public static final Predicate<byte[]> ARRAY_NOT_NULL
+            = array -> !isNull(array);
+
+    public static final IntPredicate OFFSET_POSITIVE = offset -> offset >= 0;
+
+    public static final BiPredicate<byte[], Integer> ENOUGHT_SPACE
+            = (array, offset) -> offset + HelloWorld.BYTES <= array.length;
+
+    private HelloWorldParameterPredicates() {
+        super();
+    }
 }

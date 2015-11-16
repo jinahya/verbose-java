@@ -15,55 +15,94 @@
  */
 package com.github.jinahya.verbose.hello;
 
+import com.google.inject.Binder;
 import com.google.inject.Guice;
-import static java.lang.invoke.MethodHandles.lookup;
-import static java.util.logging.Level.INFO;
-import java.util.logging.Logger;
-import static java.util.logging.Logger.getLogger;
+import com.google.inject.Module;
+import com.google.inject.name.Names;
+import java.util.concurrent.ThreadLocalRandom;
 import javax.inject.Inject;
 import org.testng.annotations.BeforeClass;
+import javax.inject.Named;
+import org.slf4j.Logger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HelloWorldDependencyInjectionTest extends HelloWorldTest {
+public class HelloWorldDependencyInjectionTest extends HelloWorldDataTest {
 
     @BeforeClass
     protected void inject() {
-        Guice.createInjector((b) -> {
-            //b.bind(HelloWorld.class).to(HelloWorldImpl.class);
-            //b.bind(HelloWorld.class).to(HelloWorldDemo.class);
-            //b.bind(HelloWorld.class)
-            //    .annotatedWith(named("impl"))
-            //   .to(HelloWorldImpl.class);
-            //b.bind(HelloWorld.class)
-            //    .annotatedWith(named("demo"))
-            //    .to(HelloWorldDemo.class);
+        final Module m1 = new Module() {
+            @Override
+            public void configure(final Binder binder) {
+                binder.bind(HelloWorld.class).to(
+                        ThreadLocalRandom.current().nextBoolean()
+                        ? HelloWorldImpl.class : HelloWorldDemo.class);
+            }
+        };
+        final Module m2 = b -> {
+            b.bind(HelloWorld.class)
+                    .annotatedWith(Names.named("impl"))
+                    .to(HelloWorldImpl.class);
+        };
+        final Module m3 = b -> {
+            b.bind(HelloWorld.class)
+                    .annotatedWith(Names.named("demo"))
+                    .to(HelloWorldDemo.class);
+        };
+        final Module m4 = b -> {
             b.bind(HelloWorld.class)
                     .annotatedWith(Impl.class)
                     .to(HelloWorldImpl.class);
-
-            b.bind(HelloWorld.class)
-                    .annotatedWith(Demo.class)
-                    .to(HelloWorldDemo.class);
-        }).injectMembers(this);
-        logger.log(INFO, "implementation injected: {0}", implementation);
+        };
+        final Module m5
+                = b -> b.bind(HelloWorld.class)
+                .annotatedWith(Demo.class)
+                .to(HelloWorldDemo.class);
+        Guice.createInjector(m1, m2, m3, m4, m5).injectMembers(this);
     }
 
     @Override
     HelloWorld implementation() {
-        return implementation;
+        switch (ThreadLocalRandom.current().nextInt(5)) {
+            case 0:
+                logger.debug("selecting any");
+                return any;
+            case 1:
+                logger.debug("selecting namedAsImpl");
+                return namedAsImpl;
+            case 2:
+                logger.debug("selecting namedAsDemo");
+                return namedAsDemo;
+            case 3:
+                logger.debug("selecting qualifiedWithImpl");
+                return qualifiedWithImpl;
+            default:
+                logger.debug("selecting qualifiedWithDemo");
+                return qualifiedWithDemo;
+        }
     }
 
-    private transient final Logger logger
-            = getLogger(lookup().lookupClass().getCanonicalName());
+    private final Logger logger = getLogger(getClass());
 
     @Inject
-    //@Named("impl")
-    //@Named("demo")
-    @Impl
-    //@Demo
-    private transient HelloWorld implementation;
+    private HelloWorld any;
 
+    @Inject
+    @Named("impl")
+    private HelloWorld namedAsImpl;
+
+    @Inject
+    @Named("demo")
+    private HelloWorld namedAsDemo;
+
+    @Inject
+    @Impl
+    private HelloWorld qualifiedWithImpl;
+
+    @Inject
+    @Demo
+    private HelloWorld qualifiedWithDemo;
 }

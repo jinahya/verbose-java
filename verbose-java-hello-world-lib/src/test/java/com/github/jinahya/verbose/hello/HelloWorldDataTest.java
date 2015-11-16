@@ -15,21 +15,21 @@
  */
 package com.github.jinahya.verbose.hello;
 
+import org.testng.annotations.Test;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
-import org.testng.annotations.Test;
 
 /**
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public abstract class HelloWorldTest {
+public abstract class HelloWorldDataTest {
 
     abstract HelloWorld implementation();
 
     @Test(dataProvider = "arrayNull",
-            dataProviderClass = HelloWorldDataProvider.class,
-            expectedExceptions = NullPointerException.class)
+          dataProviderClass = HelloWorldDataProvider.class,
+          expectedExceptions = {NullPointerException.class})
     public void setArrayNull(final byte[] array, final int offset) {
         assertFalse(array != null);
         assertTrue(offset >= 0);
@@ -37,8 +37,8 @@ public abstract class HelloWorldTest {
     }
 
     @Test(dataProvider = "offsetNegative",
-            dataProviderClass = HelloWorldDataProvider.class,
-            expectedExceptions = ArrayIndexOutOfBoundsException.class)
+          dataProviderClass = HelloWorldDataProvider.class,
+          expectedExceptions = {ArrayIndexOutOfBoundsException.class})
     public void setOffsetNegative(final byte[] array, final int offset) {
         assertTrue(array != null);
         assertFalse(offset >= 0);
@@ -46,14 +46,13 @@ public abstract class HelloWorldTest {
         implementation().set(array, offset);
     }
 
-    @Test(dataProvider = "spaceNotEnough",
-            dataProviderClass = HelloWorldDataProvider.class,
-            expectedExceptions = ArrayIndexOutOfBoundsException.class)
-    public void setSpaceNotEnough(final byte[] array, final int offset) {
+    @Test(dataProvider = "capacityNotEnough",
+          dataProviderClass = HelloWorldDataProvider.class,
+          expectedExceptions = {ArrayIndexOutOfBoundsException.class})
+    public void setCapacityNotEnough(final byte[] array, final int offset) {
         assertTrue(array != null);
         assertTrue(offset >= 0);
         assertFalse(offset + HelloWorld.BYTES <= array.length);
         implementation().set(array, offset);
     }
-
 }

@@ -15,27 +15,30 @@
  */
 package com.github.jinahya.verbose.hello;
 
-import static java.util.Objects.isNull;
-import java.util.function.BiPredicate;
-import java.util.function.IntPredicate;
-import java.util.function.Predicate;
+import java.util.Iterator;
+import java.util.ServiceLoader;
+import static org.testng.Assert.fail;
 
 /**
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public final class HelloWorldSetParameterPredicates {
+public class HelloWorldServiceLoaderTest extends HelloWorldDataTest {
 
-    public static final Predicate<byte[]> ARRAY_NOT_NULL = (a) -> !isNull(a);
-
-    public static final IntPredicate OFFSET_POSITIVE = (o) -> o >= 0;
-
-    public static final BiPredicate<byte[], Integer> ENOUGHT_SPACE
-            = (a, o) -> o + HelloWorld.BYTES <= a.length;
-
-    private HelloWorldSetParameterPredicates() {
-
-        super();
+    @Override
+    HelloWorld implementation() {
+        if (implementation == null) {
+            final ServiceLoader<HelloWorld> loader
+                    = ServiceLoader.load(HelloWorld.class);
+            final Iterator<HelloWorld> iterator = loader.iterator();
+            if (iterator.hasNext()) {
+                implementation = iterator.next();
+            } else {
+                fail("no implementation provided");
+            }
+        }
+        return implementation;
     }
 
+    private HelloWorld implementation;
 }

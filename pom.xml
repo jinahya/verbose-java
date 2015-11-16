@@ -158,7 +158,7 @@
         <artifactId>animal-sniffer-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>check-against-java16</id>
+            <id>check-against-java15</id>
             <phase>test</phase>
             <goals>
               <!--<goal>check</goal>-->
@@ -166,21 +166,7 @@
             <configuration>
               <signature>
                 <groupId>org.codehaus.mojo.signature</groupId>
-                <artifactId>java16</artifactId>
-                <version>1.1</version>
-              </signature>
-            </configuration>
-          </execution>
-          <execution>
-            <id>check-against-java17</id>
-            <phase>test</phase>
-            <goals>
-              <goal>check</goal>
-            </goals>
-            <configuration>
-              <signature>
-                <groupId>org.codehaus.mojo.signature</groupId>
-                <artifactId>java17</artifactId>
+                <artifactId>java15</artifactId>
                 <version>1.0</version>
               </signature>
             </configuration>
