@@ -46,12 +46,6 @@ public interface HelloWorld {
      * @return given byte buffer
      */
     default ByteBuffer put(final ByteBuffer buffer) {
-
-        if (buffer.hasArray()) {
-            set(buffer.array(), buffer.arrayOffset() + buffer.position());
-            buffer.position(buffer.position() + HelloWorld.BYTES);
-            return buffer;
-        }
         final byte[] array = new byte[BYTES];
         final int offset = 0;
         set(array, offset);
