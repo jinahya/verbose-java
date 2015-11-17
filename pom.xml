@@ -329,7 +329,7 @@
   <!-- More Project Information -->
   <name>${project.artifactId}</name>
   <description>verbose java</description>
-  <url>http://jinahya.github.io/${project.artifactId}/site/${project.version}</url>
+  <url>http://jinahya.github.io/verbose-java/site/${project.version}</url>
   <inceptionYear>2015</inceptionYear>
   <licenses>
     <license>
@@ -352,7 +352,7 @@
   <!-- Environment Settings -->
   <issueManagement>
     <system>GitHub Issues</system>
-    <url>https://github.com/jinahya/${project.artifactId}/issues</url>
+    <url>https://github.com/jinahya/verbose-java/issues</url>
   </issueManagement>
   <ciManagement/>
   <mailingLists/>
@@ -380,7 +380,7 @@
     -->
     <site>
       <id>github.io</id>
-      <url>${project.url}</url>
+      <url>http://jinahya.github.io/verbose-java/site/${project.version}</url>
     </site>
   </distributionManagement>
   <profiles>
