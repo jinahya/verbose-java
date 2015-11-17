@@ -43,7 +43,9 @@
     <module>verbose-java-hello-world-lib</module>
     <module>verbose-java-hello-world-app</module>
     <module>verbose-java-hex-codec-api</module>
-    <module>verbose-java-hex-codec-impl</module>
+    <module>verbose-java-hex-codec-lib</module>
+    <module>verbose-java-percent-codec-api</module>
+    <module>verbose-java-percent-codec-lib</module>
   </modules>
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
