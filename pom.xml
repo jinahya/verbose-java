@@ -269,7 +269,7 @@
   <!-- More Project Information -->
   <name>${project.artifactId}</name>
   <description>verbose java</description>
-  <url>http://jinahya.github.io/verbose-java/sites/${project.version}</url>
+  <url>http://jinahya.github.io/verbose-java/site/${project.version}</url>
   <inceptionYear>2015</inceptionYear>
   <licenses>
     <license>
