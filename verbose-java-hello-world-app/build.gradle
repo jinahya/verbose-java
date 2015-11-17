@@ -1,0 +1,7 @@
+apply plugin: 'application'
+
+mainClassName = 'com.github.jinahya.verbose.hello.HelloWorldMain'
+
+dependencies {
+    compile project(':verbose-java-hello-world-lib')
+}

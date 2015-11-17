@@ -22,13 +22,6 @@ public class HexEncoderImpl implements HexEncoder {
         }
     }
 
-//    private void encodeOctet(final int octet, final byte[] array,
-//                             final int offset) {
-//        final int high = octet >> 4 & 0x0F;
-//        array[offset] = (byte) encodeNibble(high);
-//        final int low = octet & 0x0F;
-//        array[offset + 1] = (byte) encodeNibble(low);
-//    }
     @Override
     public void encodeSingle(final int decoded, final ByteBuffer encoded) {
         final int high = decoded >> 4 & 0x0F;
@@ -36,13 +29,4 @@ public class HexEncoderImpl implements HexEncoder {
         encoded.put((byte) encodeNibble(high));
         encoded.put((byte) encodeNibble(low));
     }
-
-//    //@Override
-//    public void encode(final byte[] sourceArray, final int sourceOffset,
-//                       final byte[] targetArray, int targetOffset) {
-//        for (int i = sourceOffset; i < sourceArray.length; i++) {
-//            encodeOctet(sourceArray[i], targetArray, targetOffset);
-//            targetOffset += 2;
-//        }
-//    }
 }

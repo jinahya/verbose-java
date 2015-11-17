@@ -29,23 +29,10 @@ public class HexDecoderImpl implements HexDecoder {
         }
     }
 
-//    private int decodeOctet(final byte[] array, final int offset) {
-//        final int high = decodeNibble(array[offset]);
-//        final int low = decodeNibble(array[offset + 1]);
-//        return (high << 4) | low;
-//    }
     @Override
     public int decodeSingle(final ByteBuffer decoded) {
         final int high = decodeNibble(decoded.get());
         final int low = decodeNibble(decoded.get());
         return (high << 4) | low;
     }
-
-//    //@Override
-//    public void decode(final byte[] sourceArray, final int sourceOffset,
-//                       final byte[] targetArray, int targetOffset) {
-//        for (int i = sourceOffset; i < sourceArray.length; i += 2) {
-//            targetArray[targetOffset++] = (byte) decodeOctet(sourceArray, i);
-//        }
-//    }
 }
