@@ -23,6 +23,6 @@
     </dependency>
   </dependencies>
 
-  <name>verbose-java-percent-codec-api</name>
+  <name>${project.artifactId}</name>
 
 </project>
