@@ -1,0 +1,19 @@
+//rootProject.projectDir = new File("..")
+//include 'verbose-java-hello-world-api'
+//include 'verbose-java-hello-world-lib'
+//include 'verbose-java-hello-world-app'
+include ':verbose-java-hello-world-api'
+project(':verbose-java-hello-world-api').projectDir = new File("../verbose-java-hello-world-api")
+include ':verbose-java-hello-world-lib'
+project(':verbose-java-hello-world-lib').projectDir = new File("../verbose-java-hello-world-lib")
+include ':verbose-java-hello-world-app'
+project(':verbose-java-hello-world-app').projectDir = new File("../verbose-java-hello-world-app")
+include ':verbose-java-hex-codec-api'
+project(':verbose-java-hex-codec-api').projectDir = new File("../verbose-java-hex-codec-api")
+include ':verbose-java-hex-codec-lib'
+project(':verbose-java-hex-codec-lib').projectDir = new File("../verbose-java-hex-codec-lib")
+include ':verbose-java-percent-codec-api'
+project(':verbose-java-percent-codec-api').projectDir = new File("../verbose-java-percent-codec-api")
+include ':verbose-java-percent-codec-lib'
+project(':verbose-java-percent-codec-lib').projectDir = new File("../verbose-java-percent-codec-lib")
+
