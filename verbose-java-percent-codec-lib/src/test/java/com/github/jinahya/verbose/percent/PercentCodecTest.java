@@ -13,22 +13,28 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jinahya.verbose.hello;
+package com.github.jinahya.verbose.percent;
 
-import static java.nio.charset.StandardCharsets.US_ASCII;
+import java.io.UnsupportedEncodingException;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import static java.util.concurrent.ThreadLocalRandom.current;
+import org.apache.commons.lang3.RandomStringUtils;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
-import static org.testng.Assert.assertEquals;
 
 /**
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HelloWorldTest {
+public class PercentCodecTest {
 
-    @Test
-    public static void assertBYTESequalsToActual() {
-        assertEquals(HelloWorld.BYTES,
-                     "hello, world".getBytes(US_ASCII).length);
+    @Test(invocationCount = 1024)
+    public void testEncodeDecode() throws UnsupportedEncodingException {
+        final Charset charset = StandardCharsets.UTF_8;
+        final String expected = RandomStringUtils.random(current().nextInt(128));
+        final String encoded = new PercentEncoderImpl().encode(expected, charset);
+        final String actual = new PercentDecoderImpl().decode(encoded, charset);
+        assertEquals(actual, expected);
     }
 }

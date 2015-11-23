@@ -18,6 +18,10 @@ subprojects {
     useTestNG()
   }
 }
+project(':verbose-java-hello-world-api') {
+  apply plugin: 'application'
+  mainClassName = "com.github.jinahya.verbose.hello.SuccinctHelloWorld"
+}
 project(':verbose-java-hello-world-lib') {
   dependencies {
     compile project(':verbose-java-hello-world-api')
@@ -27,15 +31,23 @@ project(':verbose-java-hello-world-app') {
   dependencies {
     compile project(':verbose-java-hello-world-lib')
   }
+  apply plugin: 'application'
+  mainClassName = "com.github.jinahya.verbose.hello.HelloWorldMain"
+}
+project(':verbose-java-hex-codec-api') {
 }
 project(':verbose-java-hex-codec-lib') {
   dependencies {
     compile project(':verbose-java-hex-codec-api')
   }
 }
+project(':verbose-java-percent-codec-api') {
+}
 project(':verbose-java-percent-codec-lib') {
   dependencies {
-    compile project(':verbose-java-hex-codec-lib')
+    compile project(':verbose-java-hex-codec-api')
+    runtime project(':verbose-java-hex-codec-lib')
     compile project(':verbose-java-percent-codec-api')
+    testCompile 'org.apache.commons:commons-lang3:3.4'
   }
 }

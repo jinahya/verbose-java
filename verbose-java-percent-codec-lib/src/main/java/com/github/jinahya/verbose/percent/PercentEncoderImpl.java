@@ -16,8 +16,13 @@
 package com.github.jinahya.verbose.percent;
 
 import com.github.jinahya.verbose.hex.HexEncoder;
-import com.github.jinahya.verbose.hex.HexEncoderImpl;
 import java.nio.ByteBuffer;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.ServiceLoader;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 
 /**
  *
@@ -25,15 +30,33 @@ import java.nio.ByteBuffer;
  */
 public class PercentEncoderImpl implements PercentEncoder {
 
+    private static final Logger logger
+            = getLogger(PercentDecoderImpl.class.getPackage().getName());
+
     @Override
     public void encodeSingle(final int decoded, final ByteBuffer encoded) {
         if (Rfc3986.isUnreservedCharacter(decoded)) {
             encoded.put((byte) decoded);
         } else {
             encoded.put((byte) 0x25); // '%'
-            hexEncoder.encodeSingle(decoded, encoded);
+            hexEncoder().encodeSingle(decoded, encoded);
         }
     }
 
-    private final HexEncoder hexEncoder = new HexEncoderImpl();
+    private HexEncoder hexEncoder() {
+        if (hexEncoder == null) {
+            final ServiceLoader<HexEncoder> loader
+                    = ServiceLoader.load(HexEncoder.class);
+            final Iterator<HexEncoder> i = loader.iterator();
+            try {
+                hexEncoder = i.next();
+                logger.log(Level.FINE, "hex decoder loaded: {0}", hexEncoder);
+            } catch (final NoSuchElementException nsee) {
+                throw new RuntimeException("no instance loaded", nsee);
+            }
+        }
+        return hexEncoder;
+    }
+
+    private HexEncoder hexEncoder;
 }

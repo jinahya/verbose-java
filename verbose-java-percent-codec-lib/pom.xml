@@ -16,9 +16,15 @@
   <dependencies>
     <dependency>
       <groupId>com.github.jinahya</groupId>
-      <artifactId>verbose-java-hex-codec-lib</artifactId>
+      <artifactId>verbose-java-hex-codec-api</artifactId>
       <version>${project.version}</version>
       <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.github.jinahya</groupId>
+      <artifactId>verbose-java-hex-codec-lib</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>com.github.jinahya</groupId>
@@ -26,7 +32,11 @@
       <version>${project.version}</version>
       <scope>compile</scope>
     </dependency>
-
+    <dependency>
+      <groupId>org.apache.commons</groupId>
+      <artifactId>commons-lang3</artifactId>
+      <scope>test</scope>
+    </dependency>
     <dependency>
       <groupId>org.testng</groupId>
       <artifactId>testng</artifactId>

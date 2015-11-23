@@ -18,32 +18,43 @@ package com.github.jinahya.verbose.hello;
 import java.nio.ByteBuffer;
 
 /**
- * An interface generating {@code hello, world}.
+ * An interface generating {@code "hello, world"} bytes.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 public interface HelloWorld {
 
     /**
-     * Number of bytes for representing {@code hello, world} in
+     * Number of required bytes for representing {@code "hello, world"} in
      * {@code US-ASCII}.
      */
-    static final int BYTES = 12; // "hello, world".getBytes(US_ASCII).length;
+    static final int BYTES = 12;
 
     /**
-     * Sets {@code hello, world} on given byte array starting at specified
+     * Sets {@value #BYTES} bytes representing {@code "hello, world"} in
+     * {@code US-ASCII} character set on given byte array starting at specified
      * offset.
      *
      * @param array the byte array
-     * @param offset the starting offset
+     * @param offset the start offset in {@code array}
+     *
+     * @throws NullPointerException if {@code array} is {@code null}.
+     * @throws IllegalArgumentException if {@code offset} is negative or
+     * {@code offset} + {@link #BYTES}({@value #BYTES}) is greater than
+     * {@code array.length}.
      */
     void set(byte[] array, int offset);
 
     /**
-     * Put bytes representing {@code hello, world} on given byte buffer.
+     * Puts {@value #BYTES} bytes representing {@code "hello, world"} in
+     * {@code US-ASCII} on given byte buffer. Upon return, the buffer's position
+     * will be incremented by {@value HelloWorld#BYTES}.
      *
      * @param buffer the byte buffer
      * @return given byte buffer
+     *
+     * @see #set(byte[], int)
+     * @see ByteBuffer#put(byte[])
      */
     default ByteBuffer put(final ByteBuffer buffer) {
         final byte[] array = new byte[BYTES];

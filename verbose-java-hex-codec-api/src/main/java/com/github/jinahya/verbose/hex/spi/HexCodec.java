@@ -13,21 +13,15 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jinahya.verbose.hello;
-
-import static java.lang.System.arraycopy;
-import static java.nio.charset.StandardCharsets.US_ASCII;
+package com.github.jinahya.verbose.hex.spi;
 
 /**
- * A simple demo implementing {@code HelloWorld}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HelloWorldDemo implements HelloWorld {
+public interface HexCodec {
 
-    @Override
-    public void set(final byte[] array, final int offset) {
-        final byte[] src = "hello, world".getBytes(US_ASCII);
-        arraycopy(src, 0, array, offset, src.length);
-    }
+    boolean canEncode();
+
+    boolean canDecode();
 }

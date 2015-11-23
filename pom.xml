@@ -8,6 +8,11 @@
   <artifactId>verbose-java</artifactId>
   <version>0.0.1-SNAPSHOT</version>
   <packaging>pom</packaging>
+  <parent>
+    <groupId>com.github.jinahya</groupId>
+    <artifactId>ossrh-parent</artifactId>
+    <version>0.2</version>
+  </parent>
   <dependencyManagement>
     <dependencies>
       <dependency>

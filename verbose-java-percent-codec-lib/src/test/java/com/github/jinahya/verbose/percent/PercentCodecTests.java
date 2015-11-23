@@ -13,21 +13,31 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jinahya.verbose.hello;
+package com.github.jinahya.verbose.percent;
 
-import static java.lang.System.arraycopy;
-import static java.nio.charset.StandardCharsets.US_ASCII;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.Charset;
+import java.nio.charset.StandardCharsets;
+import static java.util.concurrent.ThreadLocalRandom.current;
+import org.apache.commons.lang3.RandomStringUtils;
+import static org.testng.Assert.assertEquals;
+import org.testng.annotations.Test;
 
 /**
- * A simple demo implementing {@code HelloWorld}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HelloWorldDemo implements HelloWorld {
+final class PercentCodecTests {
 
-    @Override
-    public void set(final byte[] array, final int offset) {
-        final byte[] src = "hello, world".getBytes(US_ASCII);
-        arraycopy(src, 0, array, offset, src.length);
+    static String fromURLEncoded(final String encoded) {
+        return encoded
+                .replaceAll("\\*", "%2A")
+                .replaceAll("%7E", "~")
+                .replaceAll("\\+", "%20");
+    }
+
+    private PercentCodecTests() {
+        super();
     }
 }

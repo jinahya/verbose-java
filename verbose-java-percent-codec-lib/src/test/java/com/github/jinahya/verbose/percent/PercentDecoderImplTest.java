@@ -13,22 +13,29 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jinahya.verbose.hello;
+package com.github.jinahya.verbose.percent;
 
-import static java.nio.charset.StandardCharsets.US_ASCII;
+import static com.github.jinahya.verbose.percent.PercentCodecTests.fromURLEncoded;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
-import static org.testng.Assert.assertEquals;
 
 /**
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HelloWorldTest {
+public class PercentDecoderImplTest {
 
     @Test
-    public static void assertBYTESequalsToActual() {
-        assertEquals(HelloWorld.BYTES,
-                     "hello, world".getBytes(US_ASCII).length);
+    public void testExampleFromURLEncoderDocumentation()
+            throws UnsupportedEncodingException {
+        final String expected = "The string ü@foo-bar";
+        final String encoded = PercentCodecTests.fromURLEncoded(
+                "The+string+%C3%BC%40foo-bar");
+        final String actual = new PercentDecoderImpl().decode(
+                encoded, StandardCharsets.UTF_8);
+        assertEquals(actual, expected);
     }
 }

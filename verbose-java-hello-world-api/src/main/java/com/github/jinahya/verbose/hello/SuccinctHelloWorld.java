@@ -15,19 +15,20 @@
  */
 package com.github.jinahya.verbose.hello;
 
-import static java.lang.System.arraycopy;
-import static java.nio.charset.StandardCharsets.US_ASCII;
-
 /**
- * A simple demo implementing {@code HelloWorld}.
+ * A class whose {@code main} method prints {@code hello, world} out to
+ * {@code System.out}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HelloWorldDemo implements HelloWorld {
+public class SuccinctHelloWorld {
 
-    @Override
-    public void set(final byte[] array, final int offset) {
-        final byte[] src = "hello, world".getBytes(US_ASCII);
-        arraycopy(src, 0, array, offset, src.length);
+    /**
+     * Prints {@code hello, world\n} out to {@code System.out}.
+     *
+     * @param args command line arguments
+     */
+    public static void main(final String[] args) {
+        System.out.printf("hello, world\n");
     }
 }
