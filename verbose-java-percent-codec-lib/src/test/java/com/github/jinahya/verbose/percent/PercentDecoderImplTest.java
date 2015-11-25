@@ -15,10 +15,12 @@
  */
 package com.github.jinahya.verbose.percent;
 
-import static com.github.jinahya.verbose.percent.PercentCodecTests.fromURLEncoded;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
+import static java.util.concurrent.ThreadLocalRandom.current;
+import org.apache.commons.lang3.RandomStringUtils;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
@@ -36,6 +38,18 @@ public class PercentDecoderImplTest {
                 "The+string+%C3%BC%40foo-bar");
         final String actual = new PercentDecoderImpl().decode(
                 encoded, StandardCharsets.UTF_8);
+        assertEquals(actual, expected);
+    }
+
+    @Test(invocationCount = 1024)
+    public void testDecodingAgainstURLEncoder()
+            throws UnsupportedEncodingException {
+        final Charset charset = StandardCharsets.UTF_8;
+        final String expected
+                = RandomStringUtils.random(current().nextInt(128));
+        String encoded = PercentCodecTests.fromURLEncoded(
+                URLEncoder.encode(expected, charset.name()));
+        final String actual = new PercentDecoderImpl().decode(encoded, charset);
         assertEquals(actual, expected);
     }
 }

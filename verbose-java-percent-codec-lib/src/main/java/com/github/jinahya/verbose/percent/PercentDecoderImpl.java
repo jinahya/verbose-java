@@ -35,12 +35,18 @@ public class PercentDecoderImpl implements PercentDecoder {
 
     @Override
     public int decodeSingle(final ByteBuffer encoded) {
-        final int e = encoded.get();
-        if (Rfc3986.isUnreservedCharacter(e)) {
+        final byte e = encoded.get();
+        if ((e >= 0x30 && e <= 0x39) // digit
+            || (e >= 0x41 && e <= 0x5A) // upper case alpha
+            || (e >= 0x61 && e <= 0x7A) // lower case alpha
+            || e == 0x2D // '-'
+            || e == 0x5F // '_'
+            || e == 0x2E // '.'
+            || e == 0x7E) { // '~'
             return e;
-        } else {
-            return hexDecoder().decodeSingle(encoded);
         }
+        assert e == 0x25; // '%'
+        return hexDecoder().decodeSingle(encoded);
     }
 
     private HexDecoder hexDecoder() {

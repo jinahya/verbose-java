@@ -5,6 +5,7 @@
 
   <modelVersion>4.0.0</modelVersion>
 
+  <!-- The Basics -->
   <groupId>com.github.jinahya</groupId>
   <artifactId>verbose-java-hello-world-api</artifactId>
   <version>0.0.1-SNAPSHOT</version>
@@ -22,6 +23,7 @@
   </dependencies>
   <properties/>
 
+  <!-- Build Settings -->
   <build>
     <plugins>
       <plugin>
@@ -39,7 +41,8 @@
     </plugins>
   </build>
 
-  <name>${project.artifactId}</name>
+  <!-- More Project Information -->
+  <!--<name>${project.artifactId}</name>-->
   <description>verbose java hello world api</description>
 
 </project>

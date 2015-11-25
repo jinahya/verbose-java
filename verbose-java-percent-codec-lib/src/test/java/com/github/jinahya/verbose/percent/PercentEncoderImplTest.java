@@ -34,9 +34,11 @@ public class PercentEncoderImplTest {
     public void testExampleFromURLEncoderDocumentation()
             throws UnsupportedEncodingException {
 
+        final Charset charset = StandardCharsets.UTF_8;
         final String decoded = "The string ü@foo-bar";
-        final String expected = PercentCodecTests.fromURLEncoded(URLEncoder.encode(decoded, "UTF-8"));
-        final String actual = new PercentEncoderImpl().encode(decoded, StandardCharsets.UTF_8);
+        final String expected = PercentCodecTests.fromURLEncoded(
+                URLEncoder.encode(decoded, charset.name()));
+        final String actual = new PercentEncoderImpl().encode(decoded, charset);
         assertEquals(actual, expected);
     }
 
@@ -45,7 +47,8 @@ public class PercentEncoderImplTest {
             throws UnsupportedEncodingException {
         final Charset charset = StandardCharsets.UTF_8;
         final String decoded = RandomStringUtils.random(current().nextInt(128));
-        String expected = PercentCodecTests.fromURLEncoded(URLEncoder.encode(decoded, charset.name()));
+        String expected = PercentCodecTests.fromURLEncoded(
+                URLEncoder.encode(decoded, charset.name()));
         final String actual = new PercentEncoderImpl().encode(decoded, charset);
         assertEquals(actual, expected);
     }

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
   <modelVersion>4.0.0</modelVersion>
 
@@ -10,7 +12,7 @@
   <packaging>pom</packaging>
   <parent>
     <groupId>com.github.jinahya</groupId>
-    <artifactId>ossrh-parent</artifactId>
+    <artifactId>jinahya-parent</artifactId>
     <version>0.2</version>
   </parent>
   <dependencyManagement>
@@ -53,8 +55,6 @@
     <module>verbose-java-percent-codec-lib</module>
   </modules>
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
     <maven.compiler.source>1.8</maven.compiler.source>
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.testSource>1.8</maven.compiler.testSource>
@@ -108,11 +108,11 @@
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>2.8.1</version>
         </plugin>
-        <plugin>
+        <!--        <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-release-plugin</artifactId>
           <version>2.5.3</version>
-        </plugin>
+        </plugin>-->
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-shade-plugin</artifactId>
@@ -151,35 +151,6 @@
       </plugins>
     </pluginManagement>
     <plugins>
-      <plugin>
-        <groupId>com.github.github</groupId>
-        <artifactId>site-maven-plugin</artifactId>
-        <version>0.12</version>
-        <configuration>
-          <server>github</server>
-          <message>creating site for ${project.version}</message>
-          <path>site/${project.version}</path>
-          <merge>true</merge>
-        </configuration>
-        <executions>
-          <execution>
-            <goals>
-              <goal>site</goal>
-            </goals>
-            <!--phase>site-deploy</phase-->
-          </execution>
-        </executions>
-      </plugin>
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-release-plugin</artifactId>
-        <configuration>
-          <tagNameFormat>@{project.version}</tagNameFormat>
-          <pushChanges>false</pushChanges>
-          <localCheckout>true</localCheckout>
-          <goals>install</goals>
-        </configuration>
-      </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>animal-sniffer-maven-plugin</artifactId>
@@ -332,18 +303,18 @@
   </reporting>
 
   <!-- More Project Information -->
-  <name>${project.artifactId}</name>
+  <!--<name>${project.artifactId}</name>-->
   <description>verbose java</description>
-  <url>http://jinahya.github.io/verbose-java/site/${project.version}</url>
+  <!--<url>http://jinahya.github.io/verbose-java/site/${project.version}</url>-->
   <inceptionYear>2015</inceptionYear>
-  <licenses>
+<!--  <licenses>
     <license>
       <name>Apache 2</name>
       <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
       <distribution>repo</distribution>
       <comments>A business-friendly OSS license</comments>
     </license>
-  </licenses>
+  </licenses>-->
   <organization/>
   <developers>
     <developer>
@@ -355,139 +326,38 @@
   <contributors/>
 
   <!-- Environment Settings -->
-  <issueManagement>
+<!--  <issueManagement>
     <system>GitHub Issues</system>
     <url>https://github.com/jinahya/verbose-java/issues</url>
-  </issueManagement>
+  </issueManagement>-->
   <ciManagement/>
   <mailingLists/>
-  <scm>
+<!--  <scm>
     <connection>scm:git:git@github.com:jinahya/verbose-java.git</connection>
     <developerConnection>scm:git:git@github.com:jinahya/verbose-java.git</developerConnection>
     <url>https://github.com/jinahya/verbose-java</url>
     <tag>HEAD</tag>
-  </scm>
+  </scm>-->
   <prerequisites>
     <maven>3.0.4</maven>
   </prerequisites>
   <repositories/>
   <pluginRepositories/>
-  <distributionManagement>
+<!--  <distributionManagement>
     <snapshotRepository>
       <id>ossrh</id>
       <url>https://oss.sonatype.org/content/repositories/snapshots</url>
     </snapshotRepository>
-    <!--
+
     <repository>
       <id>ossrh</id>
       <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
     </repository>
-    -->
+
     <site>
       <id>github.io</id>
       <url>http://jinahya.github.io/verbose-java/site/${project.version}</url>
     </site>
-  </distributionManagement>
-  <profiles>
-    <!--    <profile>
-      <id>release-sign-artifacts</id>
-      <activation>
-        <property>
-          <name>performRelease</name>
-          <value>true</value>
-        </property>
-      </activation>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>sign-artifacts</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>-->
-    <profile>
-      <id>ossrh</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-enforcer-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>require-release-version</id>
-                <goals>
-                  <goal>enforce</goal>
-                </goals>
-                <configuration>
-                  <rules>
-                    <requireReleaseVersion>
-                      <message>No Snapshots Allowed!</message>
-                    </requireReleaseVersion>
-                  </rules>
-                  <fail>true</fail>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-gpg-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>sign-artifacts</id>
-                <phase>verify</phase>
-                <goals>
-                  <goal>sign</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-javadoc-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>attach-javadocs</id>
-                <goals>
-                  <goal>jar</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-source-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>attach-sources</id>
-                <goals>
-                  <goal>jar-no-fork</goal>
-                </goals>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.sonatype.plugins</groupId>
-            <artifactId>nexus-staging-maven-plugin</artifactId>
-            <extensions>true</extensions>
-            <configuration>
-              <serverId>ossrh</serverId>
-              <nexusUrl>https://oss.sonatype.org/</nexusUrl>
-              <autoReleaseAfterClose>true</autoReleaseAfterClose>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>
+  </distributionManagement>-->
+  <!--<profiles/>-->
 </project>

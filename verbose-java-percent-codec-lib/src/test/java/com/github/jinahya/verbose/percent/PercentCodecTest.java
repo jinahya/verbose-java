@@ -32,9 +32,10 @@ public class PercentCodecTest {
     @Test(invocationCount = 1024)
     public void testEncodeDecode() throws UnsupportedEncodingException {
         final Charset charset = StandardCharsets.UTF_8;
-        final String expected = RandomStringUtils.random(current().nextInt(128));
-        final String encoded = new PercentEncoderImpl().encode(expected, charset);
-        final String actual = new PercentDecoderImpl().decode(encoded, charset);
-        assertEquals(actual, expected);
+        final String random = RandomStringUtils.random(current().nextInt(128));
+        final String encoded = new PercentEncoderImpl().encode(random, charset);
+        final String decoded
+                = new PercentDecoderImpl().decode(encoded, charset);
+        assertEquals(decoded, random);
     }
 }

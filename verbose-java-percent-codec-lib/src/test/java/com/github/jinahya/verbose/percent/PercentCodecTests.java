@@ -30,11 +30,18 @@ import org.testng.annotations.Test;
  */
 final class PercentCodecTests {
 
-    static String fromURLEncoded(final String encoded) {
-        return encoded
+    static String fromURLEncoded(final String urlEncoded) {
+        return urlEncoded
                 .replaceAll("\\*", "%2A")
                 .replaceAll("%7E", "~")
                 .replaceAll("\\+", "%20");
+    }
+
+    static String toUrlEncoded(final String percentEncoded) {
+        return percentEncoded
+                .replaceAll("%2A", "\\*")
+                .replaceAll("~", "%7E")
+                .replaceAll("%20", "\\+");
     }
 
     private PercentCodecTests() {
