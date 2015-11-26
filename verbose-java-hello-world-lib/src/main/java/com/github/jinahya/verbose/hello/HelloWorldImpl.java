@@ -48,5 +48,4 @@ public class HelloWorldImpl implements HelloWorld {
         array[offset++] = 0x6C; // 'l';
         array[offset++] = 0x64; // 'd';
     }
-
 }
