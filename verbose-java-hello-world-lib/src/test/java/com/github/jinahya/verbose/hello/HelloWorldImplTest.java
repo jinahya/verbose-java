@@ -17,11 +17,10 @@ package com.github.jinahya.verbose.hello;
 
 import java.nio.ByteBuffer;
 import static java.nio.charset.StandardCharsets.US_ASCII;
-import java.util.Arrays;
 import org.slf4j.Logger;
+import org.testng.annotations.Test;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.testng.Assert.assertEquals;
-import org.testng.annotations.Test;
 import static org.testng.Assert.assertTrue;
 
 /**
@@ -39,14 +38,14 @@ public class HelloWorldImplTest {
     }
 
     @Test(expectedExceptions = ArrayIndexOutOfBoundsException.class)
-    public void expectIllegalArgumentExceptionWhenOffsetIsNegative() {
+    public void expectArrayIndexOutOfBoundsWhenOffsetIsNegative() {
         final byte[] array = new byte[HelloWorld.BYTES];
         final int offset = -1;
         new HelloWorldImpl().set(array, offset);
     }
 
     @Test(expectedExceptions = ArrayIndexOutOfBoundsException.class)
-    public void expectIllegalArgumentExceptionWhenCapacityIsNotEnough() {
+    public void expectArrayIndexOutOfBoundsExceptionWhenCapacityIsNotEnough() {
         final byte[] array = new byte[HelloWorld.BYTES];
         final int offset = 1;
         new HelloWorldImpl().set(array, offset);
@@ -57,7 +56,7 @@ public class HelloWorldImplTest {
         final byte[] array = new byte[HelloWorld.BYTES];
         final int offset = 0;
         new HelloWorldImpl().set(array, offset);
-        assertTrue(Arrays.equals(array, "hello, world".getBytes(US_ASCII)));
+        assertEquals(array, "hello, world".getBytes(US_ASCII));
     }
 
     @Test
