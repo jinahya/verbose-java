@@ -26,13 +26,12 @@ import java.util.function.Predicate;
  */
 public final class HelloWorldParameterPredicates {
 
-    public static final Predicate<byte[]> ARRAY_NOT_NULL
-            = array -> !isNull(array);
+    public static final Predicate<byte[]> ARRAY_NOT_NULL = a -> !isNull(a);
 
-    public static final IntPredicate OFFSET_POSITIVE = offset -> offset >= 0;
+    public static final IntPredicate OFFSET_POSITIVE = o -> o >= 0;
 
-    public static final BiPredicate<byte[], Integer> ENOUGHT_SPACE
-            = (array, offset) -> offset + HelloWorld.BYTES <= array.length;
+    public static final BiPredicate<byte[], Integer> ENOUGHT_CAPACITY
+            = (a, o) -> o + HelloWorld.BYTES <= a.length;
 
     private HelloWorldParameterPredicates() {
         super();

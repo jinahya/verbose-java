@@ -15,13 +15,19 @@
  */
 package com.github.jinahya.verbose.hello;
 
+import java.util.Arrays;
+import java.util.Iterator;
+import static java.util.concurrent.ThreadLocalRandom.current;
+import org.testng.annotations.DataProvider;
+
 /**
+ * A class providing data for {@link HelloWorld#set(byte[], int)}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 class HelloWorldDataProvider {
 
-    @org.testng.annotations.DataProvider
+    @DataProvider
     static Object[][] arrayNull() {
         return new Object[][]{
             new Object[]{null, 0},
@@ -29,7 +35,7 @@ class HelloWorldDataProvider {
         };
     }
 
-    @org.testng.annotations.DataProvider
+    @DataProvider
     static Object[][] offsetNegative() {
         return new Object[][]{
             new Object[]{new byte[HelloWorld.BYTES], -1},
@@ -38,13 +44,28 @@ class HelloWorldDataProvider {
         };
     }
 
-    @org.testng.annotations.DataProvider
-    static java.util.Iterator<Object[]> capacityNotEnough() {
-        return java.util.Arrays.asList(
+    @DataProvider
+    static Iterator<Object[]> capacityNotEnough() {
+        return Arrays.asList(
                 new Object[]{new byte[HelloWorld.BYTES], 1},
                 new Object[]{new byte[HelloWorld.BYTES + 1], 2},
                 new Object[]{new byte[HelloWorld.BYTES + 2], 3},
                 new Object[]{new byte[HelloWorld.BYTES + 3], 4}
         ).iterator();
+    }
+
+    @DataProvider
+    static Object[][] parametersAreAllOk() {
+        final Object[][] data = new Object[current().nextInt(1, 128)][];
+        for (int i = 0; i < data.length; i++) {
+            final byte[] array = new byte[current().nextInt(
+                    HelloWorld.BYTES, HelloWorld.BYTES * 2)];
+            final int offset
+                    = array.length == HelloWorld.BYTES
+                      ? 0 : current().nextInt(
+                                    0, array.length - HelloWorld.BYTES);
+            data[i] = new Object[]{array, offset};
+        }
+        return data;
     }
 }

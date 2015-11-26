@@ -20,6 +20,7 @@ import com.google.inject.Guice;
 import com.google.inject.Module;
 import com.google.inject.name.Names;
 import java.util.concurrent.ThreadLocalRandom;
+import static java.util.concurrent.ThreadLocalRandom.current;
 import javax.inject.Inject;
 import org.testng.annotations.BeforeClass;
 import javax.inject.Named;
@@ -38,7 +39,7 @@ public class HelloWorldDependencyInjectionTest extends HelloWorldDataTest {
             @Override
             public void configure(final Binder binder) {
                 binder.bind(HelloWorld.class).to(
-                        ThreadLocalRandom.current().nextBoolean()
+                        current().nextBoolean()
                         ? HelloWorldImpl.class : HelloWorldDemo.class);
             }
         };

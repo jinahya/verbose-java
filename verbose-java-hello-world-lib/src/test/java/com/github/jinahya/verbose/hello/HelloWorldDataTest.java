@@ -15,44 +15,112 @@
  */
 package com.github.jinahya.verbose.hello;
 
-import org.testng.annotations.Test;
+import org.slf4j.Logger;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.testng.Assert.assertFalse;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertNull;
 import static org.testng.Assert.assertTrue;
+import org.testng.annotations.Test;
 
 /**
+ * Test class tests {@link HelloWorld#set(byte[], int)} with data provided by
+ * {@link HelloWorldDataProvider}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 public abstract class HelloWorldDataTest {
 
+    /**
+     * Returns an instance of {@link HelloWorld} to test.
+     *
+     * @return an instance of {@link HelloWorld}.
+     */
     abstract HelloWorld implementation();
 
+    /**
+     * Expects a {@code NullPointerException} while invoking
+     * {@link HelloWorld#set(byte[], int)} on the instance
+     * {@link #implementation()} returns with an array and an offset provided by
+     * {@link HelloWorldDataProvider#arrayNull()}.
+     *
+     * @param array the array
+     * @param offset the offset
+     *
+     * @see #implementation()
+     * @see HelloWorld#set(byte[], int)
+     */
     @Test(dataProvider = "arrayNull",
           dataProviderClass = HelloWorldDataProvider.class,
-          expectedExceptions = {NullPointerException.class})
-    public void setArrayNull(final byte[] array, final int offset) {
-        assertFalse(array != null);
-        assertTrue(offset >= 0);
+          expectedExceptions = NullPointerException.class)
+    public void arrayNull(final byte[] array, final int offset) {
+        logger.debug("arrayNull({}, {})", array, offset);
+        assertNull(array);
         implementation().set(array, offset);
     }
 
+    /**
+     * Expects an {@code ArrayIndexOutOfBoundsException} while invoking
+     * {@link HelloWorld#set(byte[], int)} on the instance
+     * {@link #implementation()} returns with an array and an offset provided by
+     * {@link HelloWorldDataProvider#offsetNegative()}.
+     *
+     * @param array the array which should not be {@code null}
+     * @param offset the offset which should be negative
+     *
+     * @see #implementation()
+     */
     @Test(dataProvider = "offsetNegative",
           dataProviderClass = HelloWorldDataProvider.class,
-          expectedExceptions = {ArrayIndexOutOfBoundsException.class})
-    public void setOffsetNegative(final byte[] array, final int offset) {
-        assertTrue(array != null);
-        assertFalse(offset >= 0);
-        assertTrue(offset + HelloWorld.BYTES <= array.length);
+          expectedExceptions = ArrayIndexOutOfBoundsException.class)
+    public void offsetNegative(final byte[] array, final int offset) {
+        logger.debug("offsetNegative({}, {})", array, offset);
+        assertNotNull(offset);
+        assertTrue(offset < 0);
         implementation().set(array, offset);
     }
 
+    /**
+     * Expects an {@code ArrayIndexOutOfBoundsException} while invoking
+     * {@link HelloWorld#set(byte[], int)} on the instance
+     * {@link #implementation()} returns with an array and an offset provided by
+     * {@link HelloWorldDataProvider#capacityNotEnough()}.
+     *
+     * @param array the array which should not be {@code null}
+     * @param offset the offset which should be too big so that
+     * {@code offset + HelloWorld.BYTES} is greater than {@code array.length}
+     *
+     * @see #implementation()
+     */
     @Test(dataProvider = "capacityNotEnough",
           dataProviderClass = HelloWorldDataProvider.class,
-          expectedExceptions = {ArrayIndexOutOfBoundsException.class})
-    public void setCapacityNotEnough(final byte[] array, final int offset) {
-        assertTrue(array != null);
+          expectedExceptions = ArrayIndexOutOfBoundsException.class)
+    public void capacityNotEnough(final byte[] array, final int offset) {
+        logger.debug("capacityNotEnough({}, {})", array, offset);
+        assertNotNull(array);
         assertTrue(offset >= 0);
         assertFalse(offset + HelloWorld.BYTES <= array.length);
         implementation().set(array, offset);
     }
+
+    /**
+     * Tests {@link HelloWorld#set(byte[], int)} on the instance
+     * {@link #implementation()} returns with an array and an offset provided by
+     * {@link HelloWorldDataProvider#parametersAreAllOk()}.
+     *
+     * @param array the array which should not be {@code null}
+     * @param offset the offset which should be small enough so that
+     * {@code offset + HelloWorld.BYTES} is equals or less than
+     * {@code array.length}
+     */
+    @Test(dataProvider = "parametersAreAllOk",
+          dataProviderClass = HelloWorldDataProvider.class)
+    public void parametersAreAllOk(final byte[] array, final int offset) {
+        assertNotNull(array);
+        assertTrue(offset >= 0);
+        assertTrue(offset + HelloWorld.BYTES <= array.length);
+        implementation().set(array, offset);
+    }
+
+    private transient final Logger logger = getLogger(getClass());
 }

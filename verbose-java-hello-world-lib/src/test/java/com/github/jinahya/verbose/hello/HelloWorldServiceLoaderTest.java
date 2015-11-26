@@ -34,7 +34,7 @@ public class HelloWorldServiceLoaderTest extends HelloWorldDataTest {
             if (iterator.hasNext()) {
                 implementation = iterator.next();
             } else {
-                fail("no implementation provided");
+                fail("no implementation loaded");
             }
         }
         return implementation;
