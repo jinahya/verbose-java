@@ -8,6 +8,13 @@ public interface HexEncoder {
 
     void encodeSingle(int decoded, ByteBuffer encoded);
 
+    /**
+     * Encodes all remaining bytes from given input buffer and puts results to
+     * specified output buffer.
+     *
+     * @param decoded the input buffer
+     * @param encoded the output buffer
+     */
     default void encode(final ByteBuffer decoded, final ByteBuffer encoded) {
         while (decoded.hasRemaining()) {
             encodeSingle(decoded.get(), encoded);

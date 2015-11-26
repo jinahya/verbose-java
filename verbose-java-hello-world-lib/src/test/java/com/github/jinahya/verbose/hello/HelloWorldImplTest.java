@@ -22,7 +22,6 @@ import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
-import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
 
 /**
@@ -32,56 +31,32 @@ import static org.testng.Assert.assertTrue;
  */
 public class HelloWorldImplTest {
 
-    @Test(expectedExceptions = {NullPointerException.class})
+    @Test(expectedExceptions = NullPointerException.class)
     public void expectNullPointerExceptionWhenArrayIsNull() {
         final byte[] array = null;
         final int offset = 0;
-        assertFalse(array != null);
-        assertTrue(offset >= 0);
-        //assertTrue(offset + HelloWorld.BYTES <= array.length);
         new HelloWorldImpl().set(array, offset);
     }
 
-    @Test(expectedExceptions = {ArrayIndexOutOfBoundsException.class})
+    @Test(expectedExceptions = ArrayIndexOutOfBoundsException.class)
     public void expectIllegalArgumentExceptionWhenOffsetIsNegative() {
         final byte[] array = new byte[HelloWorld.BYTES];
         final int offset = -1;
-        assertTrue(array != null);
-        assertFalse(offset >= 0);
-        assertTrue(offset + HelloWorld.BYTES <= array.length);
         new HelloWorldImpl().set(array, offset);
     }
 
-    @Test(expectedExceptions = {ArrayIndexOutOfBoundsException.class})
+    @Test(expectedExceptions = ArrayIndexOutOfBoundsException.class)
     public void expectIllegalArgumentExceptionWhenCapacityIsNotEnough() {
         final byte[] array = new byte[HelloWorld.BYTES];
         final int offset = 1;
-        assertTrue(array != null);
-        assertTrue(offset >= 0);
-        assertFalse(offset + HelloWorld.BYTES <= array.length);
         new HelloWorldImpl().set(array, offset);
     }
 
     @Test
-    public void test() {
+    public void set() {
         final byte[] array = new byte[HelloWorld.BYTES];
         final int offset = 0;
-        assertTrue(array != null);
-        assertTrue(offset >= 0);
-        assertTrue(offset + HelloWorld.BYTES <= array.length);
         new HelloWorldImpl().set(array, offset);
-        assertEquals(array[offset + 0x0], 'h');
-        assertEquals(array[offset + 0x1], 'e');
-        assertEquals(array[offset + 0x2], 'l');
-        assertEquals(array[offset + 0x3], 'l');
-        assertEquals(array[offset + 0x4], 'o');
-        assertEquals(array[offset + 0x5], ',');
-        assertEquals(array[offset + 0x6], ' ');
-        assertEquals(array[offset + 0x7], 'w');
-        assertEquals(array[offset + 0x8], 'o');
-        assertEquals(array[offset + 0x9], 'r');
-        assertEquals(array[offset + 0xA], 'l');
-        assertEquals(array[offset + 0xB], 'd');
         assertTrue(Arrays.equals(array, "hello, world".getBytes(US_ASCII)));
     }
 
