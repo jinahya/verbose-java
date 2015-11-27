@@ -15,20 +15,14 @@
  */
 package com.github.jinahya.verbose.hello;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import java.lang.annotation.Retention;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-import java.lang.annotation.Target;
-import javax.inject.Qualifier;
+import dagger.Component;
 
 /**
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-@Retention(RUNTIME)
-@Target({FIELD, PARAMETER, METHOD})
-@Qualifier
-@interface Demo {
+@Component(modules = HelloWorldDagger2Module.class)
+public interface HelloWorldDagger2Component {
+
+    void inject(HelloWorldDagger2Test injectee);
 }

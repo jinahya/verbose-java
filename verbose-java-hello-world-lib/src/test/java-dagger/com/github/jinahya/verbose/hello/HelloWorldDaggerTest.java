@@ -15,20 +15,21 @@
  */
 package com.github.jinahya.verbose.hello;
 
-import static java.lang.annotation.ElementType.FIELD;
-import static java.lang.annotation.ElementType.METHOD;
-import static java.lang.annotation.ElementType.PARAMETER;
-import java.lang.annotation.Retention;
-import static java.lang.annotation.RetentionPolicy.RUNTIME;
-import java.lang.annotation.Target;
-import javax.inject.Qualifier;
+import dagger.ObjectGraph;
+import org.testng.annotations.BeforeClass;
+import org.slf4j.Logger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-@Retention(RUNTIME)
-@Target({FIELD, PARAMETER, METHOD})
-@Qualifier
-@interface Demo {
+public class HelloWorldDaggerTest extends HelloWorldDependencyInjectionTest {
+
+    @BeforeClass
+    protected void inject() {
+        ObjectGraph.create(new HelloWorldDaggerModule()).inject(this);;
+    }
+
+    private transient final Logger logger = getLogger(getClass());
 }

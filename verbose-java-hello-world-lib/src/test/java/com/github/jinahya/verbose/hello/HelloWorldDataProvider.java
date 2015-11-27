@@ -53,19 +53,4 @@ class HelloWorldDataProvider {
                 new Object[]{new byte[HelloWorld.BYTES + 3], 4}
         ).iterator();
     }
-
-    @DataProvider
-    static Object[][] parametersAreAllOk() {
-        final Object[][] data = new Object[current().nextInt(1, 128)][];
-        for (int i = 0; i < data.length; i++) {
-            final byte[] array = new byte[current().nextInt(
-                    HelloWorld.BYTES, HelloWorld.BYTES * 2)];
-            final int offset
-                    = array.length == HelloWorld.BYTES
-                      ? 0 : current().nextInt(
-                                    0, array.length - HelloWorld.BYTES);
-            data[i] = new Object[]{array, offset};
-        }
-        return data;
-    }
 }

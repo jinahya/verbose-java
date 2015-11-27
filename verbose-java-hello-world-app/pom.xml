@@ -2,7 +2,6 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-
   <modelVersion>4.0.0</modelVersion>
 
   <parent>
@@ -10,9 +9,18 @@
     <artifactId>verbose-java</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
+
   <groupId>com.github.jinahya</groupId>
   <artifactId>verbose-java-hello-world-app</artifactId>
   <version>0.0.1-SNAPSHOT</version>
+
+  <name>${project.artifactId}</name>
+  <description>hello world application</description>
+
+  <properties>
+    <mainClass>com.github.jinahya.verbose.hello.HelloWorldMain</mainClass>
+  </properties>
+
   <dependencies>
     <dependency>
       <groupId>com.github.jinahya</groupId>
@@ -20,15 +28,7 @@
       <version>${project.version}</version>
       <scope>compile</scope>
     </dependency>
-    <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
-      <scope>test</scope>
-    </dependency>
   </dependencies>
-  <properties>
-    <mainClass>com.github.jinahya.verbose.hello.HelloWorldMain</mainClass>
-  </properties>
 
   <build>
     <plugins>
@@ -73,39 +73,14 @@
             </goals>
             <configuration>
               <target>
-                <!--                <zip destfile="${project.build.directory}/${project.build.finalName}.zip">
-                                    <zipfileset dir="${project.build.directory}">
-                    <include name="${project.build.finalName}.${project.packaging}"/>
-                    <include name="${project.build.finalName}.lib/*"/>
-                  </zipfileset>
-                  <zipfileset dir="${project.build.directory}" includes="${project.build.finalName}.${project.packaging} ${project.build.finalName}.lib/*"/>
-                </zip>-->
                 <zip basedir="${project.build.directory}"
                      destfile="${project.build.directory}/${project.build.finalName}.zip"
                      includes="${project.build.finalName}.${project.packaging} ${project.build.finalName}.lib/*"/>
-                <!--                <tar destfile="${project.build.directory}/${project.build.finalName}.tar">
-                  <tarfileset dir="${project.build.directory}">
-                    <include name="${project.build.finalName}.${project.packaging}"/>
-                    <include name="${project.build.finalName}.lib/*"/>
-                  </tarfileset>
-                </tar>-->
                 <tar basedir="${project.build.directory}"
                      destfile="${project.build.directory}/${project.build.finalName}.tar"
                      includes="${project.build.finalName}.${project.packaging} ${project.build.finalName}.lib/*"/>
-                <!--                <tar destfile="${project.build.directory}/${project.build.finalName}.tgz" compression="gzip">
-                  <tarfileset dir="${project.build.directory}">
-                    <include name="${project.build.finalName}.${project.packaging}"/>
-                    <include name="${project.build.finalName}.lib/*"/>
-                  </tarfileset>
-                </tar>-->
                 <gzip src="${project.build.directory}/${project.build.finalName}.tar"
                       destfile="${project.build.directory}/${project.build.finalName}.tgz"/>
-                <!--                <tar destfile="${project.build.directory}/${project.build.finalName}.tbz2" compression="bzip2">
-                  <tarfileset dir="${project.build.directory}">
-                    <include name="${project.build.finalName}.${project.packaging}"/>
-                    <include name="${project.build.finalName}.lib/*"/>
-                  </tarfileset>
-                </tar>-->
                 <bzip2 src="${project.build.directory}/${project.build.finalName}.tar"
                        destfile="${project.build.directory}/${project.build.finalName}.tbz2"/>
               </target>
@@ -136,7 +111,4 @@
       </plugin>
     </plugins>
   </build>
-
-  <!--<name>${project.artifactId}</name>-->
-
 </project>

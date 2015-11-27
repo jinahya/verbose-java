@@ -15,59 +15,23 @@
  */
 package com.github.jinahya.verbose.hello;
 
-import com.google.inject.Binder;
-import com.google.inject.Guice;
-import com.google.inject.Module;
-import com.google.inject.name.Names;
-import java.util.concurrent.ThreadLocalRandom;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import javax.inject.Inject;
-import org.testng.annotations.BeforeClass;
 import javax.inject.Named;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
+ * Test class for testing {@link HelloWorldImpl} using Dependency Injection.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HelloWorldDependencyInjectionTest extends HelloWorldDataTest {
-
-    @BeforeClass
-    protected void inject() {
-        final Module m1 = new Module() {
-            @Override
-            public void configure(final Binder binder) {
-                binder.bind(HelloWorld.class).to(
-                        current().nextBoolean()
-                        ? HelloWorldImpl.class : HelloWorldDemo.class);
-            }
-        };
-        final Module m2 = b -> {
-            b.bind(HelloWorld.class)
-                    .annotatedWith(Names.named("impl"))
-                    .to(HelloWorldImpl.class);
-        };
-        final Module m3 = b -> {
-            b.bind(HelloWorld.class)
-                    .annotatedWith(Names.named("demo"))
-                    .to(HelloWorldDemo.class);
-        };
-        final Module m4 = b -> {
-            b.bind(HelloWorld.class)
-                    .annotatedWith(Impl.class)
-                    .to(HelloWorldImpl.class);
-        };
-        final Module m5
-                = b -> b.bind(HelloWorld.class)
-                .annotatedWith(Demo.class)
-                .to(HelloWorldDemo.class);
-        Guice.createInjector(m1, m2, m3, m4, m5).injectMembers(this);
-    }
+public abstract class HelloWorldDependencyInjectionTest
+        extends HelloWorldDataTest {
 
     @Override
     HelloWorld implementation() {
-        switch (ThreadLocalRandom.current().nextInt(5)) {
+        switch (current().nextInt(5)) {
             case 0:
                 logger.debug("selecting any");
                 return any;
@@ -86,24 +50,24 @@ public class HelloWorldDependencyInjectionTest extends HelloWorldDataTest {
         }
     }
 
-    private final Logger logger = getLogger(getClass());
+    private transient final Logger logger = getLogger(getClass());
 
     @Inject
-    private HelloWorld any;
+    HelloWorld any;
 
     @Inject
     @Named("impl")
-    private HelloWorld namedAsImpl;
+    HelloWorld namedAsImpl;
 
     @Inject
     @Named("demo")
-    private HelloWorld namedAsDemo;
+    HelloWorld namedAsDemo;
 
     @Inject
     @Impl
-    private HelloWorld qualifiedWithImpl;
+    HelloWorld qualifiedWithImpl;
 
     @Inject
     @Demo
-    private HelloWorld qualifiedWithDemo;
+    HelloWorld qualifiedWithDemo;
 }

@@ -2,28 +2,21 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
-
   <modelVersion>4.0.0</modelVersion>
 
-  <!-- The Basics -->
-  <groupId>com.github.jinahya</groupId>
-  <artifactId>verbose-java-hello-world-api</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
   <parent>
     <groupId>com.github.jinahya</groupId>
     <artifactId>verbose-java</artifactId>
     <version>0.0.1-SNAPSHOT</version>
   </parent>
-  <dependencies>
-    <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
-      <scope>test</scope>
-    </dependency>
-  </dependencies>
-  <properties/>
 
-  <!-- Build Settings -->
+  <groupId>com.github.jinahya</groupId>
+  <artifactId>verbose-java-hello-world-api</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+
+  <name>${project.artifactId}</name>
+  <description>verbose java hello world api</description>
+
   <build>
     <plugins>
       <plugin>
@@ -40,9 +33,4 @@
       </plugin>
     </plugins>
   </build>
-
-  <!-- More Project Information -->
-  <!--<name>${project.artifactId}</name>-->
-  <description>verbose java hello world api</description>
-
 </project>

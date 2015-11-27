@@ -103,24 +103,5 @@ public abstract class HelloWorldDataTest {
         implementation().set(array, offset);
     }
 
-    /**
-     * Tests {@link HelloWorld#set(byte[], int)} on the instance
-     * {@link #implementation()} returns with an array and an offset provided by
-     * {@link HelloWorldDataProvider#parametersAreAllOk()}.
-     *
-     * @param array the array which should not be {@code null}
-     * @param offset the offset which should be small enough so that
-     * {@code offset + HelloWorld.BYTES} is equals or less than
-     * {@code array.length}
-     */
-    @Test(dataProvider = "parametersAreAllOk",
-          dataProviderClass = HelloWorldDataProvider.class)
-    public void parametersAreAllOk(final byte[] array, final int offset) {
-        assertNotNull(array);
-        assertTrue(offset >= 0);
-        assertTrue(offset + HelloWorld.BYTES <= array.length);
-        implementation().set(array, offset);
-    }
-
     private transient final Logger logger = getLogger(getClass());
 }
