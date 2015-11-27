@@ -2,7 +2,9 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
          xmlns="http://maven.apache.org/POM/4.0.0"
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+
   <modelVersion>4.0.0</modelVersion>
+
   <parent>
     <groupId>com.github.jinahya</groupId>
     <artifactId>verbose-java</artifactId>
@@ -25,7 +27,7 @@
     </dependency>
   </dependencies>
   <properties>
-    <mainClass>com.github.jinahya.verbose.hello</mainClass>
+    <mainClass>com.github.jinahya.verbose.hello.HelloWorldMain</mainClass>
   </properties>
 
   <build>
@@ -71,30 +73,41 @@
             </goals>
             <configuration>
               <target>
-                <zip destfile="${project.build.directory}/${project.build.finalName}.zip">
-                  <zipfileset dir="${project.build.directory}">
+                <!--                <zip destfile="${project.build.directory}/${project.build.finalName}.zip">
+                                    <zipfileset dir="${project.build.directory}">
                     <include name="${project.build.finalName}.${project.packaging}"/>
                     <include name="${project.build.finalName}.lib/*"/>
                   </zipfileset>
-                </zip>
-                <tar destfile="${project.build.directory}/${project.build.finalName}.tar">
+                  <zipfileset dir="${project.build.directory}" includes="${project.build.finalName}.${project.packaging} ${project.build.finalName}.lib/*"/>
+                </zip>-->
+                <zip basedir="${project.build.directory}"
+                     destfile="${project.build.directory}/${project.build.finalName}.zip"
+                     includes="${project.build.finalName}.${project.packaging} ${project.build.finalName}.lib/*"/>
+                <!--                <tar destfile="${project.build.directory}/${project.build.finalName}.tar">
                   <tarfileset dir="${project.build.directory}">
                     <include name="${project.build.finalName}.${project.packaging}"/>
                     <include name="${project.build.finalName}.lib/*"/>
                   </tarfileset>
-                </tar>
-                <tar destfile="${project.build.directory}/${project.build.finalName}.tgz" compression="gzip">
+                </tar>-->
+                <tar basedir="${project.build.directory}"
+                     destfile="${project.build.directory}/${project.build.finalName}.tar"
+                     includes="${project.build.finalName}.${project.packaging} ${project.build.finalName}.lib/*"/>
+                <!--                <tar destfile="${project.build.directory}/${project.build.finalName}.tgz" compression="gzip">
                   <tarfileset dir="${project.build.directory}">
                     <include name="${project.build.finalName}.${project.packaging}"/>
                     <include name="${project.build.finalName}.lib/*"/>
                   </tarfileset>
-                </tar>
-                <tar destfile="${project.build.directory}/${project.build.finalName}.tbz2" compression="bzip2">
+                </tar>-->
+                <gzip src="${project.build.directory}/${project.build.finalName}.tar"
+                      destfile="${project.build.directory}/${project.build.finalName}.tgz"/>
+                <!--                <tar destfile="${project.build.directory}/${project.build.finalName}.tbz2" compression="bzip2">
                   <tarfileset dir="${project.build.directory}">
                     <include name="${project.build.finalName}.${project.packaging}"/>
                     <include name="${project.build.finalName}.lib/*"/>
                   </tarfileset>
-                </tar>
+                </tar>-->
+                <bzip2 src="${project.build.directory}/${project.build.finalName}.tar"
+                       destfile="${project.build.directory}/${project.build.finalName}.tbz2"/>
               </target>
             </configuration>
           </execution>
@@ -124,6 +137,6 @@
     </plugins>
   </build>
 
-  <name>${project.artifactId}</name>
+  <!--<name>${project.artifactId}</name>-->
 
 </project>
