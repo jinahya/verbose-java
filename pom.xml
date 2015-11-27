@@ -61,6 +61,12 @@
     <url>https://github.com/jinahya/verbose-java/issues</url>
   </issueManagement>
   <ciManagement/>
+  <distributionManagement>
+    <site>
+      <id>github</id>
+      <url>http://jinahya.github.io/verbose-java/sites/${project.version}/</url>
+    </site>
+  </distributionManagement>
 
   <properties>
     <maven.compiler.source>1.8</maven.compiler.source>
