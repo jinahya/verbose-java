@@ -15,6 +15,7 @@
  */
 package com.github.jinahya.verbose.hello;
 
+import com.google.inject.AbstractModule;
 import com.google.inject.Binder;
 import com.google.inject.Guice;
 import com.google.inject.Module;
@@ -28,39 +29,26 @@ import org.testng.annotations.BeforeClass;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HelloWorldDependencyInjectionGuiceTest
-        extends HelloWorldDependencyInjectionTest {
+public class HelloWorldGuiceModule extends AbstractModule {
 
-    @BeforeClass
-    protected void inject() {
-        final Module m1 = new Module() {
-            @Override
-            public void configure(final Binder binder) {
-                binder.bind(HelloWorld.class).to(
-                        current().nextBoolean()
-                        ? HelloWorldImpl.class : HelloWorldDemo.class);
-            }
-        };
-        final Module m2 = b -> {
-            b.bind(HelloWorld.class)
-                    .annotatedWith(Names.named("impl"))
-                    .to(HelloWorldImpl.class);
-        };
-        final Module m3 = b -> {
-            b.bind(HelloWorld.class)
-                    .annotatedWith(Names.named("demo"))
-                    .to(HelloWorldDemo.class);
-        };
-        final Module m4
-                = b -> b.bind(HelloWorld.class)
+    @Override
+    protected void configure() {
+        bind(HelloWorld.class).to(
+                current().nextBoolean()
+                ? HelloWorldImpl.class : HelloWorldDemo.class);
+        bind(HelloWorld.class)
+                .annotatedWith(Names.named("impl"))
+                .to(HelloWorldImpl.class);
+        bind(HelloWorld.class)
+                .annotatedWith(Names.named("demo"))
+                .to(HelloWorldDemo.class);
+        bind(HelloWorld.class)
                 .annotatedWith(Impl.class)
                 .to(HelloWorldImpl.class);
-        final Module m5
-                = b -> b.bind(HelloWorld.class)
+        bind(HelloWorld.class)
                 .annotatedWith(Demo.class)
                 .to(HelloWorldDemo.class);
-        Guice.createInjector(m1, m2, m3, m4, m5).injectMembers(this);
-        logger.debug("fields injected");
+        logger.debug("configured");
     }
 
     private transient final Logger logger = getLogger(getClass());

@@ -21,12 +21,28 @@
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
       <scope>test</scope>
+      <exclusions>
+        <exclusion>
+          <groupId>com.google.guava</groupId>
+          <artifactId>guava</artifactId>
+        </exclusion>
+      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.github.jinahya</groupId>
       <artifactId>verbose-java-hello-world-api</artifactId>
       <version>${project.version}</version>
       <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.dagger</groupId>
+      <artifactId>dagger-compiler</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.glassfish.hk2</groupId>
+      <artifactId>hk2-testng</artifactId>
+      <scope>test</scope>
     </dependency>
   </dependencies>
 
