@@ -16,13 +16,15 @@
 package com.github.jinahya.verbose.hello;
 
 import dagger.Component;
+import dagger.MembersInjector;
 
 /**
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 @Component(modules = HelloWorldDagger2Module.class)
-public interface HelloWorldDagger2Component {
+public interface HelloWorldDagger2Component
+        extends MembersInjector<HelloWorldDagger2Test> {
 
-    void inject(HelloWorldDagger2Test injectee);
+//    void inject(HelloWorldDagger2Test injectee);
 }
