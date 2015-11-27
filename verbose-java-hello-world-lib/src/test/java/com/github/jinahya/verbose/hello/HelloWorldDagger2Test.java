@@ -29,7 +29,7 @@ public class HelloWorldDagger2Test extends HelloWorldDependencyInjectionTest {
 
     @BeforeClass
     protected void inject() {
-        DaggerHelloWorldDaggerComponent.create().inject(this);
+        DaggerHelloWorldDagger2Component.create().inject(this);
         logger.debug("fields injected");
     }
 
