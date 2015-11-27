@@ -16,14 +16,10 @@
 package com.github.jinahya.verbose.hello;
 
 import com.google.inject.AbstractModule;
-import com.google.inject.Binder;
-import com.google.inject.Guice;
-import com.google.inject.Module;
 import com.google.inject.name.Names;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
-import org.testng.annotations.BeforeClass;
 
 /**
  *

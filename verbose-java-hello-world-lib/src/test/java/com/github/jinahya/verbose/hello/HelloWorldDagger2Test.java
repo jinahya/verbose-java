@@ -18,9 +18,6 @@ package com.github.jinahya.verbose.hello;
 import org.testng.annotations.BeforeClass;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
-import static org.slf4j.LoggerFactory.getLogger;
-import static org.slf4j.LoggerFactory.getLogger;
-import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * Test class injects its own fields using Dagger2.

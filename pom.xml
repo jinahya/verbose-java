@@ -72,6 +72,7 @@
     <java.secure.socket.extension.classes>${java.home}/lib/jsse.jar</java.secure.socket.extension.classes>
     <com.google.dagger.version>2.0.2</com.google.dagger.version>
     <com.squareup.dagger.version>1.2.2</com.squareup.dagger.version>
+    <org.glassfish.hk2.version>2.4.0-b34</org.glassfish.hk2.version>
   </properties>
 
   <dependencyManagement>
@@ -115,6 +116,11 @@
         <groupId>org.apache.commons</groupId>
         <artifactId>commons-lang3</artifactId>
         <version>3.4</version>
+      </dependency>
+      <dependency>
+        <groupId>org.glassfish.hk2</groupId>
+        <artifactId>hk2-testng</artifactId>
+        <version>${org.glassfish.hk2.version}</version>
       </dependency>
       <dependency>
         <groupId>org.slf4j</groupId>

@@ -16,7 +16,6 @@
 package com.github.jinahya.verbose.hello;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
-import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 import static org.testng.Assert.assertEquals;
 

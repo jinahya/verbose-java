@@ -17,7 +17,6 @@ package com.github.jinahya.verbose.hello;
 
 import java.util.Arrays;
 import java.util.Iterator;
-import static java.util.concurrent.ThreadLocalRandom.current;
 import org.testng.annotations.DataProvider;
 
 /**
