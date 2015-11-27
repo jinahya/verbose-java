@@ -15,14 +15,23 @@
  */
 package com.github.jinahya.verbose.hello;
 
-import dagger.Component;
+import org.testng.annotations.BeforeClass;
+import org.slf4j.Logger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
+ * Test class injects its own fields using Dagger2.
  *
+ * @see <a href="http://google.github.io/dagger/">Dagger2</a>
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-@Component(modules = HelloWorldDagger2Module.class)
-public interface HelloWorldDagger2Component {
+public class HelloWorldDaggerTest extends HelloWorldDependencyInjectionTest {
 
-    void inject(HelloWorldDagger2Test injectee);
+    @BeforeClass
+    protected void inject() {
+        DaggerHelloWorldDaggerComponent.create().inject(this);
+        logger.debug("fields injected");
+    }
+
+    private transient final Logger logger = getLogger(getClass());
 }

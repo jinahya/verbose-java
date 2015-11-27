@@ -15,21 +15,14 @@
  */
 package com.github.jinahya.verbose.hello;
 
-import org.testng.annotations.BeforeClass;
-import org.slf4j.Logger;
-import static org.slf4j.LoggerFactory.getLogger;
+import dagger.Component;
 
 /**
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HelloWorldDagger2Test extends HelloWorldDependencyInjectionTest {
+@Component(modules = HelloWorldDaggerModule.class)
+public interface HelloWorldDaggerComponent {
 
-    @BeforeClass
-    protected void inject() {
-        DaggerHelloWorldDagger2Component.create().inject(this);
-        logger.debug("injected");
-    }
-
-    private transient final Logger logger = getLogger(getClass());
+    void inject(HelloWorldDaggerTest injectee);
 }

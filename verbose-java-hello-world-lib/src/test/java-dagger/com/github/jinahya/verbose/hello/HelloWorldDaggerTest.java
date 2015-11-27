@@ -21,7 +21,9 @@ import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
+ * Test class injects its own fields using {@code Dagger}.
  *
+ * @see <a href="http://square.github.io/dagger/">Dagger</a>
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 public class HelloWorldDaggerTest extends HelloWorldDependencyInjectionTest {
@@ -29,6 +31,7 @@ public class HelloWorldDaggerTest extends HelloWorldDependencyInjectionTest {
     @BeforeClass
     protected void inject() {
         ObjectGraph.create(new HelloWorldDaggerModule()).inject(this);;
+        logger.debug("fields injected");
     }
 
     private transient final Logger logger = getLogger(getClass());

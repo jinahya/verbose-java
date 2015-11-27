@@ -20,6 +20,8 @@ import com.google.inject.Guice;
 import com.google.inject.Module;
 import com.google.inject.name.Names;
 import static java.util.concurrent.ThreadLocalRandom.current;
+import org.slf4j.Logger;
+import static org.slf4j.LoggerFactory.getLogger;
 import org.testng.annotations.BeforeClass;
 
 /**
@@ -58,5 +60,8 @@ public class HelloWorldDependencyInjectionGuiceTest
                 .annotatedWith(Demo.class)
                 .to(HelloWorldDemo.class);
         Guice.createInjector(m1, m2, m3, m4, m5).injectMembers(this);
+        logger.debug("fields injected");
     }
+
+    private transient final Logger logger = getLogger(getClass());
 }

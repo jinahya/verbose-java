@@ -15,11 +15,15 @@
  */
 package com.github.jinahya.verbose.hello;
 
-import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.ServiceLoader;
+import static java.util.ServiceLoader.load;
+import org.slf4j.Logger;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.testng.Assert.fail;
 
 /**
+ * Test class uses {@link ServiceLoader} for {@link #implementation()}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
@@ -28,17 +32,17 @@ public class HelloWorldServiceLoaderTest extends HelloWorldDataTest {
     @Override
     HelloWorld implementation() {
         if (implementation == null) {
-            final ServiceLoader<HelloWorld> loader
-                    = ServiceLoader.load(HelloWorld.class);
-            final Iterator<HelloWorld> iterator = loader.iterator();
-            if (iterator.hasNext()) {
-                implementation = iterator.next();
-            } else {
-                fail("no implementation loaded");
+            try {
+                implementation = load(HelloWorld.class).iterator().next();
+                logger.debug("implementation loaded: {}", implementation);
+            } catch (final NoSuchElementException nsee) {
+                fail("failed to load an implementation", nsee);
             }
         }
         return implementation;
     }
+
+    private transient final Logger logger = getLogger(getClass());
 
     private HelloWorld implementation;
 }

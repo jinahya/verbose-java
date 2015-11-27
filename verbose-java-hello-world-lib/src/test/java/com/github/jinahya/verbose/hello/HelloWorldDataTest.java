@@ -54,8 +54,6 @@ public abstract class HelloWorldDataTest {
           dataProviderClass = HelloWorldDataProvider.class,
           expectedExceptions = NullPointerException.class)
     public void arrayNull(final byte[] array, final int offset) {
-        logger.debug("arrayNull({}, {})", array, offset);
-        assertNull(array);
         implementation().set(array, offset);
     }
 
@@ -74,9 +72,6 @@ public abstract class HelloWorldDataTest {
           dataProviderClass = HelloWorldDataProvider.class,
           expectedExceptions = ArrayIndexOutOfBoundsException.class)
     public void offsetNegative(final byte[] array, final int offset) {
-        logger.debug("offsetNegative({}, {})", array, offset);
-        assertNotNull(offset);
-        assertTrue(offset < 0);
         implementation().set(array, offset);
     }
 
@@ -96,10 +91,6 @@ public abstract class HelloWorldDataTest {
           dataProviderClass = HelloWorldDataProvider.class,
           expectedExceptions = ArrayIndexOutOfBoundsException.class)
     public void capacityNotEnough(final byte[] array, final int offset) {
-        logger.debug("capacityNotEnough({}, {})", array, offset);
-        assertNotNull(array);
-        assertTrue(offset >= 0);
-        assertFalse(offset + HelloWorld.BYTES <= array.length);
         implementation().set(array, offset);
     }
 

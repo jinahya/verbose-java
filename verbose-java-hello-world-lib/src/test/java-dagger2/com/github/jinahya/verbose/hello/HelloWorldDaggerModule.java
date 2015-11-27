@@ -25,7 +25,7 @@ import javax.inject.Named;
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 @Module
-public class HelloWorldDagger2Module {
+public class HelloWorldDaggerModule {
 
     @Provides
     HelloWorld providesHelloWorld() {
