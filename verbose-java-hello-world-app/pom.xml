@@ -16,6 +16,14 @@
 
   <name>${project.artifactId}</name>
   <description>hello world application</description>
+  <url>https://github.com/jinahya/${project.artifactId}</url>
+
+  <scm>
+    <connection>scm:git:git@github.com:jinahya/${project.artifactId}.git</connection>
+    <developerConnection>scm:git:git@github.com:jinahya/${project.artifactId}.git</developerConnection>
+    <url>scm:git:git@github.com:jinahya/${project.artifactId}.git</url>
+    <tag>HEAD</tag>
+  </scm>
 
   <properties>
     <mainClass>com.github.jinahya.verbose.hello.HelloWorldMain</mainClass>

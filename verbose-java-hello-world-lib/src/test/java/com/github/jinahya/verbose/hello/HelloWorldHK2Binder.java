@@ -27,13 +27,13 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 public class HelloWorldHK2Binder extends AbstractBinder {
 
-    private class DemoLiteral extends AnnotationLiteral<Demo> implements Demo {
+    class DemoLiteral extends AnnotationLiteral<Demo> implements Demo {
 
         private static final long serialVersionUID = -103484319922866187L;
 
     }
 
-    private class ImplLiteral extends AnnotationLiteral<Impl> implements Impl {
+    class ImplLiteral extends AnnotationLiteral<Impl> implements Impl {
 
         private static final long serialVersionUID = -4180074935060055710L;
 

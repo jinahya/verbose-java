@@ -20,6 +20,8 @@ import javax.inject.Inject;
 import javax.inject.Named;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
+import static org.testng.Assert.assertNotNull;
+import static org.testng.Assert.assertTrue;
 
 /**
  * Test class for testing {@link HelloWorldImpl} using Dependency Injection.
@@ -31,6 +33,11 @@ public abstract class HelloWorldDependencyInjectionTest
 
     @Override
     HelloWorld implementation() {
+        assertNotNull(any);
+        assertTrue(namedAsImpl instanceof HelloWorldImpl);
+        assertTrue(namedAsDemo instanceof HelloWorldDemo);
+        assertTrue(qualifiedWithImpl instanceof HelloWorldImpl);
+        assertTrue(qualifiedWithDemo instanceof HelloWorldDemo);
         switch (current().nextInt(5)) {
             case 0:
                 logger.debug("selecting any");

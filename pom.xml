@@ -7,7 +7,7 @@
   <parent>
     <groupId>com.github.jinahya</groupId>
     <artifactId>jinahya-parent</artifactId>
-    <version>0.2</version>
+    <version>0.5</version>
   </parent>
 
   <groupId>com.github.jinahya</groupId>
@@ -17,28 +17,8 @@
 
   <name>verbose-java</name>
   <description>verbose java</description>
-  <url>https://github.io/jinahya/verbose-java</url>
+  <url>https://github.com/jinahya/verbose-java</url>
   <inceptionYear>2015</inceptionYear>
-  <licenses>
-    <license>
-      <name>Apache 2</name>
-      <url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
-      <distribution>repo</distribution>
-      <comments>A business-friendly OSS license</comments>
-    </license>
-  </licenses>
-
-  <developers>
-    <developer>
-      <id>jinahya</id>
-      <name>Jin Kwon</name>
-      <email>jinahya@gmail.com</email>
-    </developer>
-  </developers>
-
-  <prerequisites>
-    <maven>3.0.4</maven>
-  </prerequisites>
 
   <modules>
     <module>verbose-java-hello-world-api</module>
@@ -79,6 +59,7 @@
     <com.google.dagger.version>2.0.2</com.google.dagger.version>
     <com.squareup.dagger.version>1.2.2</com.squareup.dagger.version>
     <org.glassfish.hk2.version>2.4.0-b34</org.glassfish.hk2.version>
+    <org.springframework.version>4.2.3.RELEASE</org.springframework.version>
   </properties>
 
   <dependencyManagement>
@@ -275,7 +256,7 @@
         <reportSets>
           <reportSet>
             <id>aggregate</id>
-            <inherited>false</inherited>
+            <!--<inherited>false</inherited>-->
             <reports>
               <report>aggregate</report>
             </reports>

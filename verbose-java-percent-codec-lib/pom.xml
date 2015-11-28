@@ -14,8 +14,16 @@
   <artifactId>verbose-java-percent-codec-lib</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 
-  <!--<name>${project.artifactId}</name>-->
+  <name>${project.artifactId}</name>
   <description>implementations of verbose-java-percent-codec-api</description>
+  <url>https://github.com/jinahya/${project.artifactId}</url>
+
+  <scm>
+    <connection>scm:git:git@github.com:jinahya/${project.artifactId}.git</connection>
+    <developerConnection>scm:git:git@github.com:jinahya/${project.artifactId}.git</developerConnection>
+    <url>scm:git:git@github.com:jinahya/${project.artifactId}.git</url>
+    <tag>HEAD</tag>
+  </scm>
 
   <dependencies>
     <dependency>
@@ -39,11 +47,6 @@
     <dependency>
       <groupId>org.apache.commons</groupId>
       <artifactId>commons-lang3</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
-      <groupId>org.testng</groupId>
-      <artifactId>testng</artifactId>
       <scope>test</scope>
     </dependency>
   </dependencies>

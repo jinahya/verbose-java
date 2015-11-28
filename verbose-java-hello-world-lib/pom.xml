@@ -15,29 +15,26 @@
 
   <name>${project.artifactId}</name>
   <description>hello world implementation</description>
+  <url>https://github.com/jinahya/${project.artifactId}</url>
+
+  <scm>
+    <connection>scm:git:git@github.com:jinahya/${project.artifactId}.git</connection>
+    <developerConnection>scm:git:git@github.com:jinahya/${project.artifactId}.git</developerConnection>
+    <url>scm:git:git@github.com:jinahya/${project.artifactId}.git</url>
+    <tag>HEAD</tag>
+  </scm>
 
   <dependencies>
     <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
       <scope>test</scope>
-      <exclusions>
-        <exclusion>
-          <groupId>com.google.guava</groupId>
-          <artifactId>guava</artifactId>
-        </exclusion>
-      </exclusions>
     </dependency>
     <dependency>
       <groupId>com.github.jinahya</groupId>
       <artifactId>verbose-java-hello-world-api</artifactId>
       <version>${project.version}</version>
       <scope>compile</scope>
-    </dependency>
-    <dependency>
-      <groupId>com.google.dagger</groupId>
-      <artifactId>dagger-compiler</artifactId>
-      <scope>test</scope>
     </dependency>
     <dependency>
       <groupId>org.glassfish.hk2</groupId>
@@ -49,12 +46,12 @@
   <profiles>
     <profile>
       <id>dagger</id>
+      <activation>
+        <property>
+          <name>dagger</name>
+        </property>
+      </activation>
       <dependencies>
-        <!--        <dependency>
-          <groupId>com.squareup.dagger</groupId>
-          <artifactId>dagger</artifactId>
-          <scope>test</scope>
-        </dependency>-->
         <dependency>
           <groupId>com.squareup.dagger</groupId>
           <artifactId>dagger-compiler</artifactId>
@@ -109,12 +106,12 @@
     </profile>
     <profile>
       <id>dagger2</id>
+      <activation>
+        <property>
+          <name>dagger2</name>
+        </property>
+      </activation>
       <dependencies>
-        <!--        <dependency>
-          <groupId>com.google.dagger</groupId>
-          <artifactId>dagger</artifactId>
-          <scope>test</scope>
-        </dependency>-->
         <dependency>
           <groupId>com.google.dagger</groupId>
           <artifactId>dagger-compiler</artifactId>
@@ -134,7 +131,7 @@
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
               <includes>
-                <include>**/*DaggerTest.java</include>
+                <include>**/*Dagger2Test.java</include>
               </includes>
             </configuration>
           </plugin>

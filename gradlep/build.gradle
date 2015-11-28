@@ -7,8 +7,6 @@ subprojects {
   }
   dependencies {
     testRuntime 'ch.qos.logback:logback-classic:1.1.3'
-    testCompile 'org.glassfish.hk2:hk2-testng:2.4.0-b34'
-    testCompile 'com.google.dagger:dagger-compiler:2.0.2'
     testCompile 'org.slf4j:slf4j-api:1.7.13'
     testCompile 'org.testng:testng:6.9.9'
   }
@@ -18,6 +16,7 @@ subprojects {
   }
   test {
     useTestNG()
+    //testLogging.showStandardStreams = true
   }
 }
 project(':verbose-java-hello-world-api') {
@@ -28,6 +27,7 @@ project(':verbose-java-hello-world-lib') {
   dependencies {
     compile project(':verbose-java-hello-world-api')
     testCompile 'com.google.inject:guice:4.0'
+    testCompile 'org.glassfish.hk2:hk2-testng:2.4.0-b34'
   }
   if (project.hasProperty('dagger')) {
     println('dagger');
@@ -38,6 +38,9 @@ project(':verbose-java-hello-world-lib') {
       test {
         java {
           srcDir 'src/test/java-dagger'
+        }
+        resources {
+          srcDir 'src/test/resources-dagger'
         }
       }
     }
@@ -51,6 +54,9 @@ project(':verbose-java-hello-world-lib') {
       test {
         java {
           srcDir 'src/test/java-dagger2'
+        }
+        resources {
+          srcDir 'src/test/resources-dagger2'
         }
       }
     }

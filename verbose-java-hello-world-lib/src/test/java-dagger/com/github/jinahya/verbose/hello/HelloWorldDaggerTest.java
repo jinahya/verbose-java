@@ -31,7 +31,7 @@ public class HelloWorldDaggerTest extends HelloWorldDependencyInjectionTest {
     @BeforeClass
     protected void inject() {
         ObjectGraph.create(new HelloWorldDaggerModule()).inject(this);;
-        logger.debug("fields injected");
+        logger.debug("injected");
     }
 
     private transient final Logger logger = getLogger(getClass());
