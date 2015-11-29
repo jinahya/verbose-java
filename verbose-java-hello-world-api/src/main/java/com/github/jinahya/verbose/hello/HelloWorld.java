@@ -28,7 +28,7 @@ public interface HelloWorld {
      * Number of required bytes for representing {@code "hello, world"} in
      * {@code US-ASCII}.
      */
-    static final int BYTES = 12;
+    int BYTES = 12;
 
     /**
      * Sets {@value #BYTES} bytes representing {@code "hello, world"} in
