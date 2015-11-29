@@ -18,9 +18,9 @@
   <url>https://github.com/jinahya/${project.parent.artifactId}</url>
 
   <scm>
-    <connection>scm:git:git@github.com:jinahya/${project.artifactId}.git</connection>
-    <developerConnection>scm:git:git@github.com:jinahya/${project.artifactId}.git</developerConnection>
-    <url>scm:git:git@github.com:jinahya/${project.artifactId}.git</url>
+    <connection>scm:git:git@github.com:jinahya/${project.parent.artifactId}.git</connection>
+    <developerConnection>scm:git:git@github.com:jinahya/${project.parent.artifactId}.git</developerConnection>
+    <url>scm:git:git@github.com:jinahya/${project.parent.artifactId}.git</url>
     <tag>HEAD</tag>
   </scm>
 
