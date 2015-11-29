@@ -44,7 +44,8 @@
   <distributionManagement>
     <site>
       <id>github</id>
-      <url>http://jinahya.github.io/verbose-java/sites/${project.version}/</url>
+      <!--<url>http://jinahya.github.io/verbose-java/sites/${project.version}/</url>-->
+      <url>sites/${project.version}/</url>
     </site>
   </distributionManagement>
 
@@ -53,6 +54,7 @@
     <maven.compiler.target>1.8</maven.compiler.target>
     <maven.compiler.testSource>1.8</maven.compiler.testSource>
     <maven.compiler.testTarget>1.8</maven.compiler.testTarget>
+    <maven.site.deploy.skip>true</maven.site.deploy.skip>
     <java.bootstrap.classes>${java.home}/lib/rt.jar</java.bootstrap.classes>
     <java.cryptographic.extension.classes>${java.home}/lib/jce.jar</java.cryptographic.extension.classes>
     <java.secure.socket.extension.classes>${java.home}/lib/jsse.jar</java.secure.socket.extension.classes>
@@ -218,6 +220,17 @@
       </plugins>
     </pluginManagement>
     <plugins>
+      <plugin>
+        <groupId>com.github.github</groupId>
+        <artifactId>site-maven-plugin</artifactId>
+        <version>0.12</version>
+        <configuration>
+          <server>github</server>
+          <message>creating site for ${project.version}</message>
+          <path>${project.distributionManagement.site.url}</path>
+          <merge>true</merge>
+        </configuration>
+      </plugin>
       <plugin>
         <groupId>org.codehaus.mojo</groupId>
         <artifactId>animal-sniffer-maven-plugin</artifactId>
