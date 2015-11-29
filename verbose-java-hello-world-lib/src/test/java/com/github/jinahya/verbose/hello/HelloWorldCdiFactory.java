@@ -29,6 +29,27 @@ import static org.slf4j.LoggerFactory.getLogger;
 @Dependent
 public class HelloWorldCdiFactory {
 
+//    @Produces
+//    @Demo
+//    @Impl
+//    HelloWorld helloWorld(final InjectionPoint injectionPoint) {
+//        for (final Annotation qualifier : injectionPoint.getQualifiers()) {
+//            if (qualifier instanceof Named) {
+//                final String value = ((Named) qualifier).value();
+//                if ("impl".equals(value)) {
+//                    return new HelloWorldImpl();
+//                } else if ("demo".equals(value)) {
+//                    return new HelloWorldDemo();
+//                }
+//            } else if (qualifier instanceof Impl) {
+//                return new HelloWorldImpl();
+//            } else if (qualifier instanceof Demo) {
+//                return new HelloWorldDemo();
+//            }
+//        }
+//        return current().nextBoolean()
+//               ? new HelloWorldImpl() : new HelloWorldDemo();
+//    }
     @Produces
     HelloWorld any() {
         return current().nextBoolean()
