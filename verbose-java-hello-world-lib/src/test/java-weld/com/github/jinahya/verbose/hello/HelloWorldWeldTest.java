@@ -15,13 +15,18 @@
  */
 package com.github.jinahya.verbose.hello;
 
-import org.jvnet.testing.hk2testng.HK2;
+import org.slf4j.Logger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-@HK2(populate = false, binders = HelloWorldHK2Binder.class)
-public class HelloWorldHK2Test extends HelloWorldDependencyInjectionTest {
+public class HelloWorldWeldTest extends HelloWorldCdiTest {
 
+    public HelloWorldWeldTest() {
+        super(HelloWorldWeldTest.class);
+    }
+
+    private transient final Logger logger = getLogger(getClass());
 }

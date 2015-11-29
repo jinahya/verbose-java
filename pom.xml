@@ -58,7 +58,11 @@
     <java.secure.socket.extension.classes>${java.home}/lib/jsse.jar</java.secure.socket.extension.classes>
     <com.google.dagger.version>2.0.2</com.google.dagger.version>
     <com.squareup.dagger.version>1.2.2</com.squareup.dagger.version>
+    <org.apache.deltaspike.version>1.5.1</org.apache.deltaspike.version>
+    <org.apache.deltaspike.cdictrl.version>1.5.1</org.apache.deltaspike.cdictrl.version>
+    <org.apache.openwebbeans.version>1.6.2</org.apache.openwebbeans.version>
     <org.glassfish.hk2.version>2.4.0-b34</org.glassfish.hk2.version>
+    <org.jboss.weld.se.version>3.0.0.Alpha13</org.jboss.weld.se.version>
     <org.springframework.version>4.2.3.RELEASE</org.springframework.version>
   </properties>
 
@@ -93,6 +97,11 @@
         <groupId>com.squareup.dagger</groupId>
         <artifactId>dagger-compiler</artifactId>
         <version>${com.squareup.dagger.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>javax.enterprise</groupId>
+        <artifactId>cdi-api</artifactId>
+        <version>2.0-EDR1</version>
       </dependency>
       <dependency>
         <groupId>javax.inject</groupId>

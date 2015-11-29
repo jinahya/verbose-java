@@ -18,6 +18,7 @@ package com.github.jinahya.verbose.hello;
 import static java.lang.annotation.ElementType.FIELD;
 import static java.lang.annotation.ElementType.METHOD;
 import static java.lang.annotation.ElementType.PARAMETER;
+import static java.lang.annotation.ElementType.TYPE;
 import java.lang.annotation.Retention;
 import static java.lang.annotation.RetentionPolicy.RUNTIME;
 import java.lang.annotation.Target;
@@ -28,7 +29,7 @@ import javax.inject.Qualifier;
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 @Retention(RUNTIME)
-@Target({FIELD, PARAMETER, METHOD})
+@Target({FIELD, PARAMETER, METHOD, TYPE})
 @Qualifier
 @interface Impl {
 }

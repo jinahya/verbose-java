@@ -33,15 +33,15 @@ public abstract class HelloWorldDependencyInjectionTest
 
     @Override
     HelloWorld implementation() {
-        assertNotNull(any);
+        //assertNotNull(any);
         assertTrue(namedAsImpl instanceof HelloWorldImpl);
         assertTrue(namedAsDemo instanceof HelloWorldDemo);
         assertTrue(qualifiedWithImpl instanceof HelloWorldImpl);
         assertTrue(qualifiedWithDemo instanceof HelloWorldDemo);
         switch (current().nextInt(5)) {
             case 0:
-                logger.debug("selecting any");
-                return any;
+            //logger.debug("selecting any");
+            //return any;
             case 1:
                 logger.debug("selecting namedAsImpl");
                 return namedAsImpl;
@@ -59,9 +59,8 @@ public abstract class HelloWorldDependencyInjectionTest
 
     private transient final Logger logger = getLogger(getClass());
 
-    @Inject
-    HelloWorld any;
-
+    //@Inject
+    //HelloWorld any;
     @Inject
     @Named("impl")
     HelloWorld namedAsImpl;

@@ -25,7 +25,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HelloWorldHK2Binder extends AbstractBinder {
+public class HelloWorldHk2Binder extends AbstractBinder {
 
     class DemoLiteral extends AnnotationLiteral<Demo> implements Demo {
 

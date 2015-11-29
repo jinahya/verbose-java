@@ -15,25 +15,48 @@
  */
 package com.github.jinahya.verbose.hello;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
+import static java.util.concurrent.ThreadLocalRandom.current;
+import javax.enterprise.context.Dependent;
+import javax.enterprise.inject.Produces;
+import javax.inject.Named;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
-import org.testng.annotations.BeforeClass;
 
 /**
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-//@org.testng.annotations.Guice(modules = HelloWorldGuiceModule.class)
-public class HelloWorldGuiceTest
-        extends HelloWorldDependencyInjectionTest {
+@Dependent
+public class HelloWorldCdiFactory {
 
-    @BeforeClass
-    protected void inject() {
-        com.google.inject.Guice.createInjector(new HelloWorldGuiceModule())
-                .injectMembers(this);
-        logger.debug("injected");
+    @Produces
+    HelloWorld any() {
+        return current().nextBoolean()
+               ? new HelloWorldImpl() : new HelloWorldDemo();
+    }
+
+    @Produces
+    @Named("impl")
+    HelloWorld namedAsImpl() {
+        return new HelloWorldImpl();
+    }
+
+    @Produces
+    @Named("demo")
+    HelloWorld namedAsDemo() {
+        return new HelloWorldDemo();
+    }
+
+    @Produces
+    @Impl
+    HelloWorld qualifiedWithImpl() {
+        return new HelloWorldImpl();
+    }
+
+    @Produces
+    @Demo
+    HelloWorld qualifiedWithDemo() {
+        return new HelloWorldDemo();
     }
 
     private transient final Logger logger = getLogger(getClass());
