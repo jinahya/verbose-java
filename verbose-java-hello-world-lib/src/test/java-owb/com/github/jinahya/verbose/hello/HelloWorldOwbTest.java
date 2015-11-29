@@ -22,7 +22,7 @@ import static org.slf4j.LoggerFactory.getLogger;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HelloWorldOwbTest extends HelloWorldCdiTest {
+public class HelloWorldOwbTest extends HelloWorldCdiTest<HelloWorldOwbTest> {
 
     public HelloWorldOwbTest() {
         super(HelloWorldOwbTest.class);

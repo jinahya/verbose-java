@@ -25,7 +25,7 @@ import org.testng.annotations.Test;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public abstract class HelloWorldDataTest {
+abstract class HelloWorldDataTest {
 
     /**
      * Returns an instance of {@link HelloWorld} to test.

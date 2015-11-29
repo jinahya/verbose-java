@@ -18,10 +18,10 @@ package com.github.jinahya.verbose.hello;
 import java.nio.ByteBuffer;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import org.slf4j.Logger;
-import org.testng.annotations.Test;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
+import org.testng.annotations.Test;
 
 /**
  * A test class testing {@link HelloWorldImpl}.

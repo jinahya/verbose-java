@@ -27,10 +27,11 @@ project(':verbose-java-hello-world-lib') {
   dependencies {
     compile project(':verbose-java-hello-world-api')
     testCompile 'com.google.inject:guice:4.0'
-    testCompile 'org.glassfish.hk2:hk2-testng:2.4.0-b34'
+    testCompile 'javax.enterprise:cdi-api:2.0-EDR1'
+    testCompile 'org.apache.deltaspike.cdictrl:deltaspike-cdictrl-api:1.5.1'
+    testCompile 'org.springframework:spring-context:4.2.3.RELEASE'
   }
   if (project.hasProperty('dagger')) {
-    println('dagger');
     dependencies {
       testCompile 'com.squareup.dagger:dagger-compiler:1.2.2'
     }
@@ -57,6 +58,54 @@ project(':verbose-java-hello-world-lib') {
         }
         resources {
           srcDir 'src/test/resources-dagger2'
+        }
+      }
+    }
+  }
+  if (project.hasProperty('hk2')) {
+    dependencies {
+      testCompile 'org.glassfish.hk2:hk2-testng:2.4.0-b34'
+    }
+    sourceSets {
+      test {
+        java {
+          srcDir 'src/test/java-hk2'
+        }
+        resources {
+          srcDir 'src/test/resources-hk2'
+        }
+      }
+    }
+  }
+  if (project.hasProperty('weld')) {
+    dependencies {
+      testCompile 'org.apache.deltasike.cdictrl:deltaspike-cdictrl-weld:1.5.1';
+      testCompile 'org.jboss.weld.se:weld-se-core:3.0.0.Alpha13'
+    }
+    sourceSets {
+      test {
+        java {
+          srcDir 'src/test/java-weld'
+        }
+        resources {
+          srcDir 'src/test/resources-weld'
+        }
+      }
+    }
+  }
+  if (project.hasProperty('owb')) {
+    dependencies {
+      testCompile 'org.apache.deltasike.cdictrl:deltaspike-cdictrl-owb:1.5.1';
+      testCompile 'org.apache.openwebbeans:openwebbeans-impl:1.6.2'
+      testCompile 'org.apache.openwebbeans:openwebbeans-spi:1.6.2'
+    }
+    sourceSets {
+      test {
+        java {
+          srcDir 'src/test/java-weld'
+        }
+        resources {
+          srcDir 'src/test/resources-weld'
         }
       }
     }

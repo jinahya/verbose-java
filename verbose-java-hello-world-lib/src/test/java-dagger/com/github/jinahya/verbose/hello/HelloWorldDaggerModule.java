@@ -34,20 +34,14 @@ public class HelloWorldDaggerModule {
     }
 
     @Provides
-    @Named("demo")
-    HelloWorld providesHelloWorldNamedAsDemo() {
-        return new HelloWorldDemo();
-    }
-
-    @Provides
     @Named("impl")
     HelloWorld providesHelloWorldnamedAsImpl() {
-        return new HelloWorldDemo();
+        return new HelloWorldImpl();
     }
 
     @Provides
-    @Demo
-    HelloWorld providesHelloWorldQualifiedWithDemo() {
+    @Named("demo")
+    HelloWorld providesHelloWorldNamedAsDemo() {
         return new HelloWorldDemo();
     }
 
@@ -55,5 +49,11 @@ public class HelloWorldDaggerModule {
     @Impl
     HelloWorld providesHelloWorldQualifiedWithImpl() {
         return new HelloWorldImpl();
+    }
+
+    @Provides
+    @Demo
+    HelloWorld providesHelloWorldQualifiedWithDemo() {
+        return new HelloWorldDemo();
     }
 }

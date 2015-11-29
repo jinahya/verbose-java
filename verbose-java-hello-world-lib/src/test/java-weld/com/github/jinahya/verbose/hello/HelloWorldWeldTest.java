@@ -15,6 +15,7 @@
  */
 package com.github.jinahya.verbose.hello;
 
+import javax.enterprise.context.Dependent;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -22,7 +23,8 @@ import static org.slf4j.LoggerFactory.getLogger;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HelloWorldWeldTest extends HelloWorldCdiTest {
+@Dependent
+public class HelloWorldWeldTest extends HelloWorldCdiTest<HelloWorldWeldTest> {
 
     public HelloWorldWeldTest() {
         super(HelloWorldWeldTest.class);

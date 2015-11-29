@@ -32,16 +32,20 @@ public abstract class HelloWorldDependencyInjectionTest
         extends HelloWorldDataTest {
 
     @Override
-    HelloWorld implementation() {
-        //assertNotNull(any);
-        assertTrue(namedAsImpl instanceof HelloWorldImpl);
-        assertTrue(namedAsDemo instanceof HelloWorldDemo);
-        assertTrue(qualifiedWithImpl instanceof HelloWorldImpl);
-        assertTrue(qualifiedWithDemo instanceof HelloWorldDemo);
+    final HelloWorld implementation() {
+        assertNotNull(any, "any is null");
+        assertTrue(namedAsImpl instanceof HelloWorldImpl,
+                   namedAsImpl + " is not an instanceof HelloWorldImpl");
+        assertTrue(namedAsDemo instanceof HelloWorldDemo,
+                   namedAsDemo + " is not an instance of HelloWorldDemo");
+        assertTrue(qualifiedWithImpl instanceof HelloWorldImpl,
+                   qualifiedWithImpl + " is not an instance of HelloWorldImpl");
+        assertTrue(qualifiedWithDemo instanceof HelloWorldDemo,
+                   qualifiedWithDemo + " is not an instance of HelloWorldDemo");
         switch (current().nextInt(5)) {
             case 0:
-            //logger.debug("selecting any");
-            //return any;
+                logger.debug("selecting any");
+                return any;
             case 1:
                 logger.debug("selecting namedAsImpl");
                 return namedAsImpl;
@@ -57,10 +61,23 @@ public abstract class HelloWorldDependencyInjectionTest
         }
     }
 
+    void debug(final Logger logger) {
+        logger.debug("any: {}", any);
+        logger.debug("namedAsImpl: {}", namedAsImpl);
+        logger.debug("namedAsDemo: {}", namedAsDemo);
+        logger.debug("qualifiedWithImpl: {}", qualifiedWithImpl);
+        logger.debug("qualifiedWithDemo: {}", qualifiedWithDemo);
+    }
+
+    void debug() {
+        debug(logger);
+    }
+
     private transient final Logger logger = getLogger(getClass());
 
-    //@Inject
-    //HelloWorld any;
+    @Inject
+    HelloWorld any;
+
     @Inject
     @Named("impl")
     HelloWorld namedAsImpl;

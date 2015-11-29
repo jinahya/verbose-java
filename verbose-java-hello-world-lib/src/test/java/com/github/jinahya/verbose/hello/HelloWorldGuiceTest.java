@@ -15,8 +15,6 @@
  */
 package com.github.jinahya.verbose.hello;
 
-import com.google.inject.Guice;
-import com.google.inject.Injector;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 import org.testng.annotations.BeforeClass;

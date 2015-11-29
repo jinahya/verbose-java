@@ -15,6 +15,7 @@
  */
 package com.github.jinahya.verbose.hello;
 
+import javax.enterprise.context.Dependent;
 import javax.enterprise.context.spi.CreationalContext;
 import javax.enterprise.inject.spi.AnnotatedType;
 import javax.enterprise.inject.spi.BeanManager;
@@ -22,12 +23,9 @@ import javax.enterprise.inject.spi.InjectionTarget;
 import org.apache.deltaspike.cdise.api.CdiContainer;
 import org.apache.deltaspike.cdise.api.CdiContainerLoader;
 import org.slf4j.Logger;
+import static org.slf4j.LoggerFactory.getLogger;
 import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
-import static org.slf4j.LoggerFactory.getLogger;
-import static org.slf4j.LoggerFactory.getLogger;
-import static org.slf4j.LoggerFactory.getLogger;
-import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  *
