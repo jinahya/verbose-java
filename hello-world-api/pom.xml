@@ -11,7 +11,7 @@
   </parent>
 
   <groupId>com.github.jinahya</groupId>
-  <artifactId>verbose-java-hello-world-api</artifactId>
+  <artifactId>hello-world-api</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 
   <name>${project.artifactId}</name>
