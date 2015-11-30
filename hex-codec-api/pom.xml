@@ -11,7 +11,7 @@
   </parent>
 
   <groupId>com.github.jinahya</groupId>
-  <artifactId>verbose-java-hex-codec-api</artifactId>
+  <artifactId>hex-codec-api</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 
   <name>${project.artifactId}</name>

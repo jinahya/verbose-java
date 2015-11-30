@@ -10,7 +10,7 @@
   </parent>
 
   <groupId>com.github.jinahya</groupId>
-  <artifactId>verbose-java-hello-world-lib</artifactId>
+  <artifactId>hello-world-lib</artifactId>
   <version>0.0.1-SNAPSHOT</version>
 
   <name>${project.artifactId}</name>
