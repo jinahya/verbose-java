@@ -26,7 +26,7 @@ public class HelloWorldImpl implements HelloWorld {
         if (array == null) {
             throw new NullPointerException("null array");
         }
-        if (false && offset < 0) {
+        if (offset < 0) {
             throw new ArrayIndexOutOfBoundsException(
                     "offset(" + offset + ") < 0");
         }
