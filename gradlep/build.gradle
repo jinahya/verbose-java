@@ -19,13 +19,13 @@ subprojects {
     //testLogging.showStandardStreams = true
   }
 }
-project(':verbose-java-hello-world-api') {
+project(':hello-world-api') {
   apply plugin: 'application'
   mainClassName = "com.github.jinahya.verbose.hello.SuccinctHelloWorld"
 }
-project(':verbose-java-hello-world-lib') {
+project(':hello-world-lib') {
   dependencies {
-    compile project(':verbose-java-hello-world-api')
+    compile project(':hello-world-api')
     testCompile 'com.google.inject:guice:4.0'
     testCompile 'javax.enterprise:cdi-api:2.0-EDR1'
     testCompile 'org.apache.deltaspike.cdictrl:deltaspike-cdictrl-api:1.5.1'
@@ -114,27 +114,27 @@ project(':verbose-java-hello-world-lib') {
     }
   }
 }
-project(':verbose-java-hello-world-app') {
+project(':hello-world-app') {
   dependencies {
-    compile project(':verbose-java-hello-world-lib')
+    compile project(':hello-world-lib')
   }
   apply plugin: 'application'
   mainClassName = "com.github.jinahya.verbose.hello.HelloWorldMain"
 }
-project(':verbose-java-hex-codec-api') {
+project(':hex-codec-api') {
 }
-project(':verbose-java-hex-codec-lib') {
+project(':hex-codec-lib') {
   dependencies {
-    compile project(':verbose-java-hex-codec-api')
+    compile project(':hex-codec-api')
   }
 }
-project(':verbose-java-percent-codec-api') {
+project(':percent-codec-api') {
 }
-project(':verbose-java-percent-codec-lib') {
+project(':percent-codec-lib') {
   dependencies {
-    compile project(':verbose-java-hex-codec-api')
-    runtime project(':verbose-java-hex-codec-lib')
-    compile project(':verbose-java-percent-codec-api')
+    compile project(':hex-codec-api')
+    runtime project(':hex-codec-lib')
+    compile project(':percent-codec-api')
     testCompile 'org.apache.commons:commons-lang3:3.4'
   }
 }

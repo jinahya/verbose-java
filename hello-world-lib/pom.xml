@@ -32,7 +32,7 @@
     </dependency>
     <dependency>
       <groupId>com.github.jinahya</groupId>
-      <artifactId>verbose-java-hello-world-api</artifactId>
+      <artifactId>hello-world-api</artifactId>
       <version>${project.version}</version>
       <scope>compile</scope>
     </dependency>
