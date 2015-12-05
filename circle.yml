@@ -1,0 +1,8 @@
+general :
+  branches:
+    ignore:
+      - gh-pages
+
+machines:
+  java:
+    version: oraclejdk8
