@@ -103,11 +103,11 @@
         <artifactId>dagger-compiler</artifactId>
         <version>${com.squareup.dagger.version}</version>
       </dependency>
-      <dependency>
+      <!--      <dependency>
         <groupId>javax.enterprise</groupId>
         <artifactId>cdi-api</artifactId>
         <version>2.0-EDR1</version>
-      </dependency>
+      </dependency>-->
       <dependency>
         <groupId>javax.inject</groupId>
         <artifactId>javax.inject</artifactId>
@@ -123,15 +123,15 @@
         <artifactId>hk2-testng</artifactId>
         <version>${org.glassfish.hk2.version}</version>
       </dependency>
-      <dependency>
+      <!--      <dependency>
         <groupId>org.slf4j</groupId>
         <artifactId>slf4j-api</artifactId>
         <version>1.7.13</version>
-      </dependency>
+      </dependency>-->
       <dependency>
         <groupId>org.testng</groupId>
         <artifactId>testng</artifactId>
-        <version>6.9.9</version>
+        <version>6.9.10</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -305,7 +305,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-pmd-plugin</artifactId>
-        <version>3.5</version>
+        <version>3.6</version>
       </plugin>
       <!--
       <plugin>
