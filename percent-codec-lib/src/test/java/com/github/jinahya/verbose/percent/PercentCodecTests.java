@@ -15,15 +15,6 @@
  */
 package com.github.jinahya.verbose.percent;
 
-import java.io.UnsupportedEncodingException;
-import java.net.URLEncoder;
-import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
-import static java.util.concurrent.ThreadLocalRandom.current;
-import org.apache.commons.lang3.RandomStringUtils;
-import static org.testng.Assert.assertEquals;
-import org.testng.annotations.Test;
-
 /**
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;

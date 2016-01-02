@@ -20,7 +20,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 import org.testng.annotations.Test;
 
 /**
- * Test class tests {@link HelloWorld#set(byte[], int)} with data provided by
+ * A class for testing {@link HelloWorld#set(byte[], int)} with data provided by
  * {@link HelloWorldDataProvider}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;

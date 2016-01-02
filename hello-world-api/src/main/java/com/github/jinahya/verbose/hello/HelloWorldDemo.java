@@ -15,11 +15,10 @@
  */
 package com.github.jinahya.verbose.hello;
 
-import static java.lang.System.arraycopy;
-import static java.nio.charset.StandardCharsets.US_ASCII;
+import java.nio.charset.StandardCharsets;
 
 /**
- * A simple demo implementing {@code HelloWorld}.
+ * A class implementing implementing {@code HelloWorld}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
@@ -27,7 +26,7 @@ public class HelloWorldDemo implements HelloWorld {
 
     @Override
     public void set(final byte[] array, final int offset) {
-        final byte[] src = "hello, world".getBytes(US_ASCII);
-        arraycopy(src, 0, array, offset, src.length);
+        final byte[] src = "hello, world".getBytes(StandardCharsets.US_ASCII);
+        System.arraycopy(src, 0, array, offset, src.length);
     }
 }
