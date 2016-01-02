@@ -16,8 +16,8 @@
 package com.github.jinahya.verbose.hello;
 
 import static java.nio.charset.StandardCharsets.US_ASCII;
-import org.testng.annotations.Test;
 import static org.testng.Assert.assertEquals;
+import org.testng.annotations.Test;
 
 /**
  *
@@ -26,7 +26,7 @@ import static org.testng.Assert.assertEquals;
 public class HelloWorldTest {
 
     @Test
-    public static void assertBYTESequalsToActual() {
+    public static void assert_BYTES_equalsToActual() {
         assertEquals(HelloWorld.BYTES,
                      "hello, world".getBytes(US_ASCII).length);
     }
