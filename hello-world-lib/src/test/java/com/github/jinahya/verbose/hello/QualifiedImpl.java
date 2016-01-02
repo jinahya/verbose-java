@@ -31,5 +31,5 @@ import javax.inject.Qualifier;
 @Retention(RUNTIME)
 @Target({FIELD, PARAMETER, METHOD, TYPE})
 @Qualifier
-@interface Demo {
+@interface QualifiedImpl {
 }

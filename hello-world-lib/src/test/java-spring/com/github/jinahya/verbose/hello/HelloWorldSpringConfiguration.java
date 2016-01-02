@@ -47,13 +47,13 @@ public class HelloWorldSpringConfiguration {
         return new HelloWorldDemo();
     }
 
-    @Impl
+    @QualifiedImpl
     @Bean
     HelloWorld qualifiedWithImpl() {
         return new HelloWorldImpl();
     }
 
-    @Demo
+    @QualifiedDemo
     @Bean
     HelloWorld qualifiedWithDemo() {
         return new HelloWorldDemo();

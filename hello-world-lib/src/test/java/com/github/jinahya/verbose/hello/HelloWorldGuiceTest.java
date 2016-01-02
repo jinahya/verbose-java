@@ -24,8 +24,7 @@ import org.testng.annotations.BeforeClass;
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 //@org.testng.annotations.Guice(modules = HelloWorldGuiceModule.class)
-public class HelloWorldGuiceTest
-        extends HelloWorldDependencyInjectionTest {
+public class HelloWorldGuiceTest extends HelloWorldInjectionTest {
 
     @BeforeClass
     protected void inject() {

@@ -24,8 +24,7 @@ import org.testng.annotations.BeforeClass;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HelloWorldSpringTest
-        extends HelloWorldDependencyInjectionTest {
+public class HelloWorldSpringTest extends HelloWorldInjectionTest {
 
     @BeforeClass
     protected void inject() {

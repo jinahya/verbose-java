@@ -15,20 +15,34 @@
  */
 package com.github.jinahya.verbose.hello;
 
-import javax.enterprise.context.Dependent;
+import java.util.NoSuchElementException;
+import java.util.ServiceLoader;
+import static java.util.ServiceLoader.load;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
+import static org.testng.Assert.fail;
 
 /**
+ * Test class uses {@link ServiceLoader} for {@link #implementation()}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-@Dependent
-public class HelloWorldWeldTest extends HelloWorldCdiTest<HelloWorldWeldTest> {
+public class HelloWorldServiceTest extends HelloWorldDataTest {
 
-    public HelloWorldWeldTest() {
-        super(HelloWorldWeldTest.class);
+    @Override
+    HelloWorld implementation() {
+        if (implementation == null) {
+            try {
+                implementation = load(HelloWorld.class).iterator().next();
+                logger.debug("implementation loaded: {}", implementation);
+            } catch (final NoSuchElementException nsee) {
+                fail("failed to load an implementation", nsee);
+            }
+        }
+        return implementation;
     }
 
     private transient final Logger logger = getLogger(getClass());
+
+    private HelloWorld implementation;
 }

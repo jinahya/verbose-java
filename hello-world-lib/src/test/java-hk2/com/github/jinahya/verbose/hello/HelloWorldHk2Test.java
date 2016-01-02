@@ -22,6 +22,6 @@ import org.jvnet.testing.hk2testng.HK2;
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 @HK2(populate = false, binders = HelloWorldHk2Binder.class)
-public class HelloWorldHk2Test extends HelloWorldDependencyInjectionTest {
+public class HelloWorldHk2Test extends HelloWorldInjectionTest {
 
 }
