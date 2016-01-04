@@ -23,7 +23,10 @@ import org.springframework.context.support.GenericApplicationContext;
 import org.testng.annotations.BeforeClass;
 
 /**
+ * Test class injects its own fields using Spring Framework.
  *
+ * @see <a href="http://projects.spring.io/spring-framework/">Spring
+ * Framework</a>
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 public class HelloWorldSpringTest extends HelloWorldInjectionTest {
@@ -36,10 +39,6 @@ public class HelloWorldSpringTest extends HelloWorldInjectionTest {
         final AutowireCapableBeanFactory factory
                 = context.getAutowireCapableBeanFactory();
         factory.autowireBean(this);
-//        new AnnotationConfigApplicationContext(
-//                HelloWorldSpringConfiguration.class)
-//                .getAutowireCapableBeanFactory()
-//                .autowireBean(this);
         logger.debug("injected");
     }
 
