@@ -1,8 +1,7 @@
 package com.github.jinahya.verbose.hello;
 
-import java.nio.charset.StandardCharsets;
-import java.util.NoSuchElementException;
-import java.util.ServiceLoader;
+import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.util.ServiceLoader.load;
 
 /**
  * A class whose {@code main} method prints {@code hello, world%n} to
@@ -12,26 +11,17 @@ import java.util.ServiceLoader;
  */
 public class HelloWorldMain {
 
-    private static final HelloWorld LOADED;
-
-    static {
-        try {
-            LOADED = ServiceLoader.load(HelloWorld.class).iterator().next();
-        } catch (final NoSuchElementException nsee) {
-            throw new InstantiationError("no implementation loaded");
-        }
-    }
-
     /**
      * Prints {@code hello, world} to {@code System.out}.
      *
      * @param args command line arguments
      */
     public static void main(final String[] args) {
+        final HelloWorld loaded = load(HelloWorld.class).iterator().next();
         final byte[] array = new byte[HelloWorld.BYTES];
         final int offset = 0;
-        LOADED.set(array, offset);
-        final String string = new String(array, StandardCharsets.US_ASCII);
+        loaded.set(array, offset);
+        final String string = new String(array, US_ASCII);
         System.out.printf("%s%n", string);
     }
 }
