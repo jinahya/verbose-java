@@ -15,7 +15,7 @@
   <version>0.0.1-SNAPSHOT</version>
 
   <name>${project.artifactId}</name>
-  <description>verbose java hello world api</description>
+  <description>hello world api</description>
   <url>https://github.com/jinahya/${project.parent.artifactId}</url>
 
   <scm>

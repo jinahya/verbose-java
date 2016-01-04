@@ -64,10 +64,7 @@
     <java.secure.socket.extension.classes>${java.home}/lib/jsse.jar</java.secure.socket.extension.classes>
     <com.google.dagger.version>2.0.2</com.google.dagger.version>
     <com.squareup.dagger.version>1.2.2</com.squareup.dagger.version>
-    <org.apache.deltaspike.version>1.5.1</org.apache.deltaspike.version>
-    <org.apache.openwebbeans.version>1.6.2</org.apache.openwebbeans.version>
     <org.glassfish.hk2.version>2.4.0-b34</org.glassfish.hk2.version>
-    <org.jboss.weld.se.version>3.0.0.Alpha13</org.jboss.weld.se.version>
     <org.springframework.version>4.2.3.RELEASE</org.springframework.version>
   </properties>
 
@@ -113,17 +110,12 @@
         <artifactId>commons-lang3</artifactId>
         <version>3.4</version>
       </dependency>
-      <dependency>
+      <!--      <dependency>
         <groupId>org.glassfish.hk2</groupId>
         <artifactId>hk2-bom</artifactId>
         <version>${org.glassfish.hk2.version}</version>
         <type>pom</type>
         <scope>import</scope>
-      </dependency>
-      <!--      <dependency>
-        <groupId>org.glassfish.hk2</groupId>
-        <artifactId>hk2-testng</artifactId>
-        <version>${org.glassfish.hk2.version}</version>
       </dependency>-->
       <dependency>
         <groupId>org.testng</groupId>
