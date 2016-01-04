@@ -29,7 +29,9 @@ public class HelloWorldDagger2Test extends HelloWorldInjectionTest {
 
     @BeforeClass
     void inject() {
-        DaggerHelloWorldDagger2Component.create().injectMembers(this);
+        final HelloWorldDagger2Component component
+                = DaggerHelloWorldDagger2Component.create();
+        component.injectMembers(this);
         logger.debug("injected");
     }
 

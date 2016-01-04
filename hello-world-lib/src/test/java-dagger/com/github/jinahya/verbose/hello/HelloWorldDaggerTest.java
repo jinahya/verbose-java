@@ -30,7 +30,9 @@ public class HelloWorldDaggerTest extends HelloWorldInjectionTest {
 
     @BeforeClass
     void inject() {
-        ObjectGraph.create(new HelloWorldDaggerModule()).inject(this);
+        final ObjectGraph graph
+                = ObjectGraph.create(new HelloWorldDaggerModule());
+        graph.inject(this);
         logger.debug("injected");
         debug();
     }

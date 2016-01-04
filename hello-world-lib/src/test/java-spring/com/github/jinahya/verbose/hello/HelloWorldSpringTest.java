@@ -17,7 +17,9 @@ package com.github.jinahya.verbose.hello;
 
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
+import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
+import org.springframework.context.support.GenericApplicationContext;
 import org.testng.annotations.BeforeClass;
 
 /**
@@ -28,10 +30,16 @@ public class HelloWorldSpringTest extends HelloWorldInjectionTest {
 
     @BeforeClass
     protected void inject() {
-        new AnnotationConfigApplicationContext(
-                HelloWorldSpringConfiguration.class)
-                .getAutowireCapableBeanFactory()
-                .autowireBean(this);
+        final GenericApplicationContext context
+                = new AnnotationConfigApplicationContext(
+                        HelloWorldSpringConfiguration.class);
+        final AutowireCapableBeanFactory factory
+                = context.getAutowireCapableBeanFactory();
+        factory.autowireBean(this);
+//        new AnnotationConfigApplicationContext(
+//                HelloWorldSpringConfiguration.class)
+//                .getAutowireCapableBeanFactory()
+//                .autowireBean(this);
         logger.debug("injected");
     }
 
