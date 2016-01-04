@@ -28,7 +28,7 @@ import org.testng.annotations.BeforeClass;
 public class HelloWorldDagger2Test extends HelloWorldInjectionTest {
 
     @BeforeClass
-    protected void inject() {
+    void inject() {
         DaggerHelloWorldDagger2Component.create().injectMembers(this);
         logger.debug("injected");
     }

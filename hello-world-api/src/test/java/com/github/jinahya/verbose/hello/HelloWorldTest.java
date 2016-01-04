@@ -20,11 +20,16 @@ import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
 /**
+ * Test class for testing {@link HelloWorld}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 public class HelloWorldTest {
 
+    /**
+     * Tests whether {@link HelloWorld#BYTES} is equals to actual number of
+     * bytes.
+     */
     @Test
     public static void assert_BYTES_equalsToActual() {
         assertEquals(HelloWorld.BYTES,

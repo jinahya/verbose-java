@@ -15,13 +15,26 @@
  */
 package com.github.jinahya.verbose.hello;
 
-import org.jvnet.testing.hk2testng.HK2;
+import org.glassfish.hk2.api.ServiceLocator;
+import org.glassfish.hk2.utilities.Binder;
+import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
+import org.slf4j.Logger;
+import static org.slf4j.LoggerFactory.getLogger;
+import org.testng.annotations.BeforeClass;
 
 /**
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-@HK2(populate = false, binders = HelloWorldHk2Binder.class)
 public class HelloWorldHk2Test extends HelloWorldInjectionTest {
 
+    @BeforeClass
+    void inject() {
+        final Binder binder = new HelloWorldHk2Binder();
+        final ServiceLocator locator = ServiceLocatorUtilities.bind(binder);
+        locator.inject(this);
+        logger.debug("injected");
+    }
+
+    private transient final Logger logger = getLogger(getClass());
 }

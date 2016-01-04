@@ -15,9 +15,9 @@
  */
 package com.github.jinahya.verbose.hello;
 
+import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.ServiceLoader;
-import static java.util.ServiceLoader.load;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.testng.Assert.fail;
@@ -32,8 +32,11 @@ public class HelloWorldServiceTest extends HelloWorldDataTest {
     @Override
     HelloWorld implementation() {
         if (implementation == null) {
+            final ServiceLoader<HelloWorld> loader
+                    = ServiceLoader.load(HelloWorld.class);
+            final Iterator<HelloWorld> iterator = loader.iterator();
             try {
-                implementation = load(HelloWorld.class).iterator().next();
+                implementation = iterator.next();
                 logger.debug("implementation loaded: {}", implementation);
             } catch (final NoSuchElementException nsee) {
                 fail("failed to load an implementation", nsee);

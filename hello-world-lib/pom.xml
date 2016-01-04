@@ -65,7 +65,6 @@
             <executions>
               <execution>
                 <id>add-test-source</id>
-                <phase>generate-test-sources</phase>
                 <goals>
                   <goal>add-test-source</goal>
                 </goals>
@@ -112,7 +111,6 @@
             <executions>
               <execution>
                 <id>add-test-source</id>
-                <phase>generate-test-sources</phase>
                 <goals>
                   <goal>add-test-source</goal>
                 </goals>
@@ -132,7 +130,7 @@
       <dependencies>
         <dependency>
           <groupId>org.glassfish.hk2</groupId>
-          <artifactId>hk2-testng</artifactId>
+          <artifactId>hk2-core</artifactId>
           <scope>test</scope>
         </dependency>
       </dependencies>
@@ -153,7 +151,6 @@
             <executions>
               <execution>
                 <id>add-test-source</id>
-                <phase>generate-test-sources</phase>
                 <goals>
                   <goal>add-test-source</goal>
                 </goals>
@@ -185,7 +182,7 @@
             <artifactId>maven-surefire-plugin</artifactId>
             <configuration>
               <includes>
-                <include>**/*Hk2Test.java</include>
+                <include>**/*SpringTest.java</include>
               </includes>
             </configuration>
           </plugin>
@@ -195,7 +192,6 @@
             <executions>
               <execution>
                 <id>add-test-source</id>
-                <phase>generate-test-sources</phase>
                 <goals>
                   <goal>add-test-source</goal>
                 </goals>

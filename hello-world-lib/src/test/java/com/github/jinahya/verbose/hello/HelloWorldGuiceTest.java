@@ -20,6 +20,7 @@ import static org.slf4j.LoggerFactory.getLogger;
 import org.testng.annotations.BeforeClass;
 
 /**
+ * An injection test uses Google Guice.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
@@ -27,8 +28,9 @@ import org.testng.annotations.BeforeClass;
 public class HelloWorldGuiceTest extends HelloWorldInjectionTest {
 
     @BeforeClass
-    protected void inject() {
-        com.google.inject.Guice.createInjector(new HelloWorldGuiceModule())
+    void inject() {
+        com.google.inject.Guice
+                .createInjector(new HelloWorldGuiceModule())
                 .injectMembers(this);
         logger.debug("injected");
     }

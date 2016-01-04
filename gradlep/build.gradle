@@ -21,10 +21,12 @@ subprojects {
     //testLogging.showStandardStreams = true
   }
 }
+
 project(':hello-world-api') {
   apply plugin: 'application'
   mainClassName = "com.github.jinahya.verbose.hello.SuccinctHelloWorld"
 }
+
 project(':hello-world-lib') {
   dependencies {
     compile project(':hello-world-api')
@@ -82,40 +84,8 @@ project(':hello-world-lib') {
       }
     }
   }
-  if (project.hasProperty('weld')) {
-    dependencies {
-      testCompile 'org.apache.deltasike.cdictrl:deltaspike-cdictrl-weld:1.5.1';
-      testCompile 'org.jboss.weld.se:weld-se-core:3.0.0.Alpha13'
-    }
-    sourceSets {
-      test {
-        java {
-          srcDir 'src/test/java-weld'
-        }
-        resources {
-          srcDir 'src/test/resources-weld'
-        }
-      }
-    }
-  }
-  if (project.hasProperty('owb')) {
-    dependencies {
-      testCompile 'org.apache.deltasike.cdictrl:deltaspike-cdictrl-owb:1.5.1';
-      testCompile 'org.apache.openwebbeans:openwebbeans-impl:1.6.2'
-      testCompile 'org.apache.openwebbeans:openwebbeans-spi:1.6.2'
-    }
-    sourceSets {
-      test {
-        java {
-          srcDir 'src/test/java-weld'
-        }
-        resources {
-          srcDir 'src/test/resources-weld'
-        }
-      }
-    }
-  }
 }
+
 project(':hello-world-app') {
   dependencies {
     compile project(':hello-world-lib')
@@ -123,15 +93,19 @@ project(':hello-world-app') {
   apply plugin: 'application'
   mainClassName = "com.github.jinahya.verbose.hello.HelloWorldMain"
 }
+
 project(':hex-codec-api') {
 }
+
 project(':hex-codec-lib') {
   dependencies {
     compile project(':hex-codec-api')
   }
 }
+
 project(':percent-codec-api') {
 }
+
 project(':percent-codec-lib') {
   dependencies {
     compile project(':hex-codec-api')

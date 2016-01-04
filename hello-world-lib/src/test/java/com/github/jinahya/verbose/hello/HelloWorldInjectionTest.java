@@ -34,7 +34,7 @@ import static org.testng.Assert.assertTrue;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public abstract class HelloWorldInjectionTest extends HelloWorldDataTest {
+abstract class HelloWorldInjectionTest extends HelloWorldDataTest {
 
     /**
      * {@inheritDoc} The {@code implementation()} method of

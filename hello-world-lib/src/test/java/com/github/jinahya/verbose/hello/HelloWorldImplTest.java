@@ -20,7 +20,6 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.testng.Assert.assertEquals;
-import static org.testng.Assert.assertTrue;
 import org.testng.annotations.Test;
 
 /**
@@ -60,9 +59,10 @@ public class HelloWorldImplTest {
     }
 
     @Test
-    public void setWithArrayBuffer() {
+    public void setWithBufferArray() {
         final byte[] actual = new byte[HelloWorld.BYTES];
-        new HelloWorldImpl().put(ByteBuffer.wrap(actual));
+        final ByteBuffer buffer = ByteBuffer.wrap(actual);
+        new HelloWorldImpl().put(buffer);
         final byte[] expected = "hello, world".getBytes(US_ASCII);
         assertEquals(actual, expected);
     }
@@ -71,9 +71,10 @@ public class HelloWorldImplTest {
     public void setWithBuffer() {
         final ByteBuffer actual = ByteBuffer.allocate(HelloWorld.BYTES);
         new HelloWorldImpl().put(actual);
-        final ByteBuffer expected = ByteBuffer.allocate(HelloWorld.BYTES);
-        expected.put("hello, world".getBytes(US_ASCII));
-        assertTrue(actual.flip().equals(expected.flip()));
+        actual.flip();
+        final ByteBuffer expected
+                = ByteBuffer.wrap("hello, world".getBytes(US_ASCII));
+        assertEquals(actual, expected);
     }
 
     private transient final Logger logger = getLogger(getClass());

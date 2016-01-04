@@ -1,11 +1,11 @@
 package com.github.jinahya.verbose.hello;
 
+import java.nio.charset.StandardCharsets;
 import java.util.NoSuchElementException;
 import java.util.ServiceLoader;
-import java.util.stream.IntStream;
 
 /**
- * A class whose {@code main} method prints {@code hello, world} to
+ * A class whose {@code main} method prints {@code hello, world\n} to
  * {@code System.out}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
@@ -31,10 +31,7 @@ public class HelloWorldMain {
         final byte[] array = new byte[HelloWorld.BYTES];
         final int offset = 0;
         LOADED.set(array, offset);
-        //System.out.printf("%s\n", new String(array, US_ASCII));
-        IntStream.range(0, array.length).forEach(
-                i -> System.out.printf("%c", (char) (array[i] & 0xFF))
-        );
-        System.out.println();
+        final String string = new String(array, StandardCharsets.US_ASCII);
+        System.out.printf("%s\n", string);
     }
 }

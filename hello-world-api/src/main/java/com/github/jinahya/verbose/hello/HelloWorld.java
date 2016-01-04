@@ -15,6 +15,7 @@
  */
 package com.github.jinahya.verbose.hello;
 
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 
 /**
@@ -47,8 +48,8 @@ public interface HelloWorld {
 
     /**
      * Puts {@value #BYTES} bytes representing {@code "hello, world"} in
-     * {@code US-ASCII} on given byte buffer. Upon return, the buffer's position
-     * will be incremented by {@value HelloWorld#BYTES}.
+     * {@code US-ASCII} charset on given byte buffer. Upon return, the buffer's
+     * position will be incremented by {@value HelloWorld#BYTES}.
      *
      * @param buffer the byte buffer
      * @return given byte buffer
@@ -60,7 +61,16 @@ public interface HelloWorld {
         final byte[] array = new byte[BYTES];
         final int offset = 0;
         set(array, offset);
-        buffer.put(array);
-        return buffer;
+        if (buffer.hasArray()) {
+            if (buffer.remaining() < BYTES) {
+                throw new BufferOverflowException();
+            }
+            System.arraycopy(array, 0, buffer.array(),
+                             buffer.arrayOffset() + buffer.position(),
+                             array.length);
+            buffer.position(buffer.position() + BYTES);
+            return buffer;
+        }
+        return buffer.put(array);
     }
 }

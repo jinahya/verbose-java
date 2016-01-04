@@ -29,7 +29,7 @@ import org.testng.annotations.BeforeClass;
 public class HelloWorldDaggerTest extends HelloWorldInjectionTest {
 
     @BeforeClass
-    protected void inject() {
+    void inject() {
         ObjectGraph.create(new HelloWorldDaggerModule()).inject(this);
         logger.debug("injected");
         debug();

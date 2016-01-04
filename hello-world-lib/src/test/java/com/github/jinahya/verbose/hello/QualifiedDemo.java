@@ -25,11 +25,12 @@ import java.lang.annotation.Target;
 import javax.inject.Qualifier;
 
 /**
+ * An injection qualifier for being injected with {@code HelloWorldDemo}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-@Retention(RUNTIME)
-@Target({FIELD, PARAMETER, METHOD, TYPE})
 @Qualifier
+@Retention(RUNTIME)
+@Target({FIELD, METHOD, PARAMETER, TYPE})
 @interface QualifiedDemo {
 }
