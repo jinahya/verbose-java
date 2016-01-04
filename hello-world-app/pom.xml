@@ -7,12 +7,12 @@
   <parent>
     <groupId>com.github.jinahya</groupId>
     <artifactId>verbose-java</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.1.0-SNAPSHOT</version>
   </parent>
 
   <groupId>com.github.jinahya</groupId>
   <artifactId>hello-world-app</artifactId>
-  <version>0.0.1-SNAPSHOT</version>
+  <version>0.1.0-SNAPSHOT</version>
 
   <name>${project.artifactId}</name>
   <description>hello world application</description>
@@ -129,7 +129,7 @@
                 <goals>
                   <goal>copy-dependencies</goal>
                 </goals>
-                <phase>prepare-package</phase>
+                <phase>prepare-package</phase> <!-- MDEP-187 -->
                 <configuration>
                   <outputDirectory>${project.build.directory}/${project.build.finalName}.lib</outputDirectory>
                   <includeScope>runtime</includeScope>
