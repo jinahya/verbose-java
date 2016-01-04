@@ -29,6 +29,10 @@ public class SuccinctHelloWorld {
      * @param args command line arguments
      */
     public static void main(final String[] args) {
-        System.out.printf("hello, world\n");
+        System.out.println("hello, world");
+    }
+
+    private SuccinctHelloWorld() {
+        super();
     }
 }

@@ -5,7 +5,7 @@ import java.util.NoSuchElementException;
 import java.util.ServiceLoader;
 
 /**
- * A class whose {@code main} method prints {@code hello, world\n} to
+ * A class whose {@code main} method prints {@code hello, world%n} to
  * {@code System.out}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
@@ -32,6 +32,6 @@ public class HelloWorldMain {
         final int offset = 0;
         LOADED.set(array, offset);
         final String string = new String(array, StandardCharsets.US_ASCII);
-        System.out.printf("%s\n", string);
+        System.out.printf("%s%n", string);
     }
 }
