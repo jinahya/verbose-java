@@ -34,6 +34,7 @@ public class HelloWorldHk2Test extends HelloWorldInjectionTest {
         final ServiceLocator locator = ServiceLocatorUtilities.bind(binder);
         locator.inject(this);
         logger.debug("injected");
+        System.err.println("hk2 injected");
     }
 
     private transient final Logger logger = getLogger(getClass());

@@ -129,6 +129,7 @@
                 <goals>
                   <goal>copy-dependencies</goal>
                 </goals>
+                <phase>prepare-package</phase>
                 <configuration>
                   <outputDirectory>${project.build.directory}/${project.build.finalName}.lib</outputDirectory>
                   <includeScope>runtime</includeScope>
