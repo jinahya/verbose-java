@@ -24,9 +24,9 @@ public class HexEncoderImpl implements HexEncoder {
 
     @Override
     public void encodeSingle(final int decoded, final ByteBuffer encoded) {
-        final int high = decoded >> 4 & 0x0F;
-        final int low = decoded & 0x0F;
-        encoded.put((byte) encodeNibble(high));
-        encoded.put((byte) encodeNibble(low));
+        final int h = (decoded >> 4) & 0x0F;
+        final int l = decoded & 0x0F;
+        encoded.put((byte) encodeNibble(h));
+        encoded.put((byte) encodeNibble(l));
     }
 }

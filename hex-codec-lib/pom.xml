@@ -27,11 +27,6 @@
 
   <dependencies>
     <dependency>
-      <groupId>ch.qos.logback</groupId>
-      <artifactId>logback-classic</artifactId>
-      <scope>test</scope>
-    </dependency>
-    <dependency>
       <groupId>com.github.jinahya</groupId>
       <artifactId>hex-codec-api</artifactId>
       <version>${project.version}</version>

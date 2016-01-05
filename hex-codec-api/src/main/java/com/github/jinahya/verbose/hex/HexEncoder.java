@@ -6,14 +6,21 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 
 public interface HexEncoder {
 
+    /**
+     * Encodes given octet and puts those encoded bytes to specified byte
+     * buffer.
+     *
+     * @param decoded the octet to encode
+     * @param encoded the byte buffer to which encoded bytes put.
+     */
     void encodeSingle(int decoded, ByteBuffer encoded);
 
     /**
-     * Encodes all remaining bytes from given input buffer and puts results to
-     * specified output buffer.
+     * Encodes all remaining bytes from given input byte buffer and puts results
+     * to specified output byte buffer.
      *
-     * @param decoded the input buffer
-     * @param encoded the output buffer
+     * @param decoded the input byte buffer
+     * @param encoded the output byte buffer
      */
     default void encode(final ByteBuffer decoded, final ByteBuffer encoded) {
         while (decoded.hasRemaining()) {
@@ -21,6 +28,13 @@ public interface HexEncoder {
         }
     }
 
+    /**
+     * Encodes all remaining bytes from given byte buffer and returns a byte
+     * buffer containing the result.
+     *
+     * @param decoded the byte buffer containing bytes to encode
+     * @return a byte buffer containing encoded bytes.
+     */
     default ByteBuffer encode(final ByteBuffer decoded) {
         final ByteBuffer encoded = ByteBuffer.allocate(decoded.remaining() * 2);
         encode(decoded, encoded);

@@ -37,11 +37,4 @@ public interface PercentEncoder {
         encode(decodedBuffer, encodedBuffer);
         return new String(encodedBytes, 0, encodedBuffer.position());
     }
-
-//    default String fromUrlEncoded(final String encoded) {
-//        return encoded
-//                .replaceAll("\\*", "%2A")
-//                .replaceAll("%72", "~")
-//                .replaceAll("\\+", "%20");
-//    }
 }

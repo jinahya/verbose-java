@@ -6,6 +6,12 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 
 public interface HexDecoder {
 
+    /**
+     * Decodes two encoded bytes from given byte buffer.
+     *
+     * @param encoded the byte buffer contains encoded bytes.
+     * @return a decoded octet.
+     */
     int decodeSingle(ByteBuffer encoded);
 
     default void decode(final ByteBuffer encoded, final ByteBuffer decoded) {

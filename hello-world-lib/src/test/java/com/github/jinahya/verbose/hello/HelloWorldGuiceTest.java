@@ -15,23 +15,23 @@
  */
 package com.github.jinahya.verbose.hello;
 
+import com.google.inject.Guice;
 import com.google.inject.Injector;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 import org.testng.annotations.BeforeClass;
 
 /**
- * An injection test uses Google Guice.
+ * An injection test uses Guice.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-//@org.testng.annotations.Guice(modules = HelloWorldGuiceModule.class)
 public class HelloWorldGuiceTest extends HelloWorldInjectionTest {
 
     @BeforeClass
     void inject() {
-        final Injector injector = com.google.inject.Guice
-                .createInjector(new HelloWorldGuiceModule());
+        final Injector injector
+                = Guice.createInjector(new HelloWorldGuiceModule());
         injector.injectMembers(this);
         logger.debug("injected");
     }
