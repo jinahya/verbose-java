@@ -22,6 +22,7 @@ import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 
 /**
+ * A module injects HelloWorld instance.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
@@ -33,17 +34,17 @@ class HelloWorldGuiceModule extends AbstractModule {
                 current().nextBoolean()
                 ? HelloWorldImpl.class : HelloWorldDemo.class);
         bind(HelloWorld.class)
-                .annotatedWith(Names.named("impl"))
-                .to(HelloWorldImpl.class);
-        bind(HelloWorld.class)
                 .annotatedWith(Names.named("demo"))
                 .to(HelloWorldDemo.class);
         bind(HelloWorld.class)
-                .annotatedWith(QualifiedImpl.class)
+                .annotatedWith(Names.named("impl"))
                 .to(HelloWorldImpl.class);
         bind(HelloWorld.class)
                 .annotatedWith(QualifiedDemo.class)
                 .to(HelloWorldDemo.class);
+        bind(HelloWorld.class)
+                .annotatedWith(QualifiedImpl.class)
+                .to(HelloWorldImpl.class);
         logger.debug("configured");
     }
 

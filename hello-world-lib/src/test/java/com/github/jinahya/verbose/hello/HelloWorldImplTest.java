@@ -51,11 +51,22 @@ public class HelloWorldImplTest {
     }
 
     @Test
-    public void set() {
+    public void expectHelloWorldBytesSetOnArrayStartingAtOffset() {
         final byte[] array = new byte[HelloWorld.BYTES];
         final int offset = 0;
         new HelloWorldImpl().set(array, offset);
-        assertEquals(array, "hello, world".getBytes(US_ASCII));
+        assertEquals(array[offset + 0b0000], 'h');
+        assertEquals(array[offset + 0b0001], 'e');
+        assertEquals(array[offset + 0b0010], 'l');
+        assertEquals(array[offset + 0b0011], 'l');
+        assertEquals(array[offset + 0b0100], 'o');
+        assertEquals(array[offset + 0b0101], ',');
+        assertEquals(array[offset + 0b0110], ' ');
+        assertEquals(array[offset + 0b0111], 'w');
+        assertEquals(array[offset + 0b1000], 'o');
+        assertEquals(array[offset + 0b1001], 'r');
+        assertEquals(array[offset + 0b1010], 'l');
+        assertEquals(array[offset + 0b1011], 'd');
     }
 
     @Test

@@ -30,9 +30,6 @@ project(':hello-world-lib') {
   dependencies {
     compile project(':hello-world-api')
     testCompile 'com.google.inject:guice:4.0'
-    testCompile 'javax.enterprise:cdi-api:2.0-EDR1'
-    testCompile 'org.apache.deltaspike.cdictrl:deltaspike-cdictrl-api:1.5.1'
-
   }
   if (project.hasProperty('dagger')) {
     dependencies {
