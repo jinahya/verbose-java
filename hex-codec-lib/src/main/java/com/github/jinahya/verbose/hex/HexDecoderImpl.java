@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 
 public class HexDecoderImpl implements HexDecoder {
 
-    private int decodeNibble(final int encoded) {
+    private static int decodeNibble(final int encoded) {
         switch (encoded) {
             case 0x30: // '0'
             case 0x31: // '1'
@@ -39,7 +39,7 @@ public class HexDecoderImpl implements HexDecoder {
     byte[] decode(final byte[] input, final int inoff, final int inlen,
                   final byte[] output, final int outoff) {
         final ByteBuffer decoded = ByteBuffer.wrap(input, inoff, inlen);
-        for (int i = outoff; decoded.hasRemaining(); i++) {
+        for (int i = outoff; i < output.length; i++) {
             output[i] = (byte) decodeSingle(decoded);
         }
         return output;

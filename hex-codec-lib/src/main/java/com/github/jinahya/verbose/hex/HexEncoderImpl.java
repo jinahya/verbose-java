@@ -4,7 +4,7 @@ import java.nio.ByteBuffer;
 
 public class HexEncoderImpl implements HexEncoder {
 
-    private int encodeNibble(final int decoded) {
+    private static int encodeNibble(final int decoded) {
         switch (decoded) {
             case 0x00:
             case 0x01:
@@ -34,7 +34,8 @@ public class HexEncoderImpl implements HexEncoder {
                   final byte[] output, final int outoff) {
         final int outlen = inlen << 1;
         final ByteBuffer encoded = ByteBuffer.wrap(output, outoff, outlen);
-        for (int i = inoff; encoded.hasRemaining(); i++) {
+        final int inlim = inoff + inlen;
+        for (int i = inoff; i < inlim; i++) {
             encodeSingle(input[i], encoded);
         }
         return output;
