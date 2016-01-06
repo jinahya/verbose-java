@@ -95,6 +95,7 @@ project(':hex-codec-api') {
 project(':hex-codec-lib') {
   dependencies {
     compile project(':hex-codec-api')
+    testCompile ('commons-codec:commons-codec:1.10')
   }
 }
 

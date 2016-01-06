@@ -15,7 +15,6 @@
  */
 package com.github.jinahya.verbose.hello;
 
-import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 
 /**
@@ -58,18 +57,21 @@ public interface HelloWorld {
      * @see ByteBuffer#put(byte[])
      */
     default ByteBuffer put(final ByteBuffer buffer) {
+        if (buffer == null) {
+            throw new NullPointerException("null buffer");
+        }
+        if (buffer.remaining() < BYTES) {
+            throw new IllegalArgumentException(
+                    "buffer.remaining(" + buffer.remaining() + ") < " + BYTES);
+        }
         final byte[] array = new byte[BYTES];
         final int offset = 0;
         set(array, offset);
         if (buffer.hasArray()) {
-            if (buffer.remaining() < BYTES) {
-                throw new BufferOverflowException();
-            }
             System.arraycopy(array, 0, buffer.array(),
                              buffer.arrayOffset() + buffer.position(),
                              array.length);
-            buffer.position(buffer.position() + BYTES);
-            return buffer;
+            return (ByteBuffer) buffer.position(buffer.position() + BYTES);
         }
         return buffer.put(array);
     }
