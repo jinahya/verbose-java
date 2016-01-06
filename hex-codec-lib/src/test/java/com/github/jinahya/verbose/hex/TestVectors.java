@@ -19,8 +19,10 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.function.BiConsumer;
 import java.util.stream.Collector;
 
@@ -30,7 +32,7 @@ import java.util.stream.Collector;
  */
 public class TestVectors {
 
-    private static final String[] RFC4648 = {
+    private static final String[] RFC4648_TEST_VECTOR = {
         "", "",
         "f", "66",
         "fo", "666F",
@@ -40,8 +42,29 @@ public class TestVectors {
         "foobar", "666F6F626172"
     };
 
-    private static final List<byte[]> RFC4648_DECODED_BYTES
-            = Arrays.stream(RFC4648)
+    private static final Map<String, String> RFC4648_MAP;
+
+    static {
+        final Map<String, String> m = new HashMap<>();
+        for (int i = 0; i < RFC4648_TEST_VECTOR.length; i += 2) {
+            m.put(RFC4648_TEST_VECTOR[i], RFC4648_TEST_VECTOR[i + 1]);
+        }
+        RFC4648_MAP = Collections.unmodifiableMap(m);
+    }
+
+    private static final List<String> RFC4648_STRINGS
+            = Arrays.stream(RFC4648_TEST_VECTOR)
+            .collect(Collector.<String, List<String>, List< String>>of(
+                    ArrayList::new,
+                    List::add,
+                    (l, r) -> {
+                        l.addAll(r);
+                        return l;
+                    }, Collections::unmodifiableList)
+            );
+
+    private static final List<byte[]> RFC4648_BYTE_ARRAYS
+            = RFC4648_STRINGS.stream()
             .map(s -> s.getBytes(US_ASCII))
             .collect(Collector.<byte[], List<byte[]>, List<byte[]>>of(
                     ArrayList::new,
@@ -52,13 +75,19 @@ public class TestVectors {
                     }, Collections::unmodifiableList)
             );
 
-    static void consumeRFC4648TestVectors(
-            final BiConsumer<byte[], byte[]> consumer) {
-        for (final Iterator<String> i = Arrays.asList(RFC4648).iterator();
+    static void acceptRFC4648Strings(
+            final BiConsumer<String, String> consumer) {
+        for (final Iterator<String> i = RFC4648_STRINGS.iterator();
              i.hasNext();) {
-            consumer.accept(i.next().getBytes(US_ASCII),
-                            i.next().getBytes(US_ASCII));
+            consumer.accept(i.next(), i.next());
         }
     }
 
+    static void acceptRFC4648ByteArrays(
+            final BiConsumer<byte[], byte[]> consumer) {
+        for (final Iterator<byte[]> i = RFC4648_BYTE_ARRAYS.iterator();
+             i.hasNext();) {
+            consumer.accept(i.next(), i.next());
+        }
+    }
 }

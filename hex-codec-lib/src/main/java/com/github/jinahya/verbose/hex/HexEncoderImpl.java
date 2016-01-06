@@ -4,8 +4,8 @@ import java.nio.ByteBuffer;
 
 public class HexEncoderImpl implements HexEncoder {
 
-    private int encodeNibble(final int nibble) {
-        switch (nibble) {
+    private int encodeNibble(final int decoded) {
+        switch (decoded) {
             case 0x00:
             case 0x01:
             case 0x02:
@@ -16,9 +16,9 @@ public class HexEncoderImpl implements HexEncoder {
             case 0x07:
             case 0x08:
             case 0x09:
-                return nibble + 0x30;
+                return decoded + 0x30;
             default:
-                return nibble + 0x37;
+                return decoded + 0x37;
         }
     }
 
@@ -28,5 +28,27 @@ public class HexEncoderImpl implements HexEncoder {
         final int l = decoded & 0x0F;
         encoded.put((byte) encodeNibble(h));
         encoded.put((byte) encodeNibble(l));
+    }
+
+    byte[] encode(final byte[] input, final int inoff, final int inlen,
+                  final byte[] output, final int outoff) {
+        final int outlen = inlen << 1;
+        final ByteBuffer encoded = ByteBuffer.wrap(output, outoff, outlen);
+        for (int i = inoff; encoded.hasRemaining(); i++) {
+            encodeSingle(input[i], encoded);
+        }
+        return output;
+    }
+
+    byte[] encode(final byte[] array, final int offset, final int length) {
+        return encode(array, offset, length, new byte[length << 1], 0);
+    }
+
+    byte[] encode(final byte[] array, final int offset) {
+        return encode(array, offset, array.length - offset);
+    }
+
+    byte[] encode(final byte[] array) {
+        return encode(array, 0);
     }
 }

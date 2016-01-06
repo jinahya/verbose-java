@@ -17,9 +17,9 @@ package com.github.jinahya.verbose.hex;
 
 import java.nio.ByteBuffer;
 import org.slf4j.Logger;
-import org.testng.annotations.Test;
 import static org.slf4j.LoggerFactory.getLogger;
-import static org.testng.Assert.assertTrue;
+import static org.testng.Assert.assertEquals;
+import org.testng.annotations.Test;
 
 /**
  *
@@ -29,11 +29,10 @@ public class HexDecoderImplTest {
 
     @Test
     public void decodeForRFC4648TestVectors() {
-        TestVectors.consumeRFC4648TestVectors((d, e) -> {
-            final ByteBuffer decoded = ByteBuffer.wrap(d);
-            new HexDecoderImpl().decode(ByteBuffer.wrap(e), decoded);
-            decoded.flip();
-            assertTrue(decoded.equals(ByteBuffer.wrap(d)));
+        TestVectors.acceptRFC4648ByteArrays((d, e) -> {
+            final ByteBuffer decoded
+                    = new HexDecoderImpl().decode(ByteBuffer.wrap(e));
+            assertEquals(decoded, ByteBuffer.wrap(d));
         });
     }
 
