@@ -30,9 +30,9 @@ class HelloWorldGuiceModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(HelloWorld.class).to(
-                current().nextBoolean()
-                ? HelloWorldImpl.class : HelloWorldDemo.class);
+        bind(HelloWorld.class)
+                .to(current().nextBoolean()
+                    ? HelloWorldImpl.class : HelloWorldDemo.class);
         bind(HelloWorld.class)
                 .annotatedWith(Names.named("demo"))
                 .to(HelloWorldDemo.class);

@@ -27,7 +27,7 @@ import org.testng.annotations.DataProvider;
 class HelloWorldDataProvider {
 
     @DataProvider
-    static Object[][] arrayNull() {
+    static Object[][] provideArrayNull() {
         return new Object[][]{
             new Object[]{null, 0},
             new Object[]{null, 1}
@@ -35,7 +35,7 @@ class HelloWorldDataProvider {
     }
 
     @DataProvider
-    static Object[][] offsetNegative() {
+    static Object[][] provideOffsetNegative() {
         return new Object[][]{
             new Object[]{new byte[HelloWorld.BYTES], -1},
             new Object[]{new byte[HelloWorld.BYTES - 1], -2},
@@ -44,7 +44,7 @@ class HelloWorldDataProvider {
     }
 
     @DataProvider
-    static Iterator<Object[]> capacityNotEnough() {
+    static Iterator<Object[]> provideCapacityNotEnough() {
         return Arrays.asList(
                 new Object[]{new byte[HelloWorld.BYTES], 1},
                 new Object[]{new byte[HelloWorld.BYTES + 1], 2},

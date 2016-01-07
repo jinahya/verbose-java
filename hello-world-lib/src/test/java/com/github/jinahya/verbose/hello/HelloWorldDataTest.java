@@ -38,7 +38,7 @@ abstract class HelloWorldDataTest {
      * Expects a {@code NullPointerException} while invoking
      * {@link HelloWorld#set(byte[], int)} on the instance
      * {@link #implementation()} returns with an array and an offset provided by
-     * {@link HelloWorldDataProvider#arrayNull()}.
+     * {@link HelloWorldDataProvider#provideArrayNull()}.
      *
      * @param array the array
      * @param offset the offset
@@ -46,10 +46,10 @@ abstract class HelloWorldDataTest {
      * @see #implementation()
      * @see HelloWorld#set(byte[], int)
      */
-    @Test(dataProvider = "arrayNull",
+    @Test(dataProvider = "provideArrayNull",
           dataProviderClass = HelloWorldDataProvider.class,
           expectedExceptions = NullPointerException.class)
-    public void arrayNull(final byte[] array, final int offset) {
+    public void testArrayNull(final byte[] array, final int offset) {
         implementation().set(array, offset);
     }
 
@@ -57,17 +57,17 @@ abstract class HelloWorldDataTest {
      * Expects an {@code ArrayIndexOutOfBoundsException} while invoking
      * {@link HelloWorld#set(byte[], int)} on the instance
      * {@link #implementation()} returns with an array and an offset provided by
-     * {@link HelloWorldDataProvider#offsetNegative()}.
+     * {@link HelloWorldDataProvider#provideOffsetNegative()}.
      *
      * @param array the array which should not be {@code null}
      * @param offset the offset which should be negative
      *
      * @see #implementation()
      */
-    @Test(dataProvider = "offsetNegative",
+    @Test(dataProvider = "provideOffsetNegative",
           dataProviderClass = HelloWorldDataProvider.class,
           expectedExceptions = ArrayIndexOutOfBoundsException.class)
-    public void offsetNegative(final byte[] array, final int offset) {
+    public void testOffsetNegative(final byte[] array, final int offset) {
         implementation().set(array, offset);
     }
 
@@ -75,7 +75,7 @@ abstract class HelloWorldDataTest {
      * Expects an {@code ArrayIndexOutOfBoundsException} while invoking
      * {@link HelloWorld#set(byte[], int)} on the instance
      * {@link #implementation()} returns with an array and an offset provided by
-     * {@link HelloWorldDataProvider#capacityNotEnough()}.
+     * {@link HelloWorldDataProvider#provideCapacityNotEnough()}.
      *
      * @param array the array which should not be {@code null}
      * @param offset the offset which should be too big so that
@@ -83,10 +83,10 @@ abstract class HelloWorldDataTest {
      *
      * @see #implementation()
      */
-    @Test(dataProvider = "capacityNotEnough",
+    @Test(dataProvider = "provideCapacityNotEnough",
           dataProviderClass = HelloWorldDataProvider.class,
           expectedExceptions = ArrayIndexOutOfBoundsException.class)
-    public void capacityNotEnough(final byte[] array, final int offset) {
+    public void testCapacityNotEnough(final byte[] array, final int offset) {
         implementation().set(array, offset);
     }
 

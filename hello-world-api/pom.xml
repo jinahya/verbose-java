@@ -25,6 +25,10 @@
     <tag>HEAD</tag>
   </scm>
 
+  <properties>
+    <exec.mainClass>com.github.jinahya.verbose.hello.SuccinctHelloWorld</exec.mainClass>
+  </properties>
+
   <build>
     <plugins>
       <plugin>

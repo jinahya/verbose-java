@@ -21,6 +21,20 @@ import java.util.ServiceLoader;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.testng.Assert.fail;
+import static org.slf4j.LoggerFactory.getLogger;
+import static org.testng.Assert.fail;
+import static org.slf4j.LoggerFactory.getLogger;
+import static org.testng.Assert.fail;
+import static org.slf4j.LoggerFactory.getLogger;
+import static org.testng.Assert.fail;
+import static org.slf4j.LoggerFactory.getLogger;
+import static org.testng.Assert.fail;
+import static org.slf4j.LoggerFactory.getLogger;
+import static org.testng.Assert.fail;
+import static org.slf4j.LoggerFactory.getLogger;
+import static org.testng.Assert.fail;
+import static org.slf4j.LoggerFactory.getLogger;
+import static org.testng.Assert.fail;
 
 /**
  * Test class uses {@link ServiceLoader} for {@link #implementation()}.
