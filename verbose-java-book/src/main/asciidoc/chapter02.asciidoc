@@ -1,0 +1,250 @@
+== Numbers and Characters
+
+> 컴퓨터는 0과 1밖에 모르는 바보다.
+
+아직 저 '바보'보다 더 똑똑한 사람을 만난적은 없지만 프로그래밍 본연의 목적이 '사람이 읽고 쓸 수 있는 문자'를 통해 '기계가 읽고 쓸 수 있는 숫자'를 만드는 것임은 자명한 듯 하다. 본 장에서는 이 '문자'와 '숫자' 사이의 관계에 대해 살펴본다.
+
+=== Types and Values
+
+****
+자바의 `int` 형은 몇 비트인가요? `signed` 인가요? 아니면 `unsigned` 인가요? 표현할 수 있는 최소값과 최대값은 무엇인가요?
+****
+
+위에 열거된 질문들에 대한 올바른 답을 아직 모른다면 [https://docs.oracle.com/javase/specs/jls/se8/html/jls-4.html[JSL 4. Types, Values, and Variables]] 항목을 꼭 읽어보도록 하자.
+원시형을 중심으로 요약하자면 다음과 같다.
+
+- 자바 프로그래밍 언어에는 두가지 데이터 형이 있다. 하나는 원시형(primitive types)이고 또 다른 하나는 참조형(reference types)이다.
+- 원시형(primitive types)에서 `boolean` 과 수치형(numeric types)이 있다.
+- 수치형(numeric types)에는 정수형(integral types)과 부동소수점형(floating-point types)이 있다.
+- 정수형(integral types)에는 `byte`, `short`, `int`, `long`, 그리고 `char` 가 이다.
+- 부동소수점형(floating-point types)에는 `float`(32bit IEEE 754)과 `double`(64-bit IEEE 754)이 있다.
+
+[options="header"]
+.Primitive types
+|===============================================================================
+|type       |                 |        |size|signed
+|NumericType|IntegralType     |`byte`  | `8`|&#x2713;
+|           |                 |`short` |`16`|&#x2713;
+|           |                 |`int`   |`32`|&#x2713;
+|           |                 |`long`  |`64`|&#x2713;
+|           |                 |`char`  |`16`|
+|           |FloatingPointType|`float` |`32`|&#x2713;
+|           |                 |`double`|`64`|&#x2713;
+|`boolean`  |                 |        |    |
+|===============================================================================
+
+****
+자바의 정수형(integral types) 중에 unsigned 형이 존재하는가? 있다면 무엇인가?
+****
+
+=== N-bit signed two's-compliment integers
+N개의 비트로 이루어져 있고 부호를 가지며(signed) 2의 보수체계(two's-compliment)를 사용하는 정수로 표현할 수 있는 값의 범위는 무엇일까? 아래 세개의 비트를 가지고 실험해 보자. `000(0)` 부터 시계방향으로 1씩 더하면서 계산해 보자.
+
+[source,text]
+.3-bit signed two's-compliment integer
+----
+       +1
+         \ 000 0
+   -1 111 \ 001 1
+    -2 110 \ 010 2
+     -3 101 \ 011 3 (MAX)
+(MIN) -4 100 \
+              +1
+----
+
+보는 바와 같이 `011(3)` 에서 `1` 을 더했을때 `100(4)` 이 되지만 첫번째 비트가 `1` 이므로 음수(`-4`)로 처리된다. 최대값은 첫번째 비트가 `0` 이고 나머지 모든 비트가 `1` 인 값이고 최소값은 첫번째 비트가 `1` 이고 나머지 비트가 모두 `0` 인 값이다. 이를 수식으로 표현하면 최대값은 +2^n-1^-1 이고 최소값은 -2^n-1^ 이다.
+
+****
+크기가 1 비트이고 부호를 가지며 2의 보수 체계를 사용하는 정수형의 최대값과 최소값은 무언인가?
+****
+
+=== hex-codec-api
+대부분의 컴퓨터는 정보를 디스크에 저장하거나 소켓을 통해 전송할 때 `octet` 이라고 불리는 여덟개의 비트로 이루어진 값을 사용한다. 자바의 자료형 중 `byte` 가 이 값에 대응한다. `byte` 형은 여덟개의 비트를 사용하고(8-bit) 부호를 가지며(signed) 2의 보수체계(two's-compliment)를 사용한다. 아래 표에 여덟개의 비트로 표현할 수 있는 몇몇 값들이 있다.
+
+[cols=">,>,>,>,>,<",frame="top",options="header"]
+.8-bit values
+|===============================================================================
+|hexadecimal|decimal|octal|     binary|  byte|notes
+|        `0`|    `0`|  `0`|        `0`|   `0`|
+|        `F`|   `15`| `17`|     `1111`|  `15`|
+|       `1F`|   `31`| `37`|    `11111`|  `31`|
+|       `3F`|   `63`| `77`|   `111111`|  `63`|
+|       `7F`|  `127`|`177`|  `1111111`| `127`|`Byte.MAX_VALUE`
+|       `80`|  `128`|`200`| `10000000`|`-128`|`Byte.MIN_VALUE`
+|       `C0`|  `192`|`300`| `11000000`| `-64`|
+|       `E0`|  `224`|`340`| `11100000`| `-32`|
+|       `F0`|  `240`|`360`| `11110000`| `-16`|
+|       `FF`|  `255`|`377`| `11111111`|  `-1`|
+|===============================================================================
+
+`US-ASCII` 문자셋에는 줄바뀜(CR, LF), 탭(TAB) 등의 제어 문자들과 보통의 자판에서 찾아볼 수 있는 문자들을 포함하여 128(2^7^)개의 코드가 정의되어 있다. 때문에 여덟개의 비트로 표현할 수 있는 256(2^8^)개의 수에 각각의 문자를 대응하여 표현할 수 없다. 이를 해결하는 방법 중에 하나가 위에 있는 표의 가장 왼쪽 열에 있는 `hexadecimal` 로 표현하는 것이다. `hexadecimal` 표기는 여덟 개의 비트를 네 개씩 둘로 나눈 후에 네 개의 비트로 표현할 수 있는 열여섯개의 숫자에 각각의 문자를 대응시킨다.
+
+우선 아래와 같이 여덟 개의 비트를 두 부분으로 나눈다.
+[source,text]
+----
+index    7 6 5 4 3 2 1 0
+upper    H H H H
+lower            L L L L
+----
+
+그리고 아래와 같이 열 여섯개의 미리 약속된 문자를 각 그룹의 값에 대응시킨다.
+
+[cols=">, >, >, >", options="header"]
+.hexadecimal encoding/decoding
+|===============================================================================
+|decoded binary|decoded value|encoded character|encoded value
+|           `0`|   `0 (0x0)`|            `'0'`|  `48 (0x30)`
+|           `1`|   `1 (0x1)`|            `'1'`|  `49 (0x31)`
+|          `10`|   `2 (0x2)`|            `'2'`|  `50 (0x32)`
+|          `11`|   `3 (0x3)`|            `'3'`|  `51 (0x33)`
+|         `100`|   `4 (0x4)`|            `'4'`|  `52 (0x34)`
+|         `101`|   `5 (0x5)`|            `'5'`|  `53 (0x35)`
+|         `110`|   `6 (0x6)`|            `'6'`|  `54 (0x36)`
+|         `111`|   `7 (0x7)`|            `'7'`|  `55 (0x37)`
+|        `1000`|   `8 (0x8)`|            `'8'`|  `56 (0x38)`
+|        `1001`|   `9 (0x9)`|            `'9'`|  `57 (0x39)`
+|        `1010`|  `10 (0xA)`|            `'A'`|  `65 (0x41)`
+|        `1011`|  `11 (0xB)`|            `'B'`|  `66 (0x42)`
+|        `1100`|  `12 (0xC)`|            `'C'`|  `67 (0x43)`
+|        `1101`|  `13 (0xD)`|            `'D'`|  `68 (0x44)`
+|        `1110`|  `14 (0xE)`|            `'E'`|  `69 (0x45)`
+|        `1111`|  `15 (0xF)`|            `'F'`|  `70 (0x46)`
+|===============================================================================
+
+NOTE: `10` 부터 `15` 까지의 숫자를 소문자('a'부터 'f')로 변환해도 된다.
+
+아래는 `hello, world` 가 `hexadecimal` 로 표현될 때 적용되는 방식을 보여준다.
+[source,text]
+----
+    0                    7                      15                      23
+    h  e  l  l  o  , SP  w  o  r  l  d
+   -- -- -- -- -- -- -- -- -- -- -- --
+0x 68 65 6C 6C 6F 2C 20 77 6F 72 6C 64
+   --
+    \
+   -- --
+    6  8  6  5  6  C  6  C  6  F  2  C  2  0  7  7  6  F  7  2  6  C  6  4
+   -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
+0x 36 38 36 35 36 43 36 43 36 46 32 43 32 30 37 37 36 46 37 32 36 43 36 34
+----
+
+첫번째 문자 'h' 의  ascii 값은 `104`(`0x68`)이다. 이를 이진수로 표현하면 `01101000` 이고 이를 각 네 자리씩으로 나눈 `0100(6)` 과 `1000(8)` 에 해당하는 문자 '6' 의 ascii값(`54`)과 '8' 의 ascii값(`56`)이 결과값이다.
+
+[source,text]
+----
+'h' = 0110 1000  (104, 0x68)
+      0110       (  6, 0x06)    =>    '6' = 0011 0110  ( 54, 0x36)
+           1000  (  8, 0x08)    =>    '8' = 0011 1000  ( 56, 0x38)
+----
+
+hex-codec-api 모듈에는 우리가 구현해 볼 두개의 인터페이스가 정의되어 있다.
+
+[source,java]
+.HexEncoder.java
+----
+// 주어진 숫자(octet)를 인코딩하여 hex 문자 두개를 버퍼에 담는다.
+void encodeOctet(int decoded, ByteBuffer encoded);
+----
+
+[source,java]
+.HexDecoder.java
+----
+// 버퍼에서 hex 문자 두개를 디코딩하고 그 결과값(octet)을 반환한다.
+int decodeOctet(ByteBuffer encoded);
+----
+
+=== hex-codec-lib
+hex-codec-api 모듈에 정의되어 있는 두개의 인터페이스를 구현할 모듈이다.
+
+==== HexEncoderImpl.java
+`HexEncoder` 인터페이스를 구현할 클래스이다.
+[source,java]
+.HexEncoderImpl.java
+----
+public class HexEncoderImpl implements HexEncoder {
+    // @todo: implement
+}
+----
+`encodeOctet(int, ByteBuffer)` 메서드를 구현하기 전에 네 개의 비트로 이루어진 숫자(nibble)를 한 개의 hex 문자로 변환하는 메서드를 정의해 보자.
+[source,java]
+.HexEncoderImpl#encodeNibble(int)
+----
+include::../../../../hex-codec-lib/src/main/java/com/github/jinahya/verbose/hex/HexEncoderImpl.java[lines=18..34]
+----
+
+주어진 값이 `0` 부터 `9` 까지의 값이면 그값에 `48` 을 더해서 '0'(`48`)부터 '9'(`57`)까지의 값을 반환하고 `10` 부터 `15` 까지의 값이면 그 값에 `55` 를 더해서 'A'(`65`)부터 'F'(`70`)까지의 값을 반환한다.
+
+이제 `encodeOctet(int, ByteBuffer)` 를 다음과 같이 구현할 수 있다.
+[source,java]
+.HexEncoderImpl#encodeOctet(int, ByteBuffer)
+----
+include::../../../../hex-codec-lib/src/main/java/com/github/jinahya/verbose/hex/HexEncoderImpl.java[lines=36..42]
+----
+
+==== HexDecoderImpl.java
+`HexDecoder` 인터페이스를 구현한 클래스이다.
+[source,java]
+.HexDecoderImpl.java
+----
+public class HexDecoderImpl implements HexDecoder {
+    // @todo: implement
+}
+----
+`decodeOctet(int)` 메서드를 구현하기 전에 한 개의 hex 문자를 네 개의 비트로 이루어진 숫자(nibble)로 변환하는 메서드를 정의해 보자.
+[source,java]
+.HexDecoderImpl#decodeNibble(int)
+----
+include::../../../../hex-codec-lib/src/main/java/com/github/jinahya/verbose/hex/HexDecoderImpl.java[lines=18..41]
+----
+
+주어진 값이 '0'(48, 0x30)부터 '9'(57, 0x39)까지의 문자이면 그 값에서 48을 뺀 값(`0` 부터 `9`)을, 대문자 'A'(65, 0x41)부터 'F'(70, 0x46) 까지의 값이면 그 값에서 `55` 를 뺀 값을, 소문자 'a'(97, 0x61) 부터 'f'(102, 0x66) 까지의 값이면 그 값에서 87를 뺀 값을 반환한다. (앞서 인코딩을 구현할 때는 무조건 대문자로 변환하였지만 디코딩을 할 때는 대문자 및 소문자를 모두 처리한다.)
+
+이제 `decodeOctet(ByteBuffer)` 를 다음과 같이 구현할 수 있다.
+[source,java]
+.HexdecoderImpl#decodeOctet(ByteBuffer)
+----
+include::../../../../hex-codec-lib/src/main/java/com/github/jinahya/verbose/hex/HexDecoderImpl.java[lines=43..48]
+----
+
+=== Exercises
+****
+`HexEncoderImpl#encodeNible(int)` 과 `HexDecoderImpl#decodeNibble(int)` 의 `switch` 구문을 `if/else` 구문으로 바꿔보자.
+****
+****
+`HexEncoder.java` 에 배열을 이용하는 메서드를 구현하라.
+[source,java]
+.HexEncoder#encode(byte[], int, int, byte[], int)
+----
+// inarr 의 inoff 부터 inlen 만큼의 숫자를 인코딩하고 결과를 outarr 의 outoff 부터 기록한다.
+default void encode(final byte[] inarr, final int inoff, final int inlen,
+                    final byte[] outarr, final int outoff) {
+    // @todo: implement
+    // 인자들의 유효성을 검증하자.
+    // outarr 의 outoff 부터 최소한 몇 개의 배열공간이 필요할까?
+}
+----
+****
+****
+`HexDcoder.java` 에 배열을 이용하는 메서드를 구현하라.
+[source,java]
+.HexDecoder#encode(byte[], int, int, byte[], int)
+----
+// inarr 의 inoff 부터 inlen 만큼의 문자를 디코딩하고 결과를 outarr 의 outoff 부터 기록한다.
+default void decode(final byte[] inarr, final int inoff, final int inlen,
+                    final byte[] outarr, final int outoff) {
+    // @todo: implement
+    // 인자들의 유효성을 검증하자.
+    // inlen 이 홀수이면 유효한 값일까?
+    // outarr 의 outoff 부터 최소한 몇 개의 배열공간이 필요할까?
+}
+----
+****
+
+
+=== percent-codec-api
+
+=== percent-codec-lib
+
+
+
+

@@ -7,16 +7,17 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 public interface HexDecoder {
 
     /**
-     * Decodes two encoded bytes from given byte buffer.
+     * Decodes two encoded hex characters from given byte buffer and returns the
+     * decoded octet.
      *
-     * @param encoded the byte buffer contains encoded bytes.
+     * @param encoded the byte buffer contains encoded characters.
      * @return a decoded octet.
      */
-    int decodeSingle(ByteBuffer encoded);
+    int decodeOctet(ByteBuffer encoded);
 
     default void decode(final ByteBuffer encoded, final ByteBuffer decoded) {
         while (encoded.hasRemaining()) {
-            decoded.put((byte) decodeSingle(encoded));
+            decoded.put((byte) decodeOctet(encoded));
         }
     }
 

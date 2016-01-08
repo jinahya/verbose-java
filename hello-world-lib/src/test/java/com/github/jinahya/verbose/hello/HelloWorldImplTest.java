@@ -55,18 +55,18 @@ public class HelloWorldImplTest {
         final byte[] array = new byte[HelloWorld.BYTES];
         final int offset = 0;
         new HelloWorldImpl().set(array, offset);
-        assertEquals(array[offset + 0b0000], 'h');
-        assertEquals(array[offset + 0b0001], 'e');
-        assertEquals(array[offset + 0b0010], 'l');
-        assertEquals(array[offset + 0b0011], 'l');
-        assertEquals(array[offset + 0b0100], 'o');
-        assertEquals(array[offset + 0b0101], ',');
-        assertEquals(array[offset + 0b0110], ' ');
-        assertEquals(array[offset + 0b0111], 'w');
-        assertEquals(array[offset + 0b1000], 'o');
-        assertEquals(array[offset + 0b1001], 'r');
-        assertEquals(array[offset + 0b1010], 'l');
-        assertEquals(array[offset + 0b1011], 'd');
+        assertEquals(array[offset], 'h');
+        assertEquals(array[offset + 0x1], 'e');
+        assertEquals(array[offset + 0x2], 'l');
+        assertEquals(array[offset + 0x3], 'l');
+        assertEquals(array[offset + 0x4], 'o');
+        assertEquals(array[offset + 0x5], ',');
+        assertEquals(array[offset + 0x6], ' ');
+        assertEquals(array[offset + 0x7], 'w');
+        assertEquals(array[offset + 0x8], 'o');
+        assertEquals(array[offset + 0x9], 'r');
+        assertEquals(array[offset + 0xA], 'l');
+        assertEquals(array[offset + 0xB], 'd');
     }
 
     @Test

@@ -28,7 +28,7 @@ import org.testng.annotations.Test;
 public class HexDecoderImplTest {
 
     @Test
-    public void decodeForRFC4648TestVectors() {
+    public void decodeAndCompareToRFC4648TestVectors() {
         TestVectors.acceptRFC4648ByteArrays((d, e) -> {
             final ByteBuffer decoded
                     = new HexDecoderImpl().decode(ByteBuffer.wrap(e));

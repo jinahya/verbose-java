@@ -9,7 +9,7 @@ import org.testng.annotations.Test;
 public class HexEncoderImplTest {
 
     @Test
-    public void encodeForRFC4648TestVectors() {
+    public void encodeAndCompareToRFC4648TestVectors() {
         TestVectors.acceptRFC4648ByteArrays((d, e) -> {
             final ByteBuffer encoded
                     = new HexEncoderImpl().encode(ByteBuffer.wrap(d));

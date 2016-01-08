@@ -12,7 +12,7 @@ import static java.util.ServiceLoader.load;
 public class HelloWorldMain {
 
     /**
-     * Prints {@code hello, world} to {@code System.out}.
+     * Prints {@code hello, world%n} to {@code System.out}.
      *
      * @param args command line arguments
      */

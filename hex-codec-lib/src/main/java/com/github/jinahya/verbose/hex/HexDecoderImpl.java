@@ -2,58 +2,48 @@ package com.github.jinahya.verbose.hex;
 
 import java.nio.ByteBuffer;
 
+/**
+ * A class implementing {@code HexDecoder}.
+ *
+ * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
+ */
 public class HexDecoderImpl implements HexDecoder {
 
+    /**
+     * Decodes a nibble.
+     *
+     * @param encoded the hex character to decode
+     * @return decoded number
+     */
     private static int decodeNibble(final int encoded) {
         switch (encoded) {
-            case 0x30: // '0'
-            case 0x31: // '1'
-            case 0x32: // '2'
-            case 0x33: // '3'
-            case 0x34: // '4'
-            case 0x35: // '5'
-            case 0x36: // '6'
-            case 0x37: // '7'
-            case 0x38: // '8'
-            case 0x39: // '9'
-                return encoded - 0x30;
-            case 0x41: // 'A'
-            case 0x42: // 'B'
-            case 0x43: // 'C'
-            case 0x44: // 'D'
-            case 0x45: // 'E'
-            case 0x46: // 'F'
-                return encoded - 0x37;
+            case '0': // 48, 0x30
+            case '1': // 49, 0x31
+            case '2': // 50, 0x32
+            case '3': // 51, 0x33
+            case '4': // 52, 0x34
+            case '5': // 53, 0x35
+            case '6': // 54, 0x36
+            case '7': // 55, 0x37
+            case '8': // 56, 0x38
+            case '9': // 57, 0x39
+                return encoded - 48; // to 0 ~ 9
+            case 'A': // 65, 0x41
+            case 'B': // 66, 0x42
+            case 'C': // 67, 0x43
+            case 'D': // 68, 0x44
+            case 'E': // 69, 0x45
+            case 'F': // 70, 0x46
+                return encoded - 55; // to 10 ~ 15
             default: // lower case alpha
-                return encoded - 0x57;
+                return encoded - 87; // to 10 ~ 15
         }
     }
 
     @Override
-    public int decodeSingle(final ByteBuffer decoded) {
+    public int decodeOctet(final ByteBuffer decoded) {
         final int h = decodeNibble(decoded.get());
         final int l = decodeNibble(decoded.get());
-        return (h << 4) | l;
-    }
-
-    byte[] decode(final byte[] input, final int inoff, final int inlen,
-                  final byte[] output, final int outoff) {
-        final ByteBuffer decoded = ByteBuffer.wrap(input, inoff, inlen);
-        for (int i = outoff; i < output.length; i++) {
-            output[i] = (byte) decodeSingle(decoded);
-        }
-        return output;
-    }
-
-    byte[] decode(final byte[] array, final int offset, final int length) {
-        return decode(array, offset, length, new byte[length >> 1], 0);
-    }
-
-    byte[] decode(final byte[] array, final int offset) {
-        return decode(array, offset, array.length - offset);
-    }
-
-    byte[] decode(final byte[] array) {
-        return decode(array, 0);
+        return (h << 0b0100) | l;
     }
 }

@@ -7,13 +7,13 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 public interface HexEncoder {
 
     /**
-     * Encodes given octet and puts those encoded bytes to specified byte
-     * buffer.
+     * Encodes given octet and puts those encoded hex characters to specified
+     * byte buffer.
      *
      * @param decoded the octet to encode
-     * @param encoded the byte buffer to which encoded bytes put.
+     * @param encoded the byte buffer to which encoded characters are put.
      */
-    void encodeSingle(int decoded, ByteBuffer encoded);
+    void encodeOctet(int decoded, ByteBuffer encoded);
 
     /**
      * Encodes all remaining bytes from given input byte buffer and puts results
@@ -24,7 +24,7 @@ public interface HexEncoder {
      */
     default void encode(final ByteBuffer decoded, final ByteBuffer encoded) {
         while (decoded.hasRemaining()) {
-            encodeSingle(decoded.get(), encoded);
+            encodeOctet(decoded.get(), encoded);
         }
     }
 

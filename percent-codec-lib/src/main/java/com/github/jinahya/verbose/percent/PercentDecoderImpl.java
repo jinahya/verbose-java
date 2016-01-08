@@ -26,6 +26,10 @@ import static java.util.logging.Logger.getLogger;
 import static java.util.logging.Logger.getLogger;
 import static java.util.logging.Logger.getLogger;
 import static java.util.logging.Logger.getLogger;
+import static java.util.logging.Logger.getLogger;
+import static java.util.logging.Logger.getLogger;
+import static java.util.logging.Logger.getLogger;
+import static java.util.logging.Logger.getLogger;
 
 /**
  *
@@ -49,7 +53,7 @@ public class PercentDecoderImpl implements PercentDecoder {
             return e;
         }
         assert e == 0x25; // '%'
-        return hexDecoder().decodeSingle(encoded);
+        return hexDecoder().decodeOctet(encoded);
     }
 
     private HexDecoder hexDecoder() {

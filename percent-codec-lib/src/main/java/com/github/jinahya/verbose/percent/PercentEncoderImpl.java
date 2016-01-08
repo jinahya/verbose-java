@@ -26,6 +26,10 @@ import static java.util.logging.Logger.getLogger;
 import static java.util.logging.Logger.getLogger;
 import static java.util.logging.Logger.getLogger;
 import static java.util.logging.Logger.getLogger;
+import static java.util.logging.Logger.getLogger;
+import static java.util.logging.Logger.getLogger;
+import static java.util.logging.Logger.getLogger;
+import static java.util.logging.Logger.getLogger;
 
 /**
  *
@@ -49,7 +53,7 @@ public class PercentEncoderImpl implements PercentEncoder {
             return;
         }
         encoded.put((byte) 0x25); // '%'
-        hexEncoder().encodeSingle(decoded, encoded);
+        hexEncoder().encodeOctet(decoded, encoded);
     }
 
     private HexEncoder hexEncoder() {

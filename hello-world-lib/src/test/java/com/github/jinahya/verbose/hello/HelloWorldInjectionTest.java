@@ -22,27 +22,6 @@ import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertTrue;
-import static org.slf4j.LoggerFactory.getLogger;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-import static org.slf4j.LoggerFactory.getLogger;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-import static org.slf4j.LoggerFactory.getLogger;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-import static org.slf4j.LoggerFactory.getLogger;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-import static org.slf4j.LoggerFactory.getLogger;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-import static org.slf4j.LoggerFactory.getLogger;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
-import static org.slf4j.LoggerFactory.getLogger;
-import static org.testng.Assert.assertNotNull;
-import static org.testng.Assert.assertTrue;
 
 /**
  * A test class using Dependency Injection.
@@ -54,39 +33,38 @@ abstract class HelloWorldInjectionTest extends HelloWorldDataTest {
     /**
      * {@inheritDoc} The {@code implementation()} method of
      * {@code HelloWorldInjectionTest} class returns the value of a randomly
-     * selected field which is one of {@link #any}, {@link #namedAsDemo},
-     * {@link #namedAsImpl}, {@link #qualifiedWithDemo}, or
-     * {@link #qualifiedWithImpl}.
+     * selected field which is one of {@link #any}, {@link #namedDemo},
+     * {@link #namedImpl}, {@link #qualifiedDemo}, or {@link #qualifiedImpl}.
      *
      * @return {@inheritDoc}
      */
     @Override
     HelloWorld implementation() {
         assertNotNull(any, "any is null");
-        assertTrue(namedAsDemo instanceof HelloWorldDemo,
-                   namedAsDemo + " is not an instance of HelloWorldDemo");
-        assertTrue(namedAsImpl instanceof HelloWorldImpl,
-                   namedAsImpl + " is not an instance of HelloWorldImpl");
-        assertTrue(qualifiedWithDemo instanceof HelloWorldDemo,
-                   qualifiedWithDemo + " is not an instance of HelloWorldDemo");
-        assertTrue(qualifiedWithImpl instanceof HelloWorldImpl,
-                   qualifiedWithImpl + " is not an instance of HelloWorldImpl");
+        assertTrue(namedDemo instanceof HelloWorldDemo,
+                   namedDemo + " is not an instance of HelloWorldDemo");
+        assertTrue(namedImpl instanceof HelloWorldImpl,
+                   namedImpl + " is not an instance of HelloWorldImpl");
+        assertTrue(qualifiedDemo instanceof HelloWorldDemo,
+                   qualifiedDemo + " is not an instance of HelloWorldDemo");
+        assertTrue(qualifiedImpl instanceof HelloWorldImpl,
+                   qualifiedImpl + " is not an instance of HelloWorldImpl");
         switch (current().nextInt(5)) {
             case 0:
                 logger.debug("selecting any");
                 return any;
             case 1:
-                logger.debug("selecting namedAsImpl");
-                return namedAsImpl;
+                logger.debug("selecting namedImpl");
+                return namedImpl;
             case 2:
-                logger.debug("selecting namedAsDemo");
-                return namedAsDemo;
+                logger.debug("selecting namedDemo");
+                return namedDemo;
             case 3:
-                logger.debug("selecting qualifiedWithImpl");
-                return qualifiedWithImpl;
+                logger.debug("selecting qualifiedImpl");
+                return qualifiedImpl;
             default:
-                logger.debug("selecting qualifiedWithDemo");
-                return qualifiedWithDemo;
+                logger.debug("selecting qualifiedDemo");
+                return qualifiedDemo;
         }
     }
 
@@ -104,7 +82,7 @@ abstract class HelloWorldInjectionTest extends HelloWorldDataTest {
      */
     @Inject
     @Named("demo")
-    HelloWorld namedAsDemo;
+    HelloWorld namedDemo;
 
     /**
      * An injectable {@code Helloworld} which is qualified with
@@ -112,7 +90,7 @@ abstract class HelloWorldInjectionTest extends HelloWorldDataTest {
      */
     @Inject
     @Named("impl")
-    HelloWorld namedAsImpl;
+    HelloWorld namedImpl;
 
     /**
      * An injectable {@code HelloWorld} which is qualified with
@@ -120,7 +98,7 @@ abstract class HelloWorldInjectionTest extends HelloWorldDataTest {
      */
     @Inject
     @QualifiedDemo
-    HelloWorld qualifiedWithDemo;
+    HelloWorld qualifiedDemo;
 
     /**
      * An injectable {@code HelloWorld} which is qualified with
@@ -128,5 +106,5 @@ abstract class HelloWorldInjectionTest extends HelloWorldDataTest {
      */
     @Inject
     @QualifiedImpl
-    HelloWorld qualifiedWithImpl;
+    HelloWorld qualifiedImpl;
 }
