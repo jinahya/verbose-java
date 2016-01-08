@@ -15,8 +15,8 @@
  */
 package com.github.jinahya.verbose.hello;
 
-import com.google.inject.MembersInjector;
 import dagger.Component;
+import dagger.MembersInjector;
 
 /**
  *
