@@ -3,10 +3,10 @@ package com.github.jinahya.verbose.percent;
 import static java.lang.invoke.MethodHandles.lookup;
 import java.util.regex.Matcher;
 import org.slf4j.Logger;
-import org.testng.annotations.Test;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertTrue;
+import org.testng.annotations.Test;
 
 public class Rfc3986Test {
 

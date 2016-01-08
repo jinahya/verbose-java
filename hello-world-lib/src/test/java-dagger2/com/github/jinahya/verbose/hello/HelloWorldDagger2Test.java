@@ -36,4 +36,5 @@ public class HelloWorldDagger2Test extends HelloWorldInjectionTest {
     }
 
     private transient final Logger logger = getLogger(getClass());
+
 }
