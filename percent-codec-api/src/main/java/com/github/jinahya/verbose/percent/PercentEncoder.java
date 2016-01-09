@@ -3,6 +3,11 @@ package com.github.jinahya.verbose.percent;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 
+/**
+ * An interface for percent-encoding.
+ *
+ * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
+ */
 public interface PercentEncoder {
 
     void encodeSingle(int decoded, ByteBuffer encoded);

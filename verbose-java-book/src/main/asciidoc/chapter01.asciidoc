@@ -580,7 +580,7 @@ $
 
 hello-world-lib 모듈에는 Guice 이외에 [https://jcp.org/en/jsr/detail?id=330[JSR 330: Dependency Injection for Java]]을 지원하는 몆몆 프레임워크를 사용하는 별도의 테스트 클래스들이 추가되어 있다.
 
-[options="header"]
+[cols="1,1,2",options="header"]
 .JSR 330 Implementations and Test classes
 |===============================================================================
 |framework       |profile  |url

@@ -4,6 +4,11 @@ import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
+/**
+ * An interface for percent-decoding.
+ *
+ * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
+ */
 public interface PercentDecoder {
 
     int decodeSingle(ByteBuffer encoded);

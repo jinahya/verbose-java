@@ -119,10 +119,13 @@
                 <argument>-r</argument>
                 <argument>asciidoctor-pdf-cjk-kai_gen_gothic</argument>
                 <argument>-a</argument>
-                <argument>pdf-style=KaiGenGothicKR</argument>
+                <!--<argument>pdf-style=KaiGenGothicKR</argument>-->
+                <argument>pdf-style=src/main/yml/KaiGenGothicKR-theme.yml</argument>
                 <argument>src/main/asciidoc/book.asciidoc</argument>
                 <argument>-o</argument>
                 <argument>${project.build.directory}/generated-docs/book.pdf</argument>
+                <argument>-a</argument>
+                <argument>toc</argument>
               </arguments>
             </configuration>
             <goals>

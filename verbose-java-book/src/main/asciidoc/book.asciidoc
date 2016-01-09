@@ -2,6 +2,7 @@
 Jin Kwon
 v1.0, 2003-12
 :doctype: book
+:source-highlighter: coderay
 
 include::chapter01.asciidoc[]
 
