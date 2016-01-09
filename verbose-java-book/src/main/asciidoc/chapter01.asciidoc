@@ -596,7 +596,7 @@ hello-world-lib 모듈에는 Guice 이외에 [https://jcp.org/en/jsr/detail?id=3
 ----
 $ pwd
 /.../path/to/.../verbose-java
-$ mvn -pl hello-world-lib -P<profile> test
+$ mvn -pl hello-world-lib -P<profile> clean test
 ...
 $
 ----

@@ -23,13 +23,13 @@
 .Primitive types
 |===============================================================================
 |type       |                 |        |size|signed
-|NumericType|IntegralType     |`byte`  | `8`|&#x2713;
-|           |                 |`short` |`16`|&#x2713;
-|           |                 |`int`   |`32`|&#x2713;
-|           |                 |`long`  |`64`|&#x2713;
+|NumericType|IntegralType     |`byte`  | `8`|yes
+|           |                 |`short` |`16`|yes
+|           |                 |`int`   |`32`|yes
+|           |                 |`long`  |`64`|yes
 |           |                 |`char`  |`16`|
-|           |FloatingPointType|`float` |`32`|&#x2713;
-|           |                 |`double`|`64`|&#x2713;
+|           |FloatingPointType|`float` |`32`|yes
+|           |                 |`double`|`64`|yes
 |`boolean`  |                 |        |    |
 |===============================================================================
 
@@ -64,7 +64,7 @@ N개의 비트로 이루어져 있고 부호를 가지며(signed) 2의 보수체
 [cols=">,>,>,>,>,<",frame="top",options="header"]
 .8-bit values
 |===============================================================================
-|hexadecimal|decimal|octal|     binary|  byte|notes
+|hexadecimal|decimal|octal|     binary|  byte
 |        `0`|    `0`|  `0`|        `0`|   `0`|
 |        `F`|   `15`| `17`|     `1111`|  `15`|
 |       `1F`|   `31`| `37`|    `11111`|  `31`|
