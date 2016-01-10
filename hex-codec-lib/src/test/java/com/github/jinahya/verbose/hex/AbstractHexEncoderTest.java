@@ -17,6 +17,7 @@ package com.github.jinahya.verbose.hex;
 
 import java.util.function.Consumer;
 import java.util.function.Function;
+import javax.inject.Inject;
 import static org.testng.Assert.assertNotNull;
 import org.testng.annotations.BeforeClass;
 
@@ -28,7 +29,7 @@ public abstract class AbstractHexEncoderTest {
 
     @BeforeClass
     protected void inejct() {
-        encoder = DaggerHexEncoderComponent.create().encoder();
+        DaggerHexEncoderComponent.create().injectMembers(this);
         assertNotNull(encoder);
     }
 
@@ -44,5 +45,6 @@ public abstract class AbstractHexEncoderTest {
         return function.apply(getEncoder());
     }
 
-    private HexEncoder encoder;
+    @Inject
+    HexEncoder encoder;
 }

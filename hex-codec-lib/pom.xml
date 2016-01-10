@@ -32,6 +32,11 @@
       <version>${project.version}</version>
       <scope>compile</scope>
     </dependency>
+    <!--    <dependency>
+      <groupId>com.google.dagger</groupId>
+      <artifactId>dagger</artifactId>
+      <scope>test</scope>
+    </dependency>-->
     <dependency>
       <groupId>com.google.dagger</groupId>
       <artifactId>dagger-compiler</artifactId>
@@ -53,4 +58,5 @@
       <scope>test</scope>
     </dependency>
   </dependencies>
+
 </project>

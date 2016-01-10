@@ -23,7 +23,5 @@ import dagger.MembersInjector;
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 @Component(modules = HexDecoderModule.class)
-interface HexDecoderComponent extends MembersInjector<Object> {
-
-    HexDecoder decoder();
+interface HexDecoderComponent extends MembersInjector<AbstractHexDecoderTest> {
 }
