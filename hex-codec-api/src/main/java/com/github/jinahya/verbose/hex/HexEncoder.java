@@ -42,6 +42,14 @@ public interface HexEncoder {
         return encoded;
     }
 
+    /**
+     * Encodes given string using specified charset to get a byte array from the
+     * string.
+     *
+     * @param decoded the string to encoding
+     * @param charset the charset to get a byte array from the string.
+     * @return encoded string.
+     */
     default String encode(final String decoded, final Charset charset) {
         final byte[] decodedBytes = decoded.getBytes(charset);
         final byte[] encodedBytes = new byte[decodedBytes.length << 1];

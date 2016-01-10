@@ -15,36 +15,20 @@
  */
 package com.github.jinahya.verbose.hex;
 
-import java.io.FilterOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import static java.nio.charset.StandardCharsets.US_ASCII;
 
 /**
- * An output stream encodes bytes to hex characters.
+ * A demonstrative implementation.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HexEncodingStream extends FilterOutputStream {
-
-    public HexEncodingStream(final OutputStream out, final HexEncoder encoder) {
-        super(out);
-        this.encoder = encoder;
-    }
+public class HexEncoderDemo implements HexEncoder {
 
     @Override
-    public void write(final int b) throws IOException {
-        if (encoded == null) {
-            encoded = ByteBuffer.allocate(2);
-        }
-        encoded.position(0);
-        encoder.encodeOctet(b, encoded);
-        encoded.position(0);
-        super.write(encoded.get());
-        super.write(encoded.get());
+    public void encodeOctet(final int decoded, final ByteBuffer encoded) {
+        final String s = String.format("%02X", decoded);
+        encoded.put(s.getBytes(US_ASCII));
     }
 
-    protected HexEncoder encoder;
-
-    private ByteBuffer encoded;
 }

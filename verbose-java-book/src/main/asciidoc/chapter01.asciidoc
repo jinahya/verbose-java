@@ -452,27 +452,29 @@ hello-world-api 모듈에는 `HelloWorld` 를 구현한 `HelloWorldDemo` 라는 
 --------------------------------------------------------------------------------
 abstract class HelloWorldInjectionTest extends HelloWorldDataTest {
 
-    @Inject
+    @Inject // <1>
     HelloWorld any;
 
     @Inject
-    @Named("demo")
+    @Named("demo") // <2>
     HelloWorld namedDemo;
 
     @Inject
-    @Named("impl")
+    @Named("impl") // <2>
     HelloWorld namedImpl;
 
     @Inject
-    @QualifiedDemo
+    @QualifiedDemo // <3>
     HelloWorld qualifiedDemo;
 
     @Inject
-    @QualifiedImpl
+    @QualifiedImpl // <3>
     HelloWorld qualifiedImpl;
 }
 --------------------------------------------------------------------------------
-`@javax.inject.Inject` 어노테이션을 상용함으로써 외부로부터 주입된다는 것을 선언하였다. `any` 필드에는 `HelloWorldDemo` 와 `HelloWorldImpl` 중 어느 구현체가 주입될지는 모른다. `namedDemo` 필드와 `namedImpl` 필드에는 `@javax.inject.Named` 어노테이션을 사용하여 미리 약속된 문자열(`"demo"`, `"impl"`)을 통해 원하는 형태의 구현체를 주입받는다. `qualifedDemo` 필드와 `qualifiedImpl` 필드는 `@javax.inject.Qualifier` 어노테이션이 적용된 별도의 어노테이션들을 사용하여 원하는 형태의 값을 주입받는다
+<1> `@javax.inject.Inject` 어노테이션을 상용함으로써 외부로부터 주입된다는 것을 선언하였다. `any` 필드에는 `HelloWorldDemo` 와 `HelloWorldImpl` 중 어느 구현체가 주입될지는 모른다.
+<2> `namedDemo` 필드와 `namedImpl` 필드에는 `@javax.inject.Named` 어노테이션을 사용하여 미리 약속된 문자열(`"demo"`, `"impl"`)을 통해 원하는 형태의 구현체를 주입받는다.
+<3> `qualifedDemo` 필드와 `qualifiedImpl` 필드는 `@javax.inject.Qualifier` 어노테이션이 적용된 별도의 어노테이션들을 사용하여 원하는 형태의 값을 주입받는다.
 
 ****
 `@QualifiedDemo` 과 `@QualifiedImpl` 어노테이션의 정의는 다음과 갈다.

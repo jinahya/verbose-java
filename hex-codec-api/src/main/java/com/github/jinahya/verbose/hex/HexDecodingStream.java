@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.nio.ByteBuffer;
 
 /**
+ * An input stream decodes hex characters to bytes.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
