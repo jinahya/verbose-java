@@ -26,19 +26,21 @@ import java.util.regex.Pattern;
  * @see <a href="https://tools.ietf.org/html/rfc3986">Uniform Resource
  * Identifier (URI): Generic Syntax (RFC 3986)</a>
  */
-public final class Rfc3986Constants {
+public class PercentConstants {
 
     /**
+     * Reserved characters defined in {@code RFC 3986}.
      *
      * @see <a href="https://tools.ietf.org/html/rfc3986#section-2.2">2.2.
      * Reserved Characters (RFC 3986)</a>
      */
-    public static List<Character> RESERVED_CHARACTERS = Arrays.asList(
+    public static final List<Character> RESERVED_CHARACTERS = Arrays.asList(
             ':', ',', '?', '#', '[', ']', '@', // gen-delims
             '!', '$', '&', '\'', '(', ')', '*', '+', ',', ';', '=' // sub-delims
     );
 
     /**
+     * Unreserved characters defined in {@code RFC 3986}.
      *
      * @see <a href="https://tools.ietf.org/html/rfc3986#section-2.3">2.3.
      * Unreserved Characters (RFC 3986)</a>
@@ -57,7 +59,7 @@ public final class Rfc3986Constants {
     public static final Pattern UNRESERVED_CHARACTERS_PATTERN
             = Pattern.compile("[0-9A-Za-z-\\._~]+");
 
-    private Rfc3986Constants() {
+    protected PercentConstants() {
         super();
     }
 }

@@ -22,16 +22,12 @@ import java.util.NoSuchElementException;
 import java.util.ServiceLoader;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-import static java.util.logging.Logger.getLogger;
 
 /**
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 public class PercentDecoderImpl implements PercentDecoder {
-
-    private static final Logger logger
-            = getLogger(PercentDecoderImpl.class.getPackage().getName());
 
     @Override
     public int decodeSingle(final ByteBuffer encoded) {
@@ -63,6 +59,9 @@ public class PercentDecoderImpl implements PercentDecoder {
         }
         return hexDecoder;
     }
+
+    private transient final Logger logger
+            = Logger.getLogger(getClass().getName());
 
     private HexDecoder hexDecoder;
 }

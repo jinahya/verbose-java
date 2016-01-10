@@ -14,49 +14,49 @@ public class Rfc3986Test {
 
     @Test
     public void assertMatchesWithUnreservedCharacters() {
-        Rfc3986Constants.UNRESERVED_CHARACTERS.stream()
+        PercentConstants.UNRESERVED_CHARACTERS.stream()
                 .map(Object::toString).forEach(s -> {
             final Matcher m
-                    = Rfc3986Constants.UNRESERVED_CHARACTERS_PATTERN.matcher(s);
+                    = PercentConstants.UNRESERVED_CHARACTERS_PATTERN.matcher(s);
             assertTrue(m.matches());
         });
     }
 
     @Test
     public void assertNotMatchesWithReservedCharacters() {
-        Rfc3986Constants.RESERVED_CHARACTERS.stream()
+        PercentConstants.RESERVED_CHARACTERS.stream()
                 .map(Object::toString).forEach(s -> {
             final Matcher m
-                    = Rfc3986Constants.UNRESERVED_CHARACTERS_PATTERN.matcher(s);
+                    = PercentConstants.UNRESERVED_CHARACTERS_PATTERN.matcher(s);
             assertFalse(m.matches());
         });
     }
 
     @Test
     public void assertEachReservedCharacterIsAReservedCharacter() {
-        Rfc3986Constants.RESERVED_CHARACTERS.forEach(c -> {
-            assertTrue(Rfc3986Utilities.isReservedCharacter(c));
+        PercentConstants.RESERVED_CHARACTERS.forEach(c -> {
+            assertTrue(PercentUtilities.isReservedCharacter(c));
         });
     }
 
     @Test
     public void assertEachReserviceCharacterIsNotAnUnreservedCharacter() {
-        Rfc3986Constants.RESERVED_CHARACTERS.forEach(c -> {
-            assertFalse(Rfc3986Utilities.isUnreservedCharacter(c));
+        PercentConstants.RESERVED_CHARACTERS.forEach(c -> {
+            assertFalse(PercentUtilities.isUnreservedCharacter(c));
         });
     }
 
     @Test(invocationCount = 128)
     public void assertEachUnreservedCharacterIsAnUnreservedCharacter() {
-        Rfc3986Constants.UNRESERVED_CHARACTERS.forEach(c -> {
-            assertTrue(Rfc3986Utilities.isUnreservedCharacter(c));
+        PercentConstants.UNRESERVED_CHARACTERS.forEach(c -> {
+            assertTrue(PercentUtilities.isUnreservedCharacter(c));
         });
     }
 
     @Test(invocationCount = 128)
     public void assertEachUnreservedCharacterIsNotAReservedCharacter() {
-        Rfc3986Constants.UNRESERVED_CHARACTERS.forEach(c -> {
-            assertFalse(Rfc3986Utilities.isReservedCharacter(c));
+        PercentConstants.UNRESERVED_CHARACTERS.forEach(c -> {
+            assertFalse(PercentUtilities.isReservedCharacter(c));
         });
     }
 }

@@ -22,7 +22,7 @@ package com.github.jinahya.verbose.percent;
  * @see <a href="https://tools.ietf.org/html/rfc3986">Uniform Resource
  * Identifier (URI): Generic Syntax (RFC 3986)</a>
  */
-public final class Rfc3986Utilities {
+public class PercentUtilities {
 
     /**
      * Checks if specified character is an unreserved character.
@@ -32,15 +32,14 @@ public final class Rfc3986Utilities {
      * {@code false} otherwise.
      */
     public static boolean isReservedCharacter(final char c) {
-        return Rfc3986Constants.RESERVED_CHARACTERS.contains(c);
+        return PercentConstants.RESERVED_CHARACTERS.contains(c);
     }
 
-    public static int requireReservedCharacter(final char c) {
+    public static char requireRfc3986ReservedCharacter(final char c) {
         if (isReservedCharacter(c)) {
             return c;
         }
-        throw new IllegalArgumentException(
-                (char) c + " is not a reserved character");
+        throw new IllegalArgumentException(c + " is not a reserved character");
     }
 
     /**
@@ -51,18 +50,18 @@ public final class Rfc3986Utilities {
      * {@code false} otherwise.
      */
     public static boolean isUnreservedCharacter(final char c) {
-        return Rfc3986Constants.UNRESERVED_CHARACTERS.contains(c);
+        return PercentConstants.UNRESERVED_CHARACTERS.contains(c);
     }
 
-    public static int requireUnreservedCharacter(final char c) {
+    public static char requireRfc3986UnreservedCharacter(final char c) {
         if (isUnreservedCharacter(c)) {
             return c;
         }
         throw new IllegalArgumentException(
-                (char) c + " is not an unreserved character");
+                c + " is not an unreserved character");
     }
 
-    private Rfc3986Utilities() {
+    protected PercentUtilities() {
         super();
     }
 }

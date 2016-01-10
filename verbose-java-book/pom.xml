@@ -110,11 +110,9 @@
         <artifactId>exec-maven-plugin</artifactId>
         <executions>
           <execution>
-            <id>exec-asciidoctor-pdf-cjk</id>
+            <id>asciidoctor-pdf-cjk</id>
             <configuration>
               <executable>asciidoctor-pdf</executable>
-              <!--              <commandlineArgs>-r asciidoctor-pdf-cjk-kai_gen_gothic -a pdf-style=KaiGenGothicKR src/main/asciidoc/book.asciidoc -o ${project.build.directory}/generated-docs/book.pdf
-              </commandlineArgs>-->
               <arguments>
                 <argument>-r</argument>
                 <argument>asciidoctor-pdf-cjk-kai_gen_gothic</argument>
@@ -131,7 +129,22 @@
             <goals>
               <goal>exec</goal>
             </goals>
-            <phase>process-resources</phase>
+            <!--<phase>process-resources</phase>-->
+          </execution>
+          <execution>
+            <id>wkhtmltopdf</id>
+            <configuration>
+              <arguments>
+                <argument>toc</argument>
+                <argument>${project.build.directory}/generated-docs/book.html</argument>
+                <argument>${project.build.directory}/generated-docs/book.pdf</argument>
+              </arguments>
+              <executable>wkhtmltopdf</executable>
+            </configuration>
+            <goals>
+              <goal>exec</goal>
+            </goals>
+            <!--<phase>process-resources</phase>-->
           </execution>
         </executions>
       </plugin>

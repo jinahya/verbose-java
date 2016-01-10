@@ -12,12 +12,26 @@ public interface PercentEncoder {
 
     void encodeSingle(int decoded, ByteBuffer encoded);
 
+    /**
+     * Encodes all remaining bytes from given input buffer and put result to
+     * specified output buffer.
+     *
+     * @param decoded the input byte buffer
+     * @param encoded the output byte buffer
+     */
     default void encode(final ByteBuffer decoded, final ByteBuffer encoded) {
         while (decoded.hasRemaining()) {
             encodeSingle(decoded.get(), encoded);
         }
     }
 
+    /**
+     * Encodes all remaining bytes of given input buffer and returns a byte
+     * buffer containing the result.
+     *
+     * @param decoded the input byte buffer
+     * @return a new byte buffer containing encoded bytes.
+     */
     default ByteBuffer encode(final ByteBuffer decoded) {
         final ByteBuffer encoded = ByteBuffer.allocate(decoded.remaining() * 3);
         encode(decoded, encoded);
@@ -26,7 +40,7 @@ public interface PercentEncoder {
     }
 
     /**
-     * Encoded given string using specified character set to obtain the bytes
+     * Encodes given string using specified character set to obtain the bytes.
      *
      * @param decoded the string to encode
      * @param charset the character set to encode the input string to byte
