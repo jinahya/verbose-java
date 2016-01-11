@@ -3,6 +3,7 @@ package com.github.jinahya.verbose.hex;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 public interface HexEncoder {
 
@@ -55,5 +56,9 @@ public interface HexEncoder {
         final byte[] encodedBytes = new byte[decodedBytes.length << 1];
         encode(ByteBuffer.wrap(decodedBytes), ByteBuffer.wrap(encodedBytes));
         return new String(encodedBytes, US_ASCII);
+    }
+
+    default String encode(final String decoded) {
+        return encode(decoded, UTF_8);
     }
 }

@@ -3,6 +3,7 @@ package com.github.jinahya.verbose.percent;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * An interface for percent-decoding.
@@ -11,11 +12,17 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
  */
 public interface PercentDecoder {
 
-    int decodeSingle(ByteBuffer encoded);
+    /**
+     * Decodes characters for a single octet from given byte buffer.
+     *
+     * @param encoded the byte buffer
+     * @return decoded octet
+     */
+    int decodeOctet(ByteBuffer encoded);
 
     default void decode(final ByteBuffer encoded, final ByteBuffer decoded) {
         while (encoded.hasRemaining()) {
-            decoded.put((byte) decodeSingle(encoded));
+            decoded.put((byte) decodeOctet(encoded));
         }
     }
 
@@ -43,5 +50,9 @@ public interface PercentDecoder {
         final ByteBuffer decodedBuffer = ByteBuffer.wrap(decodedBytes);
         decode(encodedBuffer, decodedBuffer);
         return new String(decodedBytes, 0, decodedBuffer.position(), charset);
+    }
+
+    default String decode(final String encoded) {
+        return decode(encoded, UTF_8);
     }
 }

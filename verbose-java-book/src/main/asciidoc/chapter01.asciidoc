@@ -327,27 +327,7 @@ $
 
 지금부터는 위에 정리된 **단위 시험 항목에서 사용할 데이터를 제공**하는 방법과 **시험을 수행할 객체를 생성**하는 방법에 대해서 알아보려 한다.
 
-TestNG에서 제공하는 데이터 제공자(Data Provider)를 사용하면 시험 항목에 필요한 **데이터를 인자로 제공**받을 수 있을 뿐만 아니라 아래 표에 정리된 것과 같이 **1개 이상의 시험 데이터**를 전달받아 여러 경우에 대해 테스트를 실행할 수 있다. 아래 표는 우리가 이미 시험항목에서 사용한 데이터와 추가적으로 사용 가능한 데이터를 보여준다.
-
-[options="header"]
-.시험 데이터
-|===============================================================================
-|case             |array                         |offset
-|arrayNull        |null                          | 0
-|                 |null                          | 1
-|offsetNegative   |new byte[HelloWorld.BYTES]    |-1
-|                 |new byte[HelloWorld.BYTES - 1]|-2
-|                 |new byte[HelloWorld.BYTES - 2]|-3
-|capacityNotEnough|new byte[HelloWorld.BYTES]    | 1
-|                 |new byte[HelloWorld.BYTES + 1]| 2
-|                 |new byte[HelloWorld.BYTES + 2]| 3
-|                 |new byte[HelloWorld.BYTES + 3]| 4
-|valid            |new byte[HelloWorld.BYTES]    | 0
-|                 |new byte[HelloWorld.BYTES + 1]| 1
-|                 |new byte[HelloWorld.BYTES + 2]| 2
-|                 |new byte[HelloWorld.BYTES + 3]| 3
-|                 |new byte[HelloWorld.BYTES + 4]| 4
-|===============================================================================
+TestNG에서 제공하는 데이터 제공자(Data Provider)를 사용하면 시험 항목에 필요한 **데이터를 인자로 제공**받을 수 있을 뿐만 아니라 **1개 이상의 시험 데이터**를 전달받아 여러 경우에 대해 테스트를 실행할 수 있다.
 
 `HelloWorld` 를 위한 시험 항목들이 사용할 시험 데이터를 제공하는 클래스를 만들어 보자.
 

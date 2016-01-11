@@ -21,6 +21,8 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.slf4j.Logger;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
@@ -52,4 +54,10 @@ public class PercentEncoderImplTest {
         final String actual = new PercentEncoderImpl().encode(decoded, charset);
         assertEquals(actual, expected);
     }
+
+    @Test
+    public void testExample() {
+    }
+
+    private transient final Logger logger = getLogger(getClass());
 }

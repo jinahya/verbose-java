@@ -35,15 +35,15 @@ public class HexDecoderImpl implements HexDecoder {
             case 'E': // 69, 0x45
             case 'F': // 70, 0x46
                 return encoded - 55; // to 10 ~ 15
-            default: // lower case alpha
+            default: // assume 'a to 'f'
                 return encoded - 87; // to 10 ~ 15
         }
     }
 
     @Override
     public int decodeOctet(final ByteBuffer decoded) {
-        final int h = decodeNibble(decoded.get());
-        final int l = decodeNibble(decoded.get());
-        return (h << 0b0100) | l;
+        final int high = decodeNibble(decoded.get());
+        final int low = decodeNibble(decoded.get());
+        return (high << 4) | low;
     }
 }

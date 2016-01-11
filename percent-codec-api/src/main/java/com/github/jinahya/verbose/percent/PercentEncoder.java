@@ -2,6 +2,8 @@ package com.github.jinahya.verbose.percent;
 
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
+import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * An interface for percent-encoding.
@@ -10,7 +12,13 @@ import java.nio.charset.Charset;
  */
 public interface PercentEncoder {
 
-    void encodeSingle(int decoded, ByteBuffer encoded);
+    /**
+     * Encodes given octet and put encoded characters to specified byte buffer.
+     *
+     * @param decoded the octet to encode
+     * @param encoded the byte buffer to which encoded characters are put.
+     */
+    void encodeOctet(int decoded, ByteBuffer encoded);
 
     /**
      * Encodes all remaining bytes from given input buffer and put result to
@@ -21,7 +29,7 @@ public interface PercentEncoder {
      */
     default void encode(final ByteBuffer decoded, final ByteBuffer encoded) {
         while (decoded.hasRemaining()) {
-            encodeSingle(decoded.get(), encoded);
+            encodeOctet(decoded.get(), encoded);
         }
     }
 
@@ -54,6 +62,10 @@ public interface PercentEncoder {
         final ByteBuffer decodedBuffer = ByteBuffer.wrap(decodedBytes);
         final ByteBuffer encodedBuffer = ByteBuffer.wrap(encodedBytes);
         encode(decodedBuffer, encodedBuffer);
-        return new String(encodedBytes, 0, encodedBuffer.position());
+        return new String(encodedBytes, 0, encodedBuffer.position(), US_ASCII);
+    }
+
+    default String encode(final String decoded) {
+        return encode(decoded, UTF_8);
     }
 }

@@ -62,8 +62,11 @@
     <java.cryptographic.extension.classes>${java.home}/lib/jce.jar</java.cryptographic.extension.classes>
     <java.secure.socket.extension.classes>${java.home}/lib/jsse.jar</java.secure.socket.extension.classes>
     <com.google.dagger.version>2.0.2</com.google.dagger.version>
+    <com.google.http-client.version>1.21.0</com.google.http-client.version>
     <com.squareup.dagger.version>1.2.2</com.squareup.dagger.version>
     <org.glassfish.hk2.version>2.4.0-b34</org.glassfish.hk2.version>
+    <org.glassfish.jersey.version>2.22.1</org.glassfish.jersey.version>
+    <org.glassfish.jersey.core.version>${org.glassfish.jersey.version}</org.glassfish.jersey.core.version>
     <org.springframework.version>4.2.3.RELEASE</org.springframework.version>
   </properties>
 
@@ -93,6 +96,11 @@
         <groupId>com.squareup</groupId>
         <artifactId>dagger-compiler</artifactId>
         <version>${com.squareup.dagger.version}</version>
+      </dependency>
+      <dependency>
+        <groupId>com.google.http-client</groupId>
+        <artifactId>google-http-client</artifactId>
+        <version>${com.google.http-client.version}</version>
       </dependency>
       <dependency>
         <groupId>com.google.inject</groupId>
@@ -129,13 +137,11 @@
         <artifactId>commons-lang3</artifactId>
         <version>3.4</version>
       </dependency>
-      <!--      <dependency>
-        <groupId>org.glassfish.hk2</groupId>
-        <artifactId>hk2-bom</artifactId>
-        <version>${org.glassfish.hk2.version}</version>
-        <type>pom</type>
-        <scope>import</scope>
-      </dependency>-->
+      <dependency>
+        <groupId>org.glassfish.jersey.core</groupId>
+        <artifactId>jersey-client</artifactId>
+        <version>${org.glassfish.jersey.core.version}</version>
+      </dependency>
       <dependency>
         <groupId>org.testng</groupId>
         <artifactId>testng</artifactId>

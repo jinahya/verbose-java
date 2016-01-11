@@ -17,44 +17,41 @@ package com.github.jinahya.verbose.percent;
 
 import com.github.jinahya.verbose.hex.HexDecoder;
 import java.nio.ByteBuffer;
-import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.ServiceLoader;
+import static java.util.ServiceLoader.load;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
+ * A class implementing {@code PercentDecoder}. This class uses an instance of
+ * {@link HexDecoder} loaded with {@link ServiceLoader#load(java.lang.Class)}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 public class PercentDecoderImpl implements PercentDecoder {
 
     @Override
-    public int decodeSingle(final ByteBuffer encoded) {
+    public int decodeOctet(final ByteBuffer encoded) {
         final byte e = encoded.get();
-        if ((e >= 0x30 && e <= 0x39) // digit
-            || (e >= 0x41 && e <= 0x5A) // upper case alpha
-            || (e >= 0x61 && e <= 0x7A) // lower case alpha
-            || e == 0x2D // '-'
-            || e == 0x5F // '_'
-            || e == 0x2E // '.'
-            || e == 0x7E) { // '~'
-            return e;
+        if (e == 0x25) { // '%' <1>
+            return hexDecoder().decodeOctet(encoded); // <2>
         }
-        assert e == 0x25; // '%'
-        return hexDecoder().decodeOctet(encoded);
+        return e; // <3>
     }
 
-    private HexDecoder hexDecoder() {
+    /**
+     * Returns an instance of {@link HexDecoder}.
+     *
+     * @return an instance of {@link HexDecoder}
+     */
+    protected HexDecoder hexDecoder() {
         if (hexDecoder == null) {
-            final ServiceLoader<HexDecoder> loader
-                    = ServiceLoader.load(HexDecoder.class);
-            final Iterator<HexDecoder> i = loader.iterator();
             try {
-                hexDecoder = i.next();
+                hexDecoder = load(HexDecoder.class).iterator().next();
                 logger.log(Level.FINE, "hex decoder loaded: {0}", hexDecoder);
             } catch (final NoSuchElementException nsee) {
-                throw new RuntimeException("no instance loaded", nsee);
+                throw new RuntimeException("no hex decoder loaded", nsee);
             }
         }
         return hexDecoder;
