@@ -58,9 +58,7 @@ public interface PercentEncoder {
      */
     default String encode(final String decoded, final Charset charset) {
         final byte[] decodedBytes = decoded.getBytes(charset);
-        System.out.println("decodedBytes.length: " + decodedBytes.length);
         final byte[] encodedBytes = new byte[decodedBytes.length * 3];
-        System.out.println("encodedBytes.length: " + encodedBytes.length);
         final ByteBuffer decodedBuffer = ByteBuffer.wrap(decodedBytes);
         final ByteBuffer encodedBuffer = ByteBuffer.wrap(encodedBytes);
         encode(decodedBuffer, encodedBuffer);

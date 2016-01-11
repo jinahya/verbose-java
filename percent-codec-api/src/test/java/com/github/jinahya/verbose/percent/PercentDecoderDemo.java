@@ -27,10 +27,9 @@ public class PercentDecoderDemo implements PercentDecoder {
     public int decodeOctet(final ByteBuffer encoded) {
         final byte e = encoded.get();
         if (e == 0x25) {
-            return Integer.parseInt(
-                    String.format("%c%c", (char) encoded.get(),
-                                  (char) encoded.get()),
-                    16);
+            final String string = String.format(
+                    "%c%c", (char) encoded.get(), (char) encoded.get());
+            return Integer.parseInt(string, 16);
         }
         return e;
     }

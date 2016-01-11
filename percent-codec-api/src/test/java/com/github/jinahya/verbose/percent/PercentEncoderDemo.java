@@ -26,12 +26,11 @@ public class PercentEncoderDemo implements PercentEncoder {
 
     @Override
     public void encodeOctet(final int decoded, final ByteBuffer encoded) {
-        System.out.println("encodeOctet(" + (decoded & 0xF) + ", " + encoded + ")");
         if ((decoded >= 0x30 && decoded <= 0x39)
             || (decoded >= 0x41 && decoded <= 0x5A)
             || (decoded >= 0x61 && decoded <= 0x7A) || decoded == 0x2D
             || decoded == 0x5F || decoded == 0x2E || decoded == 0x7E) {
-            encoded.put((byte) decoded); // <1>
+            encoded.put((byte) decoded);
             return;
         }
         encoded.put((byte) 0x25);
