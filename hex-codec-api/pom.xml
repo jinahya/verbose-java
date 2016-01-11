@@ -24,4 +24,5 @@
     <url>scm:git:git@github.com:jinahya/${project.parent.artifactId}.git</url>
     <tag>HEAD</tag>
   </scm>
+
 </project>

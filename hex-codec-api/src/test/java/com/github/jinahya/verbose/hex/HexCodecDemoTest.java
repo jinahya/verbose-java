@@ -15,20 +15,27 @@
  */
 package com.github.jinahya.verbose.hex;
 
-import java.nio.ByteBuffer;
-import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.util.concurrent.ThreadLocalRandom.current;
+import org.apache.commons.lang3.RandomStringUtils;
+import org.slf4j.Logger;
+import static org.slf4j.LoggerFactory.getLogger;
+import static org.testng.Assert.assertEquals;
+import org.testng.annotations.Test;
 
 /**
- * A demonstrative implementation.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HexEncoderDemo implements HexEncoder {
+public class HexCodecDemoTest {
 
-    @Override
-    public void encodeOctet(final int decoded, final ByteBuffer encoded) {
-        final String s = String.format("%02X", decoded & 0xFF);
-        encoded.put(s.getBytes(US_ASCII));
+    @Test(invocationCount = 128)
+    public void encodeDecodeString() {
+        final String created = RandomStringUtils.random(current().nextInt(2));
+        final String encoded = new HexEncoderDemo().encode(created);
+        final String decoded = new HexDecoderDemo().decode(encoded);
+        assertEquals(decoded, created);
     }
+
+    private transient final Logger logger = getLogger(getClass());
 
 }

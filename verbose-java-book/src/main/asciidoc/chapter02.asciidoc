@@ -330,7 +330,7 @@ public class PercentEncoderImpl implements PercentEncoder {
 [source,java]
 .PercentEncoderImpl.java#hexEncoder()
 ----
-    private HexEncoder hexEncoder() {
+    protected HexEncoder hexEncoder() {
         if (hexEncoder == null) {
             try {
                 hexEncoder = load(HexEncoder.class).iterator().next();
@@ -363,7 +363,7 @@ public class PercentDecoderImpl implements PercentDecoder {
 }
 ----
 
-`PercentEncoderImpl` 과 같이 `HexDecoder` 개체를 적재하는 코드를 작성하자.
+`PercentEncoderImpl` 과 마찬가지로 `HexDecoder` 개체를 적재하는 코드를 작성하자.
 [source,java]
 .PercentDecoderImpl.java#hexDecoder()
 ----

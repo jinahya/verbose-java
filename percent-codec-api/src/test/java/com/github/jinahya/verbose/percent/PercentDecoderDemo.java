@@ -13,22 +13,25 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jinahya.verbose.hex;
+package com.github.jinahya.verbose.percent;
 
 import java.nio.ByteBuffer;
-import static java.nio.charset.StandardCharsets.US_ASCII;
 
 /**
- * A demonstrative implementation.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HexEncoderDemo implements HexEncoder {
+public class PercentDecoderDemo implements PercentDecoder {
 
     @Override
-    public void encodeOctet(final int decoded, final ByteBuffer encoded) {
-        final String s = String.format("%02X", decoded & 0xFF);
-        encoded.put(s.getBytes(US_ASCII));
+    public int decodeOctet(final ByteBuffer encoded) {
+        final byte e = encoded.get();
+        if (e == 0x25) {
+            return Integer.parseInt(
+                    String.format("%c%c", (char) encoded.get(),
+                                  (char) encoded.get()),
+                    16);
+        }
+        return e;
     }
-
 }
