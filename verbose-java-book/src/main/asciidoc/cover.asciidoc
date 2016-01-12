@@ -1,10 +1,3 @@
 = Verbose Java
 Jin Kwon
 :revnumber: {revnumber}
-:doctype: book
-:icons: font
-:source-highlighter: coderay
-
-include::chapter01.asciidoc[]
-
-include::chapter02.asciidoc[]

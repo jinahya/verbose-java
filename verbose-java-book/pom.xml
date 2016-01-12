@@ -42,12 +42,12 @@
         <executions>
           <execution>
             <id>docbook</id>
-            <phase>generate-resources</phase>
+            <!--<phase>generate-resources</phase>-->
             <goals>
               <goal>process-asciidoc</goal>
             </goals>
             <configuration>
-              <skip>true</skip>
+              <sourceDocumentName>book.asciidoc</sourceDocumentName>
             </configuration>
           </execution>
           <execution>
@@ -62,12 +62,12 @@
                 <toc/>
                 <linkcss>false</linkcss>
               </attributes>
-              <skip>false</skip>
+              <sourceDocumentName>book.asciidoc</sourceDocumentName>
             </configuration>
           </execution>
           <execution>
-            <id>pdf-cjk</id>
-            <phase>generate-resources</phase>
+            <id>pdf-book</id>
+            <!--<phase>generate-resources</phase>-->
             <goals>
               <goal>process-asciidoc</goal>
             </goals>
@@ -82,7 +82,39 @@
                 <toc/>
               </attributes>
               <backend>pdf</backend>
-              <skip>true</skip>
+              <sourceDocumentName>book.asciidoc</sourceDocumentName>
+            </configuration>
+          </execution>
+          <execution>
+            <id>pdf-chapter01</id>
+            <!--<phase>generate-resources</phase>-->
+            <goals>
+              <goal>process-asciidoc</goal>
+            </goals>
+            <configuration>
+              <attributes>
+                <idprefix/>
+                <idseparator>-</idseparator>
+                <pagenums/>
+                <pdf-fontsdir>${project.basedir}/src/main/ttf</pdf-fontsdir>
+                <pdf-stylesdir>${project.basedir}/src/main/yml</pdf-stylesdir>
+                <pdf-style>KaiGenGothicKR</pdf-style>
+              </attributes>
+              <backend>pdf</backend>
+              <sourceDocumentName>chapter01.asciidoc</sourceDocumentName>
+            </configuration>
+          </execution>
+          <execution>
+            <id>pdf-cover</id>
+            <!--<phase>generate-resources</phase>-->
+            <goals>
+              <goal>process-asciidoc</goal>
+            </goals>
+            <configuration>
+              <attributes>
+              </attributes>
+              <backend>pdf</backend>
+              <sourceDocumentName>cover.asciidoc</sourceDocumentName>
             </configuration>
           </execution>
         </executions>

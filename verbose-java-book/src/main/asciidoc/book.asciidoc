@@ -1,6 +1,4 @@
-= Verbose Java
-Jin Kwon
-:revnumber: {revnumber}
+include::cover.asciidoc[]
 :doctype: book
 :icons: font
 :source-highlighter: coderay
