@@ -79,14 +79,10 @@
                 <pagenums/>
                 <pdf-fontsdir>${project.basedir}/src/main/ttf</pdf-fontsdir>
                 <pdf-stylesdir>${project.basedir}/src/main/yml</pdf-stylesdir>
-                <!--<pdfStyle>src/main/yml/KaiGenGothicKR-theme.yml</pdfStyle>-->
                 <pdf-style>KaiGenGothicKR</pdf-style>
                 <toc/>
               </attributes>
               <backend>pdf</backend>
-              <requires>
-                <!--<require>asciidoctor-pdf-cjk-kai_gen_gothic</require>-->
-              </requires>
               <!--<skip>true</skip>-->
             </configuration>
           </execution>
