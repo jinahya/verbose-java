@@ -388,4 +388,4 @@ include::../../../../percent-codec-lib/src/main/java/com/github/jinahya/verbose/
 ----
 <1> 첫 문자를 읽고 `"%"` 이면
 <2> `HexDecoder` 에 정의된 `decodeOctet(ByteBuffer)` 를 이용해 두개의 hex 문자로부터 한 개의 octet 을 생성하고 반환한다.
-<3> 인코딩이 필요치 안은 문자는 그대로 반환한다.
+<3> 인코딩이 필요치 않은 문자는 그대로 반환한다.

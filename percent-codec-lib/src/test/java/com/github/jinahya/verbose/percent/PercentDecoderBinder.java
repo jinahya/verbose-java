@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Jin Kwon &lt;jinahya_at_gmail.com&gt;.
+ * Copyright 2016 Jin Kwon &lt;jinahya_at_gmail.com&gt;.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,27 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jinahya.verbose.hello;
+package com.github.jinahya.verbose.percent;
 
-import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.util.Objects.requireNonNull;
+import org.glassfish.hk2.utilities.binding.AbstractBinder;
 
 /**
- * A class implementing implementing {@code HelloWorld}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
+ * @param <T> percent decoder type
  */
-public class HelloWorldDemo implements HelloWorld {
+class PercentDecoderBinder<T extends PercentDecoder> extends AbstractBinder {
 
-    private static final byte[] SRC = "hello, world".getBytes(US_ASCII);
+    public PercentDecoderBinder(final Class<T> serviceType) {
+        super();
+        this.serviceType = requireNonNull(serviceType, "null serviceType");
+    }
 
     @Override
-    public void set(final byte[] array, final int offset) {
-        System.arraycopy(SRC, 0, array, offset, SRC.length);
+    protected void configure() {
+        bind(serviceType).to(PercentDecoder.class);
     }
+
+    protected final Class<T> serviceType;
 }

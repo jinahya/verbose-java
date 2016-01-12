@@ -27,11 +27,10 @@ public class HelloWorldImpl implements HelloWorld {
             throw new NullPointerException("null array");
         }
         if (offset < 0) {
-            throw new ArrayIndexOutOfBoundsException(
-                    "offset(" + offset + ") < 0");
+            throw new IndexOutOfBoundsException("offset(" + offset + ") < 0");
         }
         if (offset + HelloWorld.BYTES > array.length) {
-            throw new ArrayIndexOutOfBoundsException(
+            throw new IndexOutOfBoundsException(
                     "offset(" + offset + ") + " + HelloWorld.BYTES
                     + " > array.length(" + array.length + ")");
         }

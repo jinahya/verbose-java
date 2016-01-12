@@ -21,6 +21,7 @@ import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.jvnet.testing.hk2testng.HK2;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
@@ -28,7 +29,8 @@ import org.testng.annotations.Test;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class PercentDecoderImplTest {
+@HK2(binders = PercentDecoderImplBinder.class)
+public class PercentDecoderImplTest extends PercentDecoderTest {
 
     @Test
     public void testExampleFromURLEncoderDocumentation()

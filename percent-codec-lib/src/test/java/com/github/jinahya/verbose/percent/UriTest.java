@@ -29,7 +29,7 @@ import org.testng.annotations.Test;
  */
 public class UriTest {
 
-    @Test
+    @Test(enabled = false)
     public void testUriComponent() {
         final String uriTemplate = "http://www.example.com/names/{file}";
         final String pathValue = "a/b";

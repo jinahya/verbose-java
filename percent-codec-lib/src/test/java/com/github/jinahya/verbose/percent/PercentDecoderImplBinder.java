@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Jin Kwon &lt;jinahya_at_gmail.com&gt;.
+ * Copyright 2016 Jin Kwon &lt;jinahya_at_gmail.com&gt;.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jinahya.verbose.hello;
-
-import static java.nio.charset.StandardCharsets.US_ASCII;
+package com.github.jinahya.verbose.percent;
 
 /**
- * A class implementing implementing {@code HelloWorld}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HelloWorldDemo implements HelloWorld {
+public class PercentDecoderImplBinder
+        extends PercentDecoderBinder<PercentDecoderImpl> {
 
-    private static final byte[] SRC = "hello, world".getBytes(US_ASCII);
-
-    @Override
-    public void set(final byte[] array, final int offset) {
-        System.arraycopy(SRC, 0, array, offset, SRC.length);
+    public PercentDecoderImplBinder() {
+        super(PercentDecoderImpl.class);
     }
 }

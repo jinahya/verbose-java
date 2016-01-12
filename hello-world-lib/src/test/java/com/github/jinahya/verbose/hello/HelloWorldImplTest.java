@@ -20,6 +20,7 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertThrows;
 import org.testng.annotations.Test;
 
 /**
@@ -36,15 +37,15 @@ public class HelloWorldImplTest {
         new HelloWorldImpl().set(array, offset);
     }
 
-    @Test(expectedExceptions = ArrayIndexOutOfBoundsException.class)
-    public void expectArrayIndexOutOfBoundsWhenOffsetIsNegative() {
+    @Test(expectedExceptions = IndexOutOfBoundsException.class)
+    public void expectIndexOutOfBoundsWhenOffsetIsNegative() {
         final byte[] array = new byte[HelloWorld.BYTES];
         final int offset = -1;
         new HelloWorldImpl().set(array, offset);
     }
 
-    @Test(expectedExceptions = ArrayIndexOutOfBoundsException.class)
-    public void expectArrayIndexOutOfBoundsExceptionWhenCapacityIsNotEnough() {
+    @Test(expectedExceptions = IndexOutOfBoundsException.class)
+    public void expectIndexOutOfBoundsExceptionWhenCapacityIsNotEnough() {
         final byte[] array = new byte[HelloWorld.BYTES];
         final int offset = 1;
         new HelloWorldImpl().set(array, offset);
@@ -70,21 +71,23 @@ public class HelloWorldImplTest {
     }
 
     @Test
-    public void setWithBufferArray() {
-        final byte[] actual = new byte[HelloWorld.BYTES];
-        final ByteBuffer buffer = ByteBuffer.wrap(actual);
-        new HelloWorldImpl().put(buffer);
-        final byte[] expected = "hello, world".getBytes(US_ASCII);
-        assertEquals(actual, expected);
-    }
-
-    @Test
-    public void setWithBuffer() {
+    public void put() {
+        assertThrows(NullPointerException.class,
+                     () -> new HelloWorldImpl().put(null));
         final ByteBuffer actual = ByteBuffer.allocate(HelloWorld.BYTES);
         new HelloWorldImpl().put(actual);
         actual.flip();
         final ByteBuffer expected
                 = ByteBuffer.wrap("hello, world".getBytes(US_ASCII));
+        assertEquals(actual, expected);
+    }
+
+    @Test
+    public void putWithArrayWrappingBuffer() {
+        final byte[] actual = new byte[HelloWorld.BYTES];
+        final ByteBuffer buffer = ByteBuffer.wrap(actual);
+        new HelloWorldImpl().put(buffer);
+        final byte[] expected = "hello, world".getBytes(US_ASCII);
         assertEquals(actual, expected);
     }
 

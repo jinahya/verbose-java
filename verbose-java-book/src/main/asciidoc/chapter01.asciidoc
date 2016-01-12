@@ -3,9 +3,8 @@
 [source,java]
 ----
 public class SuccinctHelloWorld {
-
     public static void main(final String[] args) {
-        System.out.println("hello, world");
+        System.out.printf("%s%n", "hello, world");
     }
 }
 ----
@@ -160,7 +159,7 @@ public void do_not_ever_test_like_this() {
         new HelloWorldImpl().set(array, offset);
     } catch (final NullPointerException npe) {
         // array 를 먼저 확인하는 군!
-    } catch (final ArrayIndexOutOfBoundsException aioobe) {
+    } catch (final IndexOutOfBoundsException aioobe) {
         // offset 을 먼저 확인하는 듯?
     }
 }
@@ -216,7 +215,7 @@ $
 
 다음 항목은 `offset` 이 음수인 경우에 대한 시험 항목이다.
 
-.HelloWorldImplTest#expectArrayIndexOutOfBoundsExceptionWhenOffsetIsNegative
+.HelloWorldImplTest#expectIndexOutOfBoundsExceptionWhenOffsetIsNegative
 [source,java,indent=0]
 ----
 include::../../../../hello-world-lib/src/test/java/com/github/jinahya/verbose/hello/HelloWorldImplTest.java[lines=39..44]
@@ -228,8 +227,8 @@ include::../../../../hello-world-lib/src/test/java/com/github/jinahya/verbose/he
 ----
 $ mvn test
 ...
-Method HelloWorldImplTest.expectArrayIndexOutOfBoundsExceptionWhenOffsetIsNegative()[
-...] should have thrown an exception of class java.lang.ArrayIndexOutOfBoundsException
+Method HelloWorldImplTest.expectIndexOutOfBoundsExceptionWhenOffsetIsNegative()[
+...] should have thrown an exception of class java.lang.IndexOutOfBoundsException
 ...
 Tests run: 2, Failures: 1, Errors: 0, Skipped: 0
 ...
@@ -246,8 +245,7 @@ public void set(final byte[] array, final int offset) {
         throw new NullPointerException("null array");
     }
     if (offset < 0) {
-        throw new ArrayIndexOutOfBoundsException(
-                "offset(" + offset + ") < 0");
+        throw new IndexOutOfBoundsException("offset(" + offset + ") < 0");
     }
 }
 ----
@@ -263,7 +261,7 @@ $
 
 다음은 배열 공간이 충분하지 않을 경우에 대한 시험항목이다.
 
-.HelloWorldImplTest#expectArrayIndexOutOfBoundsExceptionWhenCapacityIsNotEnough
+.HelloWorldImplTest#expectIndexOutOfBoundsExceptionWhenCapacityIsNotEnough
 [source,java,indent=0]
 ----
 include::../../../../hello-world-lib/src/test/java/com/github/jinahya/verbose/hello/HelloWorldImplTest.java[lines=45..51]
@@ -275,8 +273,8 @@ include::../../../../hello-world-lib/src/test/java/com/github/jinahya/verbose/he
 ----
 $ mvn test
 ...
-Method HelloWorldImplTest.expectArrayIndexOutOfBoundsExceptionWhenCapacityIsNotEnough()[
-...] should have thrown an exception of class java.lang.ArrayIndexOutOfBoundsException
+Method HelloWorldImplTest.expectIndexOutOfBoundsExceptionWhenCapacityIsNotEnough()[
+...] should have thrown an exception of class java.lang.IndexOutOfBoundsException
 ...
 Tests run: 3, Failures: 1, Errors: 0, Skipped: 0
 ...
@@ -292,11 +290,11 @@ public void set(final byte[] array, final int offset) {
         throw new NullPointerException("null array");
     }
     if (offset < 0) {
-        throw new ArrayIndexOutOfBoundsException(
+        throw new IndexOutOfBoundsException(
                 "offset(" + offset + ") < 0");
     }
     if (offset + HelloWorld.BYTES > array.length) {
-        throw new ArrayIndexOutOfBoundsException(
+        throw new IndexOutOfBoundsException(
                 "offset(" + offset + ")" + HelloWorld.BYTES
                 + " > array.length(" + array.length + ")");
     }
@@ -737,34 +735,12 @@ $
 `HelloWorldMain` 클래스를 실행하기 위해서는 hello-world-api 모듈과 hello-world-lib 모듈이 필요하다. 몇몇 플러그인을 이용하여 실행에 필요한 파일들을 모두 포함하는 실행 가능한 jar파일을 생성해 보자.
 
 ===== Apache Maven Assembly Plugin
-다음은 http://maven.apache.org/plugins/maven-assembly-plugin/[Apache Maven Assembly Plugin]의 `jar-with-dependencies` 설명자(descriptor)를  이용하는 방법이다.
+다음은 http://maven.apache.org/plugins/maven-assembly-plugin/[Apache Maven Assembly Plugin]의 `jar-with-dependencies` descriptor를  이용하는 방법이다.
 
-[source,xml]
+[source,xml,indent="0"]
 .maven-assembly-plugin:single
 ----
-<plugin>
-  <groupId>org.apache.maven.plugins</groupId>
-  <artifactId>maven-assembly-plugin</artifactId>
-  <executions>
-    <execution>
-      <id>assembly-single</id>
-      <phase>package</phase>
-      <goals>
-        <goal>single</goal>
-      </goals>
-      <configuration>
-        <archive>
-          <manifest>
-            <mainClass>${mainClass}</mainClass>
-          </manifest>
-        </archive>
-        <descriptorRefs>
-          <descriptorRef>jar-with-dependencies</descriptorRef>
-        </descriptorRefs>
-      </configuration>
-    </execution>
-  </executions>
-</plugin>
+include::../../../../hello-world-app/pom.xml[lines=49..71]
 ----
 다음과 같이 실행해 볼 수 있다.
 
@@ -781,30 +757,10 @@ $
 
 ===== Apache Maven Shade Plugin
 
-[source,xml]
+[source,xml,indent="0"]
 .maven-shade-plugin:shade
 ----
-<plugin>
-  <groupId>org.apache.maven.plugins</groupId>
-  <artifactId>maven-shade-plugin</artifactId>
-  <executions>
-    <execution>
-      <id>shade-shade</id>
-      <goals>
-        <goal>shade</goal>
-      </goals>
-      <configuration>
-        <shadedArtifactAttached>true</shadedArtifactAttached>
-        <transformers>
-          <transformer implementation=
-           "org.apache.maven.plugins.shade.resource.ManifestResourceTransformer">
-            <mainClass>${mainClass}</mainClass>
-          </transformer>
-        </transformers>
-      </configuration>
-    </execution>
-  </executions>
-</plugin>
+include::../../../../hello-world-app/pom.xml[lines=144..173]
 ----
 `shadedArtifactAttached` 프로퍼티를 사용해서 별도의 jar파일을 만들도록 설정하였다. 다음과 같이 실행해 볼 수 있다.
 
@@ -822,26 +778,10 @@ $
 ===== Spring Boot Maven Plugin
 `spring-boot:repackage` 를 이용할 수도 있다.
 
-[source,xml]
+[source,xml,indent="0"]
 ----
-<plugin>
-  <groupId>org.springframework.boot</groupId>
-  <artifactId>spring-boot-maven-plugin</artifactId>
-  <executions>
-    <execution>
-      <id>spring-boot-repackage</id>
-      <goals>
-        <goal>repackage</goal>
-      </goals>
-      <configuration>
-        <classifier>spring-boot</classifier>
-        <mainClass>${mainClass}</mainClass>
-      </configuration>
-    </execution>
-  </executions>
-</plugin>
+include::../../../../hello-world-app/pom.xml[lines=174..199]
 ----
-
 `classifier` 속성을 사용하여 별도의 jar 파일을 생성하도록 설정하였다. 다음과 같이 실행해 볼 수 있다.
 
 [source,text]
@@ -857,7 +797,6 @@ $
 
 ****
 위에서 생성된 jar 파일들의 `META-INF/MANIFEST.MF` 항목의 내용을 확인해보자.
-
 [source,text]
 ----
 $ pwd

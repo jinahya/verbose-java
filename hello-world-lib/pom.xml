@@ -137,7 +137,6 @@
         <dependency>
           <groupId>org.glassfish.hk2</groupId>
           <artifactId>hk2-core</artifactId>
-          <version>${org.glassfish.hk2.version}</version>
           <scope>test</scope>
         </dependency>
       </dependencies>
@@ -178,7 +177,6 @@
         <dependency>
           <groupId>org.springframework</groupId>
           <artifactId>spring-context</artifactId>
-          <version>${org.springframework.version}</version>
           <scope>test</scope>
         </dependency>
       </dependencies>

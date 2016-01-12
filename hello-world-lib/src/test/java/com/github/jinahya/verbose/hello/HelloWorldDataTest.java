@@ -54,7 +54,7 @@ abstract class HelloWorldDataTest {
     }
 
     /**
-     * Expects an {@code ArrayIndexOutOfBoundsException} while invoking
+     * Expects an {@code IndexOutOfBoundsException} while invoking
      * {@link HelloWorld#set(byte[], int)} on the instance
      * {@link #implementation()} returns with an array and an offset provided by
      * {@link HelloWorldDataProvider#provideOffsetNegative()}.
@@ -66,13 +66,13 @@ abstract class HelloWorldDataTest {
      */
     @Test(dataProvider = "provideOffsetNegative",
           dataProviderClass = HelloWorldDataProvider.class,
-          expectedExceptions = ArrayIndexOutOfBoundsException.class)
+          expectedExceptions = IndexOutOfBoundsException.class)
     public void testOffsetNegative(final byte[] array, final int offset) {
         implementation().set(array, offset);
     }
 
     /**
-     * Expects an {@code ArrayIndexOutOfBoundsException} while invoking
+     * Expects an {@code IndexOutOfBoundsException} while invoking
      * {@link HelloWorld#set(byte[], int)} on the instance
      * {@link #implementation()} returns with an array and an offset provided by
      * {@link HelloWorldDataProvider#provideCapacityNotEnough()}.
@@ -85,7 +85,7 @@ abstract class HelloWorldDataTest {
      */
     @Test(dataProvider = "provideCapacityNotEnough",
           dataProviderClass = HelloWorldDataProvider.class,
-          expectedExceptions = ArrayIndexOutOfBoundsException.class)
+          expectedExceptions = IndexOutOfBoundsException.class)
     public void testCapacityNotEnough(final byte[] array, final int offset) {
         implementation().set(array, offset);
     }

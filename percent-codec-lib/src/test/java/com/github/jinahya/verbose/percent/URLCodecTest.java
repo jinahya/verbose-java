@@ -27,7 +27,7 @@ import org.testng.annotations.Test;
  */
 public class URLCodecTest {
 
-    @Test
+    @Test(enabled = false)
     public void encode() throws UnsupportedEncodingException {
         final String encoded = URLEncoder.encode("홍 길동", "UTF-8");
         logger.debug("encoded: {}", encoded);

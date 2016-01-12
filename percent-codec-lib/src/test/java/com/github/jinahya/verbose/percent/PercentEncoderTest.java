@@ -1,5 +1,5 @@
 /*
- * Copyright 2015 Jin Kwon &lt;jinahya_at_gmail.com&gt;.
+ * Copyright 2016 Jin Kwon &lt;jinahya_at_gmail.com&gt;.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -13,21 +13,30 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jinahya.verbose.hello;
+package com.github.jinahya.verbose.percent;
 
-import static java.nio.charset.StandardCharsets.US_ASCII;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import javax.inject.Inject;
 
 /**
- * A class implementing implementing {@code HelloWorld}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HelloWorldDemo implements HelloWorld {
+abstract class PercentEncoderTest {
 
-    private static final byte[] SRC = "hello, world".getBytes(US_ASCII);
-
-    @Override
-    public void set(final byte[] array, final int offset) {
-        System.arraycopy(SRC, 0, array, offset, SRC.length);
+    protected void accept(final Consumer<PercentEncoder> consumer) {
+        consumer.accept(percentEncoder());
     }
+
+    protected <T> T apply(final Function<PercentEncoder, T> function) {
+        return function.apply(percentEncoder());
+    }
+
+    protected PercentEncoder percentEncoder() {
+        return percentEncoder;
+    }
+
+    @Inject
+    private PercentEncoder percentEncoder;
 }

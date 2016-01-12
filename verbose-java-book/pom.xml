@@ -73,7 +73,6 @@
             </goals>
             <configuration>
               <attributes>
-                <!--<icons>font</icons>-->
                 <idprefix/>
                 <idseparator>-</idseparator>
                 <pagenums/>
@@ -83,7 +82,7 @@
                 <toc/>
               </attributes>
               <backend>pdf</backend>
-              <!--<skip>true</skip>-->
+              <skip>true</skip>
             </configuration>
           </execution>
         </executions>
