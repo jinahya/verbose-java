@@ -82,16 +82,6 @@
         <version>${com.google.dagger.version}</version>
       </dependency>
       <dependency>
-        <groupId>com.squareup.dagger</groupId>
-        <artifactId>dagger</artifactId>
-        <version>${com.squareup.dagger.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.squareup.dagger</groupId>
-        <artifactId>dagger-compiler</artifactId>
-        <version>${com.squareup.dagger.version}</version>
-      </dependency>
-      <dependency>
         <groupId>com.google.inject</groupId>
         <artifactId>guice</artifactId>
         <version>4.0</version>
