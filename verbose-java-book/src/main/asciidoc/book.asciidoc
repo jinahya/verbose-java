@@ -1,6 +1,6 @@
 = Verbose Java
 Jin Kwon
-v1.0
+:revnumber: {revnumber}
 :doctype: book
 :icons: font
 :source-highlighter: coderay

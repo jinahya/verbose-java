@@ -15,18 +15,22 @@
  */
 package com.github.jinahya.verbose.hello;
 
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.nio.channels.WritableByteChannel;
 
 /**
- * An interface generating {@code "hello, world"} bytes.
+ * An interface for generating {@code "hello, world"} bytes.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
+@FunctionalInterface
 public interface HelloWorld {
 
     /**
      * Number of required bytes for representing {@code "hello, world"} in
-     * {@code US-ASCII}.
+     * {@code US-ASCII} charset.
      */
     int BYTES = 12;
 
@@ -39,7 +43,7 @@ public interface HelloWorld {
      * @param offset the start offset in {@code array}
      *
      * @throws NullPointerException if {@code array} is {@code null}.
-     * @throws IllegalArgumentException if {@code offset} is negative or
+     * @throws IndexOutOfBoundsException if {@code offset} is negative or
      * {@code offset} + {@link #BYTES}({@value #BYTES}) is greater than
      * {@code array.length}.
      */
@@ -51,28 +55,68 @@ public interface HelloWorld {
      * position will be incremented by {@value HelloWorld#BYTES}.
      *
      * @param buffer the byte buffer
-     * @return given byte buffer
+     * @throws NullPointerException if {@code buffer} is {@code null}.
+     * @throws IllegalArgumentException if {@code buffer.remaining} is less than
+     * {@value #BYTES}
      *
      * @see #set(byte[], int)
      * @see ByteBuffer#put(byte[])
      */
-    default ByteBuffer put(final ByteBuffer buffer) {
-        if (buffer == null) {
+    default void put(final ByteBuffer buffer) {
+        if (buffer == null) { // <1>
             throw new NullPointerException("null buffer");
         }
-        if (buffer.remaining() < BYTES) {
+        if (buffer.remaining() < BYTES) { // <2>
             throw new IllegalArgumentException(
                     "buffer.remaining(" + buffer.remaining() + ") < " + BYTES);
         }
-        final byte[] array = new byte[BYTES];
+        if (buffer.hasArray()) { // <3>
+            set(buffer.array(), buffer.arrayOffset() + buffer.position());
+            buffer.position(buffer.position() + BYTES);
+            return;
+        }
+        final byte[] array = new byte[BYTES]; // <4>
         final int offset = 0;
         set(array, offset);
-        if (buffer.hasArray()) {
-            System.arraycopy(array, 0, buffer.array(),
-                             buffer.arrayOffset() + buffer.position(),
-                             array.length);
-            return (ByteBuffer) buffer.position(buffer.position() + BYTES);
+        buffer.put(array);
+    }
+
+    /**
+     * Writes {@value #BYTES} bytes representing {@code "hello, world"} on given
+     * output stream.
+     *
+     * @param stream the output stream
+     * @throws IOException if an I/O error occurs.
+     */
+    default void write(final OutputStream stream) throws IOException {
+        if (stream == null) { // <1>
+            throw new NullPointerException("null stream");
         }
-        return buffer.put(array);
+        final byte[] array = new byte[BYTES]; // <2>
+        final int offset = 0;
+        set(array, offset);
+        stream.write(array);
+    }
+
+    /**
+     * Writes {@value #BYTES} bytes representing {@code "hello, world"} on given
+     * byte channel.
+     *
+     * @param channel the byte channel
+     * @throws IOException if an I/O error occurs.
+     *
+     * @see #put(java.nio.ByteBuffer)
+     * @see WritableByteChannel#write(java.nio.ByteBuffer)
+     */
+    default void write(final WritableByteChannel channel) throws IOException {
+        if (channel == null) { // <1>
+            throw new NullPointerException("null channel");
+        }
+        final ByteBuffer buffer = ByteBuffer.allocate(BYTES); // <2>
+        put(buffer);
+        buffer.flip();
+        while (buffer.hasRemaining()) { // <3>
+            channel.write(buffer);
+        }
     }
 }

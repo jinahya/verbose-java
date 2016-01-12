@@ -34,15 +34,20 @@
           <doctype>book</doctype>
           <relativeBaseDir>true</relativeBaseDir>
           <sourceHighlighter>coderay</sourceHighlighter>
+          <attributes>
+            <icons>font</icons>
+            <revnumber>${project.version}</revnumber>
+          </attributes>
         </configuration>
         <executions>
           <execution>
             <id>docbook</id>
             <phase>generate-resources</phase>
             <goals>
-              <!--<goal>process-asciidoc</goal>-->
+              <goal>process-asciidoc</goal>
             </goals>
             <configuration>
+              <skip>true</skip>
             </configuration>
           </execution>
           <execution>
@@ -57,33 +62,32 @@
                 <toc/>
                 <linkcss>false</linkcss>
               </attributes>
+              <skip>false</skip>
             </configuration>
           </execution>
           <execution>
             <id>pdf-cjk</id>
             <phase>generate-resources</phase>
             <goals>
-              <!--<goal>process-asciidoc</goal>-->
+              <goal>process-asciidoc</goal>
             </goals>
             <configuration>
               <attributes>
-                <icons>font</icons>
+                <!--<icons>font</icons>-->
                 <idprefix/>
                 <idseparator>-</idseparator>
                 <pagenums/>
-                <pdfStyle>KaiGenGothicKR</pdfStyle>
+                <pdf-fontsdir>${project.basedir}/src/main/ttf</pdf-fontsdir>
+                <pdf-stylesdir>${project.basedir}/src/main/yml</pdf-stylesdir>
+                <!--<pdfStyle>src/main/yml/KaiGenGothicKR-theme.yml</pdfStyle>-->
+                <pdf-style>KaiGenGothicKR</pdf-style>
                 <toc/>
               </attributes>
               <backend>pdf</backend>
-              <!--              <gemPaths>
-                <gemPath>/Library/Ruby/Gems/2.0.0</gemPath>
-                <gemPath>/Users/onacit/.gem/ruby/2.0.0</gemPath>
-                <gemPath>/System/Library/Frameworks/Ruby.framework/Versions/2.0/usr/lib/ruby/gems/2.0.0</gemPath>
-              </gemPaths>-->
-              <!--<gemPath>/Library/Ruby/Gems/2.0.0</gemPath>-->
               <requires>
-                <require>asciidoctor-pdf-cjk-kai_gen_gothic</require>
+                <!--<require>asciidoctor-pdf-cjk-kai_gen_gothic</require>-->
               </requires>
+              <!--<skip>true</skip>-->
             </configuration>
           </execution>
         </executions>

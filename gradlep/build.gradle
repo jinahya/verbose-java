@@ -33,6 +33,7 @@ subprojects {
     testCompile 'commons-io:commons-io:2.4'
     testCompile 'org.apache.commons:commons-lang3:3.4'
     testCompile 'org.glassfish.jersey.core:jersey-client:2.22.1'
+    testCompile 'org.mockito:mockito-core:2.0.36-beta'
     testCompile 'org.slf4j:slf4j-api:1.7.13'
     testCompile 'org.testng:testng:6.9.10'
   }
