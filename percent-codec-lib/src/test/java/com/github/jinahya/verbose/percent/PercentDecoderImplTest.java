@@ -43,7 +43,7 @@ public class PercentDecoderImplTest extends PercentDecoderTest {
         assertEquals(actual, expected);
     }
 
-    @Test(invocationCount = 1024)
+    @Test(invocationCount = 128)
     public void testDecodingAgainstURLEncoder()
             throws UnsupportedEncodingException {
         final Charset charset = StandardCharsets.UTF_8;

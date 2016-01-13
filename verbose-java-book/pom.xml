@@ -57,11 +57,11 @@
               <goal>process-asciidoc</goal>
             </goals>
             <configuration>
-              <backend>html5</backend>
               <attributes>
                 <toc/>
                 <linkcss>false</linkcss>
               </attributes>
+              <backend>html5</backend>
               <sourceDocumentName>book.asciidoc</sourceDocumentName>
             </configuration>
           </execution>
@@ -79,6 +79,7 @@
                 <pdf-fontsdir>${project.basedir}/src/main/ttf</pdf-fontsdir>
                 <pdf-stylesdir>${project.basedir}/src/main/yml</pdf-stylesdir>
                 <pdf-style>KaiGenGothicKR</pdf-style>
+                <sectnums>true</sectnums>
                 <toc/>
               </attributes>
               <backend>pdf</backend>

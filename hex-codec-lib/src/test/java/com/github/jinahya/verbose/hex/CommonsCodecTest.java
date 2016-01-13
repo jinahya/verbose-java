@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 
 public class CommonsCodecTest {
 
-    @Test(invocationCount = 1024)
+    @Test(invocationCount = 128)
     public void encodeVerboseDecodeCommons() throws DecoderException {
         final byte[] expected = new byte[current().nextInt(1024)];
         current().nextBytes(expected);
@@ -22,7 +22,7 @@ public class CommonsCodecTest {
         assertEquals(actual, expected);
     }
 
-    @Test(invocationCount = 1024)
+    @Test(invocationCount = 128)
     public void encodeCommonsDecodeVerbose() throws DecoderException {
         final byte[] expected = new byte[current().nextInt(1024)];
         current().nextBytes(expected);

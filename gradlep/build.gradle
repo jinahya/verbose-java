@@ -13,6 +13,7 @@ ext {
                'dagger2-compiler': [group: dagger2Group, name: 'dagger-compiler', version: dagger2Version],
                'guice': [group: 'com.google.inject', name: 'guice', version: '4.0'],
                'hk2-core': [group: 'org.glassfish.hk2', name: 'hk2-core', version: hk2Version],
+               'hk2-testng': [group: 'org.glassfish.hk2', name: 'hk2-testng', version: hk2Version],
                'spring-context': [group: springGroup, name: 'spring-context', version: springVersion]
               ]
 }
@@ -132,5 +133,6 @@ project(':percent-codec-lib') {
     compile project(':hex-codec-api')
     runtime project(':hex-codec-lib')
     compile project(':percent-codec-api')
+    testCompile libraries.'hk2-testng'
   }
 }

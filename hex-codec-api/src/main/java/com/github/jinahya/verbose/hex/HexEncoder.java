@@ -5,6 +5,12 @@ import java.nio.charset.Charset;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
+/**
+ * And interface for hex encoding.
+ *
+ * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
+ */
+@FunctionalInterface
 public interface HexEncoder {
 
     /**

@@ -3,6 +3,8 @@ include::cover.asciidoc[]
 :icons: font
 :source-highlighter: coderay
 
+include::introduction.asciidoc[]
+
 include::chapter01.asciidoc[]
 
 include::chapter02.asciidoc[]

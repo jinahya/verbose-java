@@ -43,7 +43,7 @@ public class HelloWorldTest {
      * bytes.
      */
     @Test
-    public static void bytes() {
+    public static void BYTES() {
         assertEquals(HelloWorld.BYTES, VALUE.getBytes(US_ASCII).length);
     }
 
@@ -53,24 +53,8 @@ public class HelloWorldTest {
      * @return an instance of {@link HelloWorld}.
      */
     private static HelloWorld impl() {
-        final byte[] src = VALUE.getBytes(US_ASCII);
-        return (a, o) -> System.arraycopy(src, 0, a, o, src.length);
-    }
-
-    /**
-     * Tests {@link HelloWorld#set(byte[], int)}.
-     */
-    @Test
-    public void set() {
-        assertThrows(NullPointerException.class, () -> impl().set(null, 0));
-        assertThrows(IndexOutOfBoundsException.class,
-                     () -> impl().set(new byte[HelloWorld.BYTES], -1));
-        assertThrows(IndexOutOfBoundsException.class,
-                     () -> impl().set(new byte[HelloWorld.BYTES], 1));
-        final byte[] array = new byte[HelloWorld.BYTES];
-        final int offset = 0;
-        impl().set(array, offset);
-        assertEquals(array, VALUE.getBytes(US_ASCII));
+        final byte[] bytes = VALUE.getBytes(US_ASCII);
+        return (a, o) -> System.arraycopy(bytes, 0, a, o, bytes.length);
     }
 
     /**
@@ -94,9 +78,9 @@ public class HelloWorldTest {
      */
     @Test
     public void putWithArrayWrappingBuffer() {
-        final byte[] array = new byte[HelloWorld.BYTES];
+        final byte[] array = new byte[HelloWorld.BYTES]; // <1>
         impl().put(ByteBuffer.wrap(array));
-        assertEquals(array, VALUE.getBytes(US_ASCII));
+        assertEquals(array, VALUE.getBytes(US_ASCII)); // <2>
     }
 
     /**
@@ -106,9 +90,9 @@ public class HelloWorldTest {
      */
     @Test
     public void writeWithStream() throws IOException {
-        assertThrows(NullPointerException.class,
+        assertThrows(NullPointerException.class, // <1>
                      () -> impl().write((OutputStream) null));
-        final ByteArrayOutputStream stream
+        final ByteArrayOutputStream stream // <2>
                 = new ByteArrayOutputStream(HelloWorld.BYTES);
         impl().write(stream);
         assertEquals(stream.toByteArray(), VALUE.getBytes(US_ASCII));

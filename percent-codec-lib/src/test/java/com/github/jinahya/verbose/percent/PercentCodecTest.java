@@ -40,7 +40,7 @@ abstract class PercentCodecTest {
         return function.apply(percentEncoder(), percentDecoder());
     }
 
-    @Test(invocationCount = 1024)
+    @Test(invocationCount = 128)
     public void encodeDecodeString() throws UnsupportedEncodingException {
         final String created = RandomStringUtils.random(current().nextInt(128));
         accept((e, d) -> {

@@ -21,7 +21,7 @@ import org.testng.annotations.Test;
 
 public class HexCodecImplTest extends AbstractHexCodecImplTest {
 
-    @Test(invocationCount = 1024)
+    @Test(invocationCount = 128)
     public void encodeDecode() {
         final byte[] created = new byte[current().nextInt(1024)];
         current().nextBytes(created);

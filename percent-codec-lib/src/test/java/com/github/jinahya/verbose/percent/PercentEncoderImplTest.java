@@ -45,7 +45,7 @@ public class PercentEncoderImplTest {
         assertEquals(actual, expected);
     }
 
-    @Test(invocationCount = 1024)
+    @Test(invocationCount = 128)
     public void testEncodingAgainstURLEncoder()
             throws UnsupportedEncodingException {
         final Charset charset = StandardCharsets.UTF_8;
