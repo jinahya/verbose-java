@@ -34,27 +34,18 @@ import org.testng.annotations.Test;
 public class HelloWorldTest {
 
     /**
-     * Actual value.
-     */
-    private static final String VALUE = "hello, world";
-
-    /**
      * Tests whether {@link HelloWorld#BYTES} is equals to actual number of
      * bytes.
      */
     @Test
     public static void BYTES() {
-        assertEquals(HelloWorld.BYTES, VALUE.getBytes(US_ASCII).length);
+        assertEquals(HelloWorld.BYTES,
+                     "hello, world".getBytes(US_ASCII).length);
     }
 
-    /**
-     * Returns an instance of {@link HelloWorld}.
-     *
-     * @return an instance of {@link HelloWorld}.
-     */
-    private static HelloWorld impl() {
-        final byte[] bytes = VALUE.getBytes(US_ASCII);
-        return (a, o) -> System.arraycopy(bytes, 0, a, o, bytes.length);
+    private HelloWorld mock() {
+        return (a, o) -> {
+        };
     }
 
     /**
@@ -62,25 +53,19 @@ public class HelloWorldTest {
      */
     @Test
     public void put() {
-        assertThrows(NullPointerException.class, () -> impl().put(null));
-        assertThrows(
+        assertThrows(NullPointerException.class, () -> mock().put(null)); // <1>
+        assertThrows( // <2>
                 IllegalArgumentException.class,
-                () -> impl().put(ByteBuffer.allocate(HelloWorld.BYTES - 1)));
-        final ByteBuffer buffer = ByteBuffer.allocate(HelloWorld.BYTES);
-        impl().put(buffer);
-        buffer.flip();
-        assertEquals(buffer, ByteBuffer.wrap(VALUE.getBytes(US_ASCII)));
-    }
-
-    /**
-     * Tests {@link HelloWorld#put(java.nio.ByteBuffer)} with an array wrapping
-     * buffer.
-     */
-    @Test
-    public void putWithArrayWrappingBuffer() {
-        final byte[] array = new byte[HelloWorld.BYTES]; // <1>
-        impl().put(ByteBuffer.wrap(array));
-        assertEquals(array, VALUE.getBytes(US_ASCII)); // <2>
+                () -> mock().put(ByteBuffer.allocate(HelloWorld.BYTES - 1)));
+        { // <3>
+            final ByteBuffer buffer = ByteBuffer.allocate(HelloWorld.BYTES);
+            mock().put(buffer);
+        }
+        { // <4>
+            final ByteBuffer buffer
+                    = ByteBuffer.allocateDirect(HelloWorld.BYTES);
+            mock().put(buffer);
+        }
     }
 
     /**
@@ -91,11 +76,9 @@ public class HelloWorldTest {
     @Test
     public void writeWithStream() throws IOException {
         assertThrows(NullPointerException.class, // <1>
-                     () -> impl().write((OutputStream) null));
-        final ByteArrayOutputStream stream // <2>
-                = new ByteArrayOutputStream(HelloWorld.BYTES);
-        impl().write(stream);
-        assertEquals(stream.toByteArray(), VALUE.getBytes(US_ASCII));
+                     () -> mock().write((OutputStream) null));
+        final ByteArrayOutputStream stream = new ByteArrayOutputStream(); // <2>
+        mock().write(stream);
     }
 
     /**
@@ -105,12 +88,10 @@ public class HelloWorldTest {
      */
     @Test
     public void writeWithChannel() throws IOException {
-        assertThrows(NullPointerException.class,
-                     () -> impl().write((WritableByteChannel) null));
-        final ByteArrayOutputStream stream
-                = new ByteArrayOutputStream(HelloWorld.BYTES);
-        final WritableByteChannel channel = Channels.newChannel(stream);
-        impl().write(channel);
-        assertEquals(stream.toByteArray(), VALUE.getBytes(US_ASCII));
+        assertThrows(NullPointerException.class, // <1>
+                     () -> mock().write((WritableByteChannel) null));
+        final WritableByteChannel channel // <2>
+                = Channels.newChannel(new ByteArrayOutputStream());
+        mock().write(channel);
     }
 }

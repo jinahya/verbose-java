@@ -1,5 +1,6 @@
 package com.github.jinahya.verbose.hello;
 
+import java.io.PrintStream;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.util.ServiceLoader.load;
 
@@ -17,11 +18,29 @@ public class HelloWorldMain {
      * @param args command line arguments
      */
     public static void main(final String[] args) {
-        final HelloWorld loaded = load(HelloWorld.class).iterator().next();
-        final byte[] array = new byte[HelloWorld.BYTES];
+        new HelloWorldMain().print(System.out);
+    }
+
+    private HelloWorldMain() {
+        super();
+    }
+
+    /**
+     * Prints {@code hello, world%n} to given {@code PrintStream}.
+     *
+     * @param out the {@code PrintStream} to which {@code hello, world%n} is
+     * printed
+     */
+    private void print(final PrintStream out) {
+        if (out == null) { // <1>
+            throw new NullPointerException("null out");
+        }
+        final HelloWorld service // <2>
+                = load(HelloWorld.class).iterator().next();
+        final byte[] array = new byte[HelloWorld.BYTES]; // <3>
         final int offset = 0;
-        loaded.set(array, offset);
-        final String string = new String(array, US_ASCII);
-        System.out.printf("%s%n", string);
+        service.set(array, offset);
+        final String string = new String(array, US_ASCII); // <4>
+        out.printf("%s%n", string); // <5>
     }
 }

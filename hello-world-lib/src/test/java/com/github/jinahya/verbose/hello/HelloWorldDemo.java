@@ -24,10 +24,9 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
  */
 public class HelloWorldDemo implements HelloWorld {
 
-    private static final byte[] SRC = "hello, world".getBytes(US_ASCII);
-
     @Override
     public void set(final byte[] array, final int offset) {
-        System.arraycopy(SRC, 0, array, offset, SRC.length);
+        final byte[] value = "hello, world".getBytes(US_ASCII);
+        System.arraycopy(value, 0, array, offset, value.length);
     }
 }
