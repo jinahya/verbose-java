@@ -43,7 +43,7 @@ public class HelloWorldTest {
                      "hello, world".getBytes(US_ASCII).length);
     }
 
-    private HelloWorld mock() {
+    private HelloWorld impl() {
         return (a, o) -> {
         };
     }
@@ -53,19 +53,11 @@ public class HelloWorldTest {
      */
     @Test
     public void put() {
-        assertThrows(NullPointerException.class, () -> mock().put(null)); // <1>
-        assertThrows( // <2>
-                IllegalArgumentException.class,
-                () -> mock().put(ByteBuffer.allocate(HelloWorld.BYTES - 1)));
-        { // <3>
-            final ByteBuffer buffer = ByteBuffer.allocate(HelloWorld.BYTES);
-            mock().put(buffer);
-        }
-        { // <4>
-            final ByteBuffer buffer
-                    = ByteBuffer.allocateDirect(HelloWorld.BYTES);
-            mock().put(buffer);
-        }
+        assertThrows(NullPointerException.class, () -> impl().put(null)); // <1>
+        assertThrows(IllegalArgumentException.class, // <2>
+                     () -> impl().put(ByteBuffer.allocate(0)));
+        impl().put(ByteBuffer.allocate(HelloWorld.BYTES)); // <3>
+        impl().put(ByteBuffer.allocateDirect(HelloWorld.BYTES)); // <4>
     }
 
     /**
@@ -76,9 +68,8 @@ public class HelloWorldTest {
     @Test
     public void writeWithStream() throws IOException {
         assertThrows(NullPointerException.class, // <1>
-                     () -> mock().write((OutputStream) null));
-        final ByteArrayOutputStream stream = new ByteArrayOutputStream(); // <2>
-        mock().write(stream);
+                     () -> impl().write((OutputStream) null));
+        impl().write(new ByteArrayOutputStream()); // <2>
     }
 
     /**
@@ -89,9 +80,7 @@ public class HelloWorldTest {
     @Test
     public void writeWithChannel() throws IOException {
         assertThrows(NullPointerException.class, // <1>
-                     () -> mock().write((WritableByteChannel) null));
-        final WritableByteChannel channel // <2>
-                = Channels.newChannel(new ByteArrayOutputStream());
-        mock().write(channel);
+                     () -> impl().write((WritableByteChannel) null));
+        impl().write(Channels.newChannel(new ByteArrayOutputStream())); // <2>
     }
 }

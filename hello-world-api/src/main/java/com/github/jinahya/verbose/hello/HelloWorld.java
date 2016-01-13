@@ -114,8 +114,8 @@ public interface HelloWorld {
         }
         final ByteBuffer buffer = ByteBuffer.allocate(BYTES); // <2>
         put(buffer);
-        buffer.flip();
-        while (buffer.hasRemaining()) { // <3>
+        for (buffer.flip(); buffer.hasRemaining();) { // <3>
+            System.out.println("writing...");
             channel.write(buffer);
         }
     }
