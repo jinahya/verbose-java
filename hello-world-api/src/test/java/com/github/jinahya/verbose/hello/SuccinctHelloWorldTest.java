@@ -27,8 +27,6 @@ import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
-import static org.slf4j.LoggerFactory.getLogger;
-import static org.testng.Assert.assertEquals;
 
 /**
  *
@@ -36,9 +34,10 @@ import static org.testng.Assert.assertEquals;
  */
 public class SuccinctHelloWorldTest {
 
-    @Test
-    public void start() throws URISyntaxException, IOException, InterruptedException {
-        ProcessBuilder builder = new ProcessBuilder(
+    @Test(enabled = false)
+    public void start()
+            throws URISyntaxException, IOException, InterruptedException {
+        final ProcessBuilder builder = new ProcessBuilder(
                 "java", SuccinctHelloWorld.class.getName());
         builder.directory(new File(getClass().getResource("/").toURI()).toPath()
                 .resolve("..").resolve("classes").toFile());
