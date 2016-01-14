@@ -72,26 +72,37 @@ public class HexDecodingStream extends FilterInputStream {
         return i;
     }
 
+    /**
+     * {@inheritDoc} The {@code read()} method of {@code HexDecodingStream}
+     * class read two byte from the underlying stream and decodes them using
+     * {@link #decoder} and returns the result.
+     *
+     * @return {@inheritDoc}
+     * @throws IOException {@inheritDoc}
+     */
     @Override
     public int read() throws IOException {
         if (decoded == null) {
             decoded = ByteBuffer.allocate(2);
         }
         decoded.position(0);
-        final int b1 = super.read();
+        final int b1 = super.read(); // <1>
         if (b1 == -1) {
             return b1;
         }
         decoded.put((byte) b1);
-        final int b2 = super.read();
+        final int b2 = super.read(); // <2>
         if (b2 == -1) {
             throw new EOFException();
         }
         decoded.put((byte) b2);
         decoded.position(0);
-        return decoder.decodeOctet(decoded);
+        return decoder.decodeOctet(decoded); // <3>
     }
 
+    /**
+     * The encoder to encode two hex characters to a octet.
+     */
     protected HexDecoder decoder;
 
     private ByteBuffer decoded;

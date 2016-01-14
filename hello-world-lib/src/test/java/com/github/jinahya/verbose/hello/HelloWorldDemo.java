@@ -18,12 +18,18 @@ package com.github.jinahya.verbose.hello;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 
 /**
- * A class implementing implementing {@code HelloWorld}.
+ * A class implementing {@code HelloWorld}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 public class HelloWorldDemo implements HelloWorld {
 
+    /**
+     * {@inheritDoc}.
+     *
+     * @param array {@inheritDoc}
+     * @param offset {@inheritDoc}
+     */
     @Override
     public void set(final byte[] array, final int offset) {
         final byte[] value = "hello, world".getBytes(US_ASCII);

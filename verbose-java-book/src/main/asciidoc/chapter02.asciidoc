@@ -5,7 +5,7 @@ ________________________________________________________________________________
 컴퓨터는 0과 1밖에 모르는 바보다.
 ________________________________________________________________________________
 
-아직 저 '`바보`' 보다 더 똑똑한 사람을 만난적은 없지만 프로그래밍을 할 때면 '`사람이 읽고 쓸 수 있는 문자`'와 '`기계가 읽고 쓸 수 있는 숫자`' 사이에 발생하는 문제를 해결해야 하는 경우가 종종 있다. 본 장에서는 이 '`문자`'와 '`숫자`' 사이의 관계에 대해 살펴본다.
+아직 저 '`바보`' 보다 더 똑똑한 사람을 만난적은 없지만 '`숫자`'밖에 모르는 컴퓨터와 '`문자`'를 사용하는 사람과의 사이에 종종 발생하는 문제점들을 해결해야 하는 경우가 있다. 본 장에서는 이 '`문자`'와 '`숫자`' 사이의 관계에 대해 살펴본다.
 
 우선 자바의 자료형에 대해 간략하고 알아본 후 [http://tools.ietf.org/html/rfc4648#section-8[Base 16 Encoding]]과 [https://tools.ietf.org/html/rfc3986#section-2.1[Percent-Encoding]]에 대해 알아보자.
 
@@ -118,7 +118,7 @@ lower            L L L L
 
 NOTE: `10` 부터 `15` 까지의 숫자를 소문자(`'a'` 부터 `'f'`)로 변환해도 된다.
 
-아래는 `hello, world` 가 `hexadecimal` 로 표현될 때 적용되는 방식을 보여준다.
+아래는 `hello, world` 가 `base16` 으로 표현될 때 적용되는 방식을 보여준다.
 [source,text]
 ----
     0                    7                      15                      23
@@ -144,18 +144,26 @@ NOTE: `10` 부터 `15` 까지의 숫자를 소문자(`'a'` 부터 `'f'`)로 변�
 
 hex-codec-api 모듈에는 우리가 구현해 볼 두개의 인터페이스가 정의되어 있다.
 
+==== HexEncoder.java
 [source,java]
 .HexEncoder.java
 ----
-// 주어진 숫자(octet)를 인코딩하여 hex 문자 두개를 버퍼에 담는다.
-void encodeOctet(int decoded, ByteBuffer encoded);
+@FunctionalInterface
+public interface HexEncoder {
+    // 주어진 숫자(octet)를 인코딩하여 hex 문자 두개를 버퍼에 담는다.
+    void encodeOctet(int decoded, ByteBuffer encoded);
+}
 ----
 
+==== HexDecoder.java
 [source,java]
 .HexDecoder.java
 ----
-// 버퍼에서 hex 문자 두개를 디코딩하고 그 결과값(octet)을 반환한다.
-int decodeOctet(ByteBuffer encoded);
+@FunctionalInterface
+public interface HexEncoder {
+    // 버퍼에서 hex 문자 두개를 디코딩하고 그 결과값(octet)을 반환한다.
+    int decodeOctet(ByteBuffer encoded);
+}
 ----
 
 === hex-codec-lib
@@ -214,11 +222,10 @@ include::../../../../hex-codec-lib/src/main/java/com/github/jinahya/verbose/hex/
 ----
 
 === Exercises
-****
-`HexEncoderImpl#encodeNible(int)` 과 `HexDecoderImpl#decodeNibble(int)` 의 `switch` 구문을 `if/else` 구문으로 바꿔보자.
-****
-****
-`HexEncoder.java` 에 배열을 이용하는 메서드를 구현하라.
+. `HexEncoderImpl#encodeNible(int)` 과 `HexDecoderImpl#decodeNibble(int)` 의 `switch` 구문을 `if/else` 구문으로 바꿔보자.
++
+. `HexEncoder.java` 에 배열을 이용하는 메서드를 구현하라.
++
 [source,java]
 .HexEncoder#encode(byte[], int, int, byte[], int)
 ----
@@ -230,9 +237,8 @@ default void encode(final byte[] inarr, final int inoff, final int inlen,
     // outarr 의 outoff 부터 최소한 몇 개의 배열공간이 필요할까?
 }
 ----
-****
-****
-`HexDcoder.java` 에 배열을 이용하는 메서드를 구현하라.
+. `HexDcoder.java` 에 배열을 이용하는 메서드를 구현하라.
++
 [source,java]
 .HexDecoder#encode(byte[], int, int, byte[], int)
 ----
@@ -245,7 +251,6 @@ default void decode(final byte[] inarr, final int inoff, final int inlen,
     // outarr 의 outoff 부터 최소한 몇 개의 배열공간이 필요할까?
 }
 ----
-****
 
 === percent-codec-api
 다음과 같이 정의된 URL이 있다고 가정하자.

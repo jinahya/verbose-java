@@ -30,7 +30,7 @@ public interface HelloWorld {
 
     /**
      * Number of required bytes for representing {@code "hello, world"} in
-     * {@code US-ASCII} charset.
+     * {@code US-ASCII} character set.
      */
     int BYTES = 12;
 
@@ -51,10 +51,11 @@ public interface HelloWorld {
 
     /**
      * Puts {@value #BYTES} bytes representing {@code "hello, world"} in
-     * {@code US-ASCII} charset on given byte buffer. Upon return, the buffer's
-     * position will be incremented by {@value HelloWorld#BYTES}.
+     * {@code US-ASCII} character set on given byte buffer. Upon return, the
+     * buffer's position will be incremented by {@value HelloWorld#BYTES}.
      *
      * @param buffer the byte buffer
+     * @return given byte buffer
      * @throws NullPointerException if {@code buffer} is {@code null}.
      * @throws IllegalArgumentException if {@code buffer.remaining} is less than
      * {@value #BYTES}
@@ -62,7 +63,7 @@ public interface HelloWorld {
      * @see #set(byte[], int)
      * @see ByteBuffer#put(byte[])
      */
-    default void put(final ByteBuffer buffer) {
+    default ByteBuffer put(final ByteBuffer buffer) {
         if (buffer == null) { // <1>
             throw new NullPointerException("null buffer");
         }
@@ -72,23 +73,26 @@ public interface HelloWorld {
         }
         if (buffer.hasArray()) { // <3>
             set(buffer.array(), buffer.arrayOffset() + buffer.position());
-            buffer.position(buffer.position() + BYTES);
-            return;
+            return (ByteBuffer) buffer.position(buffer.position() + BYTES);
         }
         final byte[] array = new byte[BYTES]; // <4>
         final int offset = 0;
         set(array, offset);
-        buffer.put(array);
+        return buffer.put(array);
     }
 
     /**
      * Writes {@value #BYTES} bytes representing {@code "hello, world"} on given
      * output stream.
      *
+     * @param <T> output stream type parameter
      * @param stream the output stream
+     * @return given output stream
+     * @throws NullPointerException if {@code stream} is {@code null}
      * @throws IOException if an I/O error occurs.
      */
-    default void write(final OutputStream stream) throws IOException {
+    default <T extends OutputStream> T write(final T stream)
+            throws IOException {
         if (stream == null) { // <1>
             throw new NullPointerException("null stream");
         }
@@ -96,27 +100,31 @@ public interface HelloWorld {
         final int offset = 0;
         set(array, offset);
         stream.write(array);
+        return stream;
     }
 
     /**
      * Writes {@value #BYTES} bytes representing {@code "hello, world"} on given
      * byte channel.
      *
+     * @param <T> channel type parameter
      * @param channel the byte channel
+     * @return given channel
+     * @throws NullPointerException if {@code channel} is {@code null}
      * @throws IOException if an I/O error occurs.
      *
      * @see #put(java.nio.ByteBuffer)
      * @see WritableByteChannel#write(java.nio.ByteBuffer)
      */
-    default void write(final WritableByteChannel channel) throws IOException {
+    default <T extends WritableByteChannel> T write(final T channel)
+            throws IOException {
         if (channel == null) { // <1>
             throw new NullPointerException("null channel");
         }
-        final ByteBuffer buffer = ByteBuffer.allocate(BYTES); // <2>
-        put(buffer);
+        final ByteBuffer buffer = put(ByteBuffer.allocate(BYTES)); // <2>
         for (buffer.flip(); buffer.hasRemaining();) { // <3>
-            System.out.println("writing...");
             channel.write(buffer);
         }
+        return channel;
     }
 }

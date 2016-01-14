@@ -32,11 +32,35 @@
   <dependencies>
     <dependency>
       <groupId>com.github.jinahya</groupId>
-      <artifactId>hello-world-lib</artifactId>
+      <artifactId>hello-world-api</artifactId>
       <version>${project.version}</version>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>com.github.jinahya</groupId>
+      <artifactId>hello-world-lib</artifactId>
+      <version>${project.version}</version>
+      <scope>runtime</scope>
+    </dependency>
   </dependencies>
+
+  <!--  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-jar</id>
+            <phase>package</phase>
+            <goals>
+              <goal>jar</goal>
+            </goals>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>-->
 
   <profiles>
     <profile>
@@ -73,12 +97,52 @@
       </build>
     </profile>
     <profile>
-      <id>manual</id>
+      <id>class-path</id>
       <activation>
         <activeByDefault>true</activeByDefault>
       </activation>
       <build>
         <plugins>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-dependency-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>copy-dependencies</id>
+                <goals>
+                  <goal>copy-dependencies</goal>
+                </goals>
+                <phase>prepare-package</phase> <!-- MDEP-187 -->
+                <configuration>
+                  <outputDirectory>${project.build.directory}/${project.build.finalName}-class-path.lib</outputDirectory>
+                  <includeScope>runtime</includeScope>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
+          <plugin>
+            <groupId>org.apache.maven.plugins</groupId>
+            <artifactId>maven-jar-plugin</artifactId>
+            <executions>
+              <execution>
+                <id>class-path</id>
+                <goals>
+                  <goal>jar</goal>
+                </goals>
+                <phase>prepare-package</phase>
+                <configuration>
+                  <archive>
+                    <manifest>
+                      <addClasspath>true</addClasspath>
+                      <classpathPrefix>${project.build.finalName}-class-path.lib/</classpathPrefix>
+                      <mainClass>${mainClass}</mainClass>
+                    </manifest>
+                  </archive>
+                  <finalName>${project.build.finalName}-class-path</finalName>
+                </configuration>
+              </execution>
+            </executions>
+          </plugin>
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-antrun-plugin</artifactId>
@@ -92,7 +156,7 @@
                 <configuration>
                   <target>
                     <property name="final.name" value="${project.build.directory}/${project.build.finalName}"/>
-                    <property name="archive.includes" value="${project.build.finalName}.${project.packaging} ${project.build.finalName}.lib/*"/>
+                    <property name="archive.includes" value="${project.build.finalName}-classpath.${project.packaging} ${project.build.finalName}-classpath.lib/*"/>
                     <property name="tar.destfile" value="${final.name}.tar"/>
                     <zip basedir="${project.build.directory}" destfile="${final.name}.zip" includes="${archive.includes}" />
                     <tar basedir="${project.build.directory}" destfile="${tar.destfile}" includes="${archive.includes}" />
@@ -103,46 +167,11 @@
               </execution>
             </executions>
           </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-jar-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>default-jar</id>
-                <configuration>
-                  <archive>
-                    <manifest>
-                      <addClasspath>true</addClasspath>
-                      <classpathPrefix>${project.build.finalName}.lib/</classpathPrefix>
-                      <mainClass>${mainClass}</mainClass>
-                    </manifest>
-                  </archive>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-dependency-plugin</artifactId>
-            <executions>
-              <execution>
-                <id>copy-dependencies</id>
-                <goals>
-                  <goal>copy-dependencies</goal>
-                </goals>
-                <phase>prepare-package</phase> <!-- MDEP-187 -->
-                <configuration>
-                  <outputDirectory>${project.build.directory}/${project.build.finalName}.lib</outputDirectory>
-                  <includeScope>runtime</includeScope>
-                </configuration>
-              </execution>
-            </executions>
-          </plugin>
         </plugins>
       </build>
     </profile>
     <profile>
-      <id>shade</id>
+      <id>shaded</id>
       <activation>
         <activeByDefault>true</activeByDefault>
       </activation>

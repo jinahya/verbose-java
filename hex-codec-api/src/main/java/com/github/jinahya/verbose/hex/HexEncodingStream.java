@@ -27,23 +27,40 @@ import java.nio.ByteBuffer;
  */
 public class HexEncodingStream extends FilterOutputStream {
 
+    /**
+     * Creates a new instance.
+     *
+     * @param out the output stream for {@link #out}.
+     * @param encoder the encoder to use.
+     */
     public HexEncodingStream(final OutputStream out, final HexEncoder encoder) {
         super(out);
         this.encoder = encoder;
     }
 
+    /**
+     * {@inheritDoc} The {@code write(int)} method of {@code HexEncodingStream}
+     * class encode given byte using {@link #encoder} and write two bytes which
+     * each is a hex character to underlying output stream.
+     *
+     * @param b {@inheritDoc}
+     * @throws IOException {@inheritDoc}
+     */
     @Override
     public void write(final int b) throws IOException {
         if (encoded == null) {
             encoded = ByteBuffer.allocate(2);
         }
         encoded.position(0);
-        encoder.encodeOctet(b, encoded);
+        encoder.encodeOctet(b, encoded); // <1>
         encoded.position(0);
-        super.write(encoded.get());
-        super.write(encoded.get());
+        super.write(encoded.get()); // <2>
+        super.write(encoded.get()); // <3>
     }
 
+    /**
+     * The encoder to encode a octet to two hex characters.
+     */
     protected HexEncoder encoder;
 
     private ByteBuffer encoded;

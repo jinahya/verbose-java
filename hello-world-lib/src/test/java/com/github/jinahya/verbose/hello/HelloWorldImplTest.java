@@ -15,7 +15,11 @@
  */
 package com.github.jinahya.verbose.hello;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import java.nio.channels.Channels;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -30,6 +34,10 @@ import org.testng.annotations.Test;
  */
 public class HelloWorldImplTest {
 
+    /**
+     * Expects {@link HelloWorldImpl#set(byte[], int)} throws a
+     * {@code NullPointerException} when {@code array} is {@code null}.
+     */
     @Test(expectedExceptions = NullPointerException.class)
     public void expectNullPointerExceptionWhenArrayIsNull() {
         final byte[] array = null;
@@ -37,13 +45,22 @@ public class HelloWorldImplTest {
         new HelloWorldImpl().set(array, offset);
     }
 
+    /**
+     * Expects {@link HelloWorldImpl#set(byte[], int)} throws an
+     * {@code IndexOutOfBoundsException} when {@code offset} is negative.
+     */
     @Test(expectedExceptions = IndexOutOfBoundsException.class)
     public void expectIndexOutOfBoundsWhenOffsetIsNegative() {
-        final byte[] array = new byte[HelloWorld.BYTES];
+        final byte[] array = new byte[0];
         final int offset = -1;
         new HelloWorldImpl().set(array, offset);
     }
 
+    /**
+     * Expects {@link HelloWorldImpl#set(byte[], int)} throws an
+     * {@code IndexOutOfBoundsException} when
+     * {@code array.length + offset > HelloWorld.BYTES}.
+     */
     @Test(expectedExceptions = IndexOutOfBoundsException.class)
     public void expectIndexOutOfBoundsExceptionWhenCapacityIsNotEnough() {
         final byte[] array = new byte[HelloWorld.BYTES];
@@ -51,6 +68,10 @@ public class HelloWorldImplTest {
         new HelloWorldImpl().set(array, offset);
     }
 
+    /**
+     * Expects {@code hello, world} is set on {@code array} starting at
+     * {@code offset}.
+     */
     @Test
     public void expectHelloWorldBytesSetOnArrayStartingAtOffset() {
         final byte[] array = new byte[HelloWorld.BYTES];
@@ -70,23 +91,62 @@ public class HelloWorldImplTest {
         assertEquals(array[offset + 0xB], 'd');
     }
 
+    /**
+     * Tests {@link HelloWorld#put(java.nio.ByteBuffer)} works as expected.
+     */
     @Test
     public void put() {
         assertThrows(NullPointerException.class,
                      () -> new HelloWorldImpl().put(null));
-        final ByteBuffer actual = ByteBuffer.allocate(HelloWorld.BYTES);
-        new HelloWorldImpl().put(actual);
-        actual.flip();
-        final ByteBuffer expected
-                = ByteBuffer.wrap("hello, world".getBytes(US_ASCII));
+        {
+            final ByteBuffer actual = ByteBuffer.allocate(HelloWorld.BYTES);
+            new HelloWorldImpl().put(actual);
+            actual.flip();
+            final ByteBuffer expected
+                    = ByteBuffer.wrap("hello, world".getBytes(US_ASCII));
+            assertEquals(actual, expected);
+        }
+        {
+            final ByteBuffer actual
+                    = ByteBuffer.allocateDirect(HelloWorld.BYTES);
+            new HelloWorldImpl().put(actual);
+            actual.flip();
+            final ByteBuffer expected
+                    = ByteBuffer.wrap("hello, world".getBytes(US_ASCII));
+            assertEquals(actual, expected);
+        }
+    }
+
+    /**
+     * Tests {@link HelloWorldImpl#write(java.io.OutputStream)} works as
+     * expected.
+     *
+     * @throws IOException if an I/O error occurs.
+     */
+    @Test
+    public void writeWithStream() throws IOException {
+        assertThrows(NullPointerException.class,
+                     () -> new HelloWorldImpl().write((OutputStream) null));
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        new HelloWorldImpl().write(baos);
+        final byte[] actual = baos.toByteArray();
+        final byte[] expected = "hello, world".getBytes(US_ASCII);
         assertEquals(actual, expected);
     }
 
+    /**
+     * Tests {@link HelloWorldImpl#write(java.nio.channels.WritableByteChannel)}
+     * works as expected.
+     *
+     * @throws IOException
+     */
     @Test
-    public void putWithArrayWrappingBuffer() {
-        final byte[] actual = new byte[HelloWorld.BYTES];
-        final ByteBuffer buffer = ByteBuffer.wrap(actual);
-        new HelloWorldImpl().put(buffer);
+    public void writeWithChannel() throws IOException {
+        assertThrows(NullPointerException.class,
+                     () -> new HelloWorldImpl().write((OutputStream) null));
+        final ByteArrayOutputStream baos = new ByteArrayOutputStream();
+        new HelloWorldImpl().write(Channels.newChannel(baos));
+        final byte[] actual = baos.toByteArray();
         final byte[] expected = "hello, world".getBytes(US_ASCII);
         assertEquals(actual, expected);
     }

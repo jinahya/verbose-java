@@ -23,6 +23,7 @@ import java.nio.channels.Channels;
 import java.nio.channels.WritableByteChannel;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertThrows;
 import org.testng.annotations.Test;
 
@@ -43,8 +44,14 @@ public class HelloWorldTest {
                      "hello, world".getBytes(US_ASCII).length);
     }
 
+    /**
+     * Returns an implementation of {@link HelloWorld} whose
+     * {@link HelloWorld#set(byte[], int)} does nothing.
+     *
+     * @return an implementation of {@link HelloWorld}
+     */
     private HelloWorld impl() {
-        return (a, o) -> {
+        return (a, o) -> { // <1>
         };
     }
 
@@ -56,8 +63,19 @@ public class HelloWorldTest {
         assertThrows(NullPointerException.class, () -> impl().put(null)); // <1>
         assertThrows(IllegalArgumentException.class, // <2>
                      () -> impl().put(ByteBuffer.allocate(0)));
-        impl().put(ByteBuffer.allocate(HelloWorld.BYTES)); // <3>
-        impl().put(ByteBuffer.allocateDirect(HelloWorld.BYTES)); // <4>
+        assertThrows(IllegalArgumentException.class, // <2>
+                     () -> impl().put(ByteBuffer.allocateDirect(0)));
+        { // <3>
+            final ByteBuffer expected = ByteBuffer.allocate(HelloWorld.BYTES);
+            final ByteBuffer actual = impl().put(expected);
+            assertSame(actual, expected);
+        }
+        { // <4>
+            final ByteBuffer expected
+                    = ByteBuffer.allocateDirect(HelloWorld.BYTES);
+            final ByteBuffer actual = impl().put(expected);
+            assertSame(actual, expected);
+        }
     }
 
     /**
@@ -69,7 +87,9 @@ public class HelloWorldTest {
     public void writeWithStream() throws IOException {
         assertThrows(NullPointerException.class, // <1>
                      () -> impl().write((OutputStream) null));
-        impl().write(new ByteArrayOutputStream()); // <2>
+        final OutputStream expected = new ByteArrayOutputStream(); // <2>
+        final OutputStream actual = impl().write(expected);
+        assertSame(actual, expected);
     }
 
     /**
@@ -81,6 +101,9 @@ public class HelloWorldTest {
     public void writeWithChannel() throws IOException {
         assertThrows(NullPointerException.class, // <1>
                      () -> impl().write((WritableByteChannel) null));
-        impl().write(Channels.newChannel(new ByteArrayOutputStream())); // <2>
+        final WritableByteChannel expected // <2>
+                = Channels.newChannel(new ByteArrayOutputStream());
+        final WritableByteChannel actual = impl().write(expected);
+        assertSame(actual, expected);
     }
 }
