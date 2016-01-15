@@ -25,7 +25,7 @@ import java.nio.ByteBuffer;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HexEncodingStream extends FilterOutputStream {
+public class HexEncoderStream extends FilterOutputStream {
 
     /**
      * Creates a new instance.
@@ -33,7 +33,7 @@ public class HexEncodingStream extends FilterOutputStream {
      * @param out the output stream for {@link #out}.
      * @param encoder the encoder to use.
      */
-    public HexEncodingStream(final OutputStream out, final HexEncoder encoder) {
+    public HexEncoderStream(final OutputStream out, final HexEncoder encoder) {
         super(out);
         this.encoder = encoder;
     }

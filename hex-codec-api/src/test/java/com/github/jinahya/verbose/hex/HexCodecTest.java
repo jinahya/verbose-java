@@ -15,10 +15,11 @@
  */
 package com.github.jinahya.verbose.hex;
 
-import java.nio.ByteBuffer;
+import static java.nio.ByteBuffer.wrap;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.util.concurrent.ThreadLocalRandom.current;
-import org.apache.commons.lang3.RandomStringUtils;
+import static org.apache.commons.lang3.RandomStringUtils.random;
+import static org.apache.commons.lang3.RandomStringUtils.randomAscii;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.testng.Assert.assertEquals;
@@ -28,31 +29,30 @@ import org.testng.annotations.Test;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HexCodecDemoTest {
+public class HexCodecTest {
 
-    @Test(invocationCount = 128)
+    @Test(enabled = true, invocationCount = 128)
     public void encodeDecodeBytes() {
-        final byte[] decodedBytes = new byte[current().nextInt(128)];
-        current().nextBytes(decodedBytes);
-        final ByteBuffer encoded
-                = new HexEncoderDemo().encode(ByteBuffer.wrap(decodedBytes));
-        final ByteBuffer decoded = new HexDecoderDemo().decode(encoded);
-        assertEquals(decoded, ByteBuffer.wrap(decodedBytes));
+        final byte[] createdBytes = new byte[current().nextInt(128)];
+        current().nextBytes(createdBytes);
+        final byte[] encodedBytes = new byte[createdBytes.length << 1];
+        new HexEncoderDemo().encode(wrap(createdBytes), wrap(encodedBytes));
+        final byte[] decodedBytes = new byte[encodedBytes.length >> 1];
+        new HexDecoderDemo().decode(wrap(encodedBytes), wrap(decodedBytes));
+        assertEquals(decodedBytes, createdBytes);
     }
 
-    @Test(invocationCount = 128)
+    @Test(enabled = true, invocationCount = 128)
     public void encodeDecodeString() {
-        final int count = current().nextInt(128);
-        final String created = RandomStringUtils.random(count);
+        final String created = random(current().nextInt(128));
         final String encoded = new HexEncoderDemo().encode(created);
         final String decoded = new HexDecoderDemo().decode(encoded);
         assertEquals(decoded, created);
     }
 
-    @Test(invocationCount = 128)
+    @Test(enabled = true, invocationCount = 128)
     public void encodeDecodeAscii() {
-        final int count = current().nextInt(128);
-        final String created = RandomStringUtils.randomAscii(count);
+        final String created = randomAscii(current().nextInt(128));
         final String encoded = new HexEncoderDemo().encode(created, US_ASCII);
         final String decoded = new HexDecoderDemo().decode(encoded, US_ASCII);
         assertEquals(decoded, created);

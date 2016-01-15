@@ -34,7 +34,8 @@ import org.testng.annotations.Test;
  */
 public class SuccinctHelloWorldTest {
 
-    @Test(enabled = false)
+    // disabled; fails on CI
+    @Test(enabled = false, description = "external process")
     public void start()
             throws URISyntaxException, IOException, InterruptedException {
         final ProcessBuilder builder = new ProcessBuilder(

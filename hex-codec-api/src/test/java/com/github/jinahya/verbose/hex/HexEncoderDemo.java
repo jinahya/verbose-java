@@ -23,12 +23,13 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HexEncoderDemo implements HexEncoder {
+class HexEncoderDemo implements HexEncoder {
 
     @Override
     public void encodeOctet(final int decoded, final ByteBuffer encoded) {
         final String s = String.format("%02X", decoded & 0xFF);
         encoded.put(s.getBytes(US_ASCII));
+//        encoded.position(encoded.position() + 2);
     }
 
 }

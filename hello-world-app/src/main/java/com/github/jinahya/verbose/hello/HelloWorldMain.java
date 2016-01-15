@@ -21,9 +21,16 @@ public class HelloWorldMain {
      * @param args command line arguments
      * @throws IOException if an I/O error occurs.
      */
-    public static void main(final String[] args) throws IOException {
+    public static void main(final String... args) throws IOException {
         load(HelloWorld.class).iterator().next() // <1>
                 .write(System.out) // <2>
                 .println(); // <3>
+    }
+
+    /**
+     * private constructor.
+     */
+    private HelloWorldMain() {
+        super();
     }
 }

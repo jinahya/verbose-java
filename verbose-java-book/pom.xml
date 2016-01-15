@@ -37,6 +37,7 @@
           <attributes>
             <icons>font</icons>
             <revnumber>${project.version}</revnumber>
+            <sectnums>true</sectnums>
           </attributes>
         </configuration>
         <executions>
@@ -79,7 +80,7 @@
                 <pdf-fontsdir>${project.basedir}/src/main/ttf</pdf-fontsdir>
                 <pdf-stylesdir>${project.basedir}/src/main/yml</pdf-stylesdir>
                 <pdf-style>KaiGenGothicKR</pdf-style>
-                <sectnums>true</sectnums>
+                <!--<sectnums>true</sectnums>-->
                 <toc/>
               </attributes>
               <backend>pdf</backend>

@@ -26,9 +26,15 @@ import java.nio.ByteBuffer;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HexDecodingStream extends FilterInputStream {
+public class HexDecoderStream extends FilterInputStream {
 
-    public HexDecodingStream(final InputStream in, final HexDecoder decoder) {
+    /**
+     * Creates a new instance with given input stream and decoder.
+     *
+     * @param in the input stream
+     * @param decoder the decoder
+     */
+    public HexDecoderStream(final InputStream in, final HexDecoder decoder) {
         super(in);
         this.decoder = decoder;
     }
@@ -73,9 +79,9 @@ public class HexDecodingStream extends FilterInputStream {
     }
 
     /**
-     * {@inheritDoc} The {@code read()} method of {@code HexDecodingStream}
-     * class read two byte from the underlying stream and decodes them using
-     * {@link #decoder} and returns the result.
+     * {@inheritDoc} The {@code read()} method of {@code HexDecoderStream} class
+     * read two byte from the underlying input stream and decodes them into a
+     * single octet using {@link #decoder} and returns the result.
      *
      * @return {@inheritDoc}
      * @throws IOException {@inheritDoc}

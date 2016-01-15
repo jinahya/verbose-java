@@ -70,7 +70,7 @@ public class HexCodecImplTest extends AbstractHexCodecImplTest {
         final File encoded = File.createTempFile("hex", null);
         encoded.deleteOnExit();
         try (InputStream in = new FileInputStream(created)) {
-            try (OutputStream out = new HexEncodingStream(
+            try (OutputStream out = new HexEncoderStream(
                     new FileOutputStream(encoded), new HexEncoderImpl())) {
                 final long copied = IOUtils.copyLarge(in, out);
                 assertEquals(copied, created.length());
@@ -79,7 +79,7 @@ public class HexCodecImplTest extends AbstractHexCodecImplTest {
         }
         final File decoded = File.createTempFile("hex", null);
         decoded.deleteOnExit();
-        try (InputStream in = new HexDecodingStream(
+        try (InputStream in = new HexDecoderStream(
                 new FileInputStream(encoded), new HexDecoderImpl())) {
             try (OutputStream out = new FileOutputStream(decoded)) {
                 final long copied = IOUtils.copyLarge(in, out);

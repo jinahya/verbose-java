@@ -22,13 +22,15 @@ import java.nio.ByteBuffer;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HexDecoderDemo implements HexDecoder {
+class HexDecoderDemo implements HexDecoder {
 
     @Override
     public int decodeOctet(final ByteBuffer encoded) {
-        final String s = String.format("%c%c", (char) encoded.get(),
-                                       (char) encoded.get());
+        final String s = String.format(
+                "%c%c", (char) encoded.get(), (char) encoded.get());
         return Integer.parseInt(s, 16);
+//        encoded.position(encoded.position() + 2);
+//        return 0;
     }
 
 }

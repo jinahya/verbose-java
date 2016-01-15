@@ -31,6 +31,9 @@ public class SuccinctHelloWorld {
         System.out.printf("%s%n", "hello, world");
     }
 
+    /**
+     * private constructor.
+     */
     private SuccinctHelloWorld() {
         super();
     }

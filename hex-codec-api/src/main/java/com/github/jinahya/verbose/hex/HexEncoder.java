@@ -1,5 +1,6 @@
 package com.github.jinahya.verbose.hex;
 
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -16,28 +17,38 @@ public interface HexEncoder {
 
     /**
      * Encodes given octet and puts those encoded hex characters to specified
-     * byte buffer.
+     * byte buffer. Only lower 8 bits of given {@code octet} is encoded. A
+     * {@link BufferOverflowException} will be thrown if
+     * {@code encoded.remaining} is less than {@code 2}.
      *
      * @param decoded the octet to encode
-     * @param encoded the byte buffer to which encoded characters are put.
+     * @param encoded the byte buffer on which encoded characters are put.
      */
     void encodeOctet(int decoded, ByteBuffer encoded);
 
     /**
-     * Encodes all remaining bytes from given input byte buffer and puts results
-     * to specified output byte buffer.
+     * Encodes bytes from given input buffer and puts results to specified
+     * output byte buffer. This method continuously invokes
+     * {@link #encodeOctet(int, java.nio.ByteBuffer)} with {@code decoded.get()}
+     * and {@code encoded} as its arguments while {@code decoded.hasRemaining()}
+     * returns {@code true} and {@code encoded.remaining()} is greater than or
+     * equals to {@code 2}.
      *
-     * @param decoded the input byte buffer
-     * @param encoded the output byte buffer
+     * @param decoded the input buffer
+     * @param encoded the output buffer
+     * @return number of encoded bytes
      */
-    default void encode(final ByteBuffer decoded, final ByteBuffer encoded) {
-        while (decoded.hasRemaining()) { // <1>
+    default int encode(final ByteBuffer decoded, final ByteBuffer encoded) {
+        int count = 0;
+        while (decoded.hasRemaining() && (encoded.remaining() >= 2)) { // <1>
             encodeOctet(decoded.get(), encoded);
+            count++;
         }
+        return count;
     }
 
     /**
-     * Encodes all remaining bytes from given byte buffer and returns a byte
+     * Encodes all remaining bytes from given input buffer and returns a byte
      * buffer containing the result.
      *
      * @param decoded the byte buffer containing bytes to encode
@@ -45,9 +56,9 @@ public interface HexEncoder {
      */
     default ByteBuffer encode(final ByteBuffer decoded) {
         final ByteBuffer encoded // <1>
-                = ByteBuffer.allocate(decoded.remaining() * 2);
+                = ByteBuffer.allocate(decoded.remaining() << 1);
         encode(decoded, encoded);
-        encoded.flip();
+        encoded.position(0); // <2>
         return encoded;
     }
 
@@ -61,19 +72,21 @@ public interface HexEncoder {
      */
     default String encode(final String decoded, final Charset charset) {
         final byte[] decodedBytes = decoded.getBytes(charset); // <1>
-        final byte[] encodedBytes = new byte[decodedBytes.length << 1]; // <2>
-        encode(ByteBuffer.wrap(decodedBytes), ByteBuffer.wrap(encodedBytes));
-        return new String(encodedBytes, US_ASCII);
+        final byte[] encodedBytes = new byte[decodedBytes.length * 2]; // <2>
+        encode(ByteBuffer.wrap(decodedBytes), // <3>
+               ByteBuffer.wrap(encodedBytes));
+        return new String(encodedBytes, US_ASCII); // <4>
     }
 
     /**
-     * Encodes given string. The {@code encode(String)} method of
-     * {@code HexEncoder} class invokes
-     * {@link #encode(java.lang.String, java.nio.charset.Charset)} with given
-     * string and {@link StandardCharsets#UTF_8} and returns the result.
+     * Encodes given string. This method invokes
+     * {@link #encode(java.lang.String, java.nio.charset.Charset)} with the
+     * given string and {@link StandardCharsets#UTF_8} as its arguments and
+     * returns the result.
      *
      * @param decoded the string to encode
      * @return encoded string
+     * @see #encode(java.lang.String, java.nio.charset.Charset)
      */
     default String encode(final String decoded) {
         return encode(decoded, UTF_8);

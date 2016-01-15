@@ -15,7 +15,9 @@
  */
 package com.github.jinahya.verbose.hex;
 
-import static java.nio.charset.StandardCharsets.US_ASCII;
+import java.nio.ByteBuffer;
+import static java.util.concurrent.ThreadLocalRandom.current;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.testng.Assert.assertEquals;
@@ -26,15 +28,27 @@ import org.testng.annotations.Test;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HexDecoderDemoTest {
+public class HexEncoderTest {
+
+    private HexEncoder impl() {
+        return (d, e) -> e.position(e.position() + 2);
+    }
 
     @Test
-    public void decodeHelloWorld() {
-        final String created = "68656C6c6f2c20776F726c64";
-        final String decoded = new HexDecoderDemo().decode(created, US_ASCII);
-        assertEquals(decoded, "hello, world");
+    public void encodeBuffer() {
+        final int capacity = current().nextInt(128);
+        final ByteBuffer encoded = impl().encode(ByteBuffer.allocate(capacity));
+        assertEquals(encoded.remaining(), capacity << 1);
+        impl().encode(ByteBuffer.allocate(capacity),
+                      ByteBuffer.allocate(capacity << 1));
+    }
+
+    @Test
+    public void encodeString() {
+        final int count = current().nextInt(128);
+        final String decoded = RandomStringUtils.random(count);
+        final String encoded = impl().encode(decoded);
     }
 
     private transient final Logger logger = getLogger(getClass());
-
 }
