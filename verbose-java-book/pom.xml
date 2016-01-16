@@ -128,6 +128,11 @@
           </dependency>
           <dependency>
             <groupId>org.asciidoctor</groupId>
+            <artifactId>asciidoctorj-diagram</artifactId>
+            <version>1.3.1</version>
+          </dependency>
+          <dependency>
+            <groupId>org.asciidoctor</groupId>
             <artifactId>asciidoctorj-pdf</artifactId>
             <version>1.5.0-alpha.11</version>
           </dependency>

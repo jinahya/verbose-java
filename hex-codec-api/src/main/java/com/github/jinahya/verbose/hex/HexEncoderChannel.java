@@ -21,23 +21,31 @@ import java.nio.channels.Channel;
 import java.nio.channels.WritableByteChannel;
 
 /**
+ * A {@code WritableByteChannel} which encodes bytes to hex characters.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 public class HexEncoderChannel implements WritableByteChannel {
 
-    public HexEncoderChannel(
-            final WritableByteChannel channel,
-            final HexEncoder encoder,
-            final int capacity, final boolean direct) {
+    /**
+     * Creates a new instance on top of given channel.
+     *
+     * @param channel the channel to wrap.
+     * @param encoder the encoder for encoding bytes to hex characters
+     * @param capacity the capacity of intermediate buffer.
+     * @param direct the flag for direct allocation of the intermediate buffer.
+     */
+    public HexEncoderChannel(final WritableByteChannel channel,
+                             final HexEncoder encoder, final int capacity,
+                             final boolean direct) {
         super();
-        if (capacity < 2) {
+        if (capacity < 2) { // <1>
             throw new IllegalArgumentException(
                     "capacity(" + capacity + ") < 2");
         }
         this.channel = channel;
         this.encoder = encoder;
-        this.capacity = (capacity >> 1) << 1;
+        this.capacity = capacity;
         this.direct = direct;
     }
 
@@ -84,28 +92,36 @@ public class HexEncoderChannel implements WritableByteChannel {
     @Override
     public int write(final ByteBuffer src) throws IOException {
         if (buffer == null) { // <1>
-            buffer = direct ? ByteBuffer.allocateDirect(capacity)
+            buffer = direct
+                     ? ByteBuffer.allocateDirect(capacity)
                      : ByteBuffer.allocate(capacity);
         }
         int count = 0;
-        while (src.hasRemaining()) { // <1>
-            count += encoder.encode(src, buffer);
+        while (src.hasRemaining()) {
+            count += encoder.encode(src, buffer); // <2>
             buffer.flip();
             final int remaining = buffer.remaining();
-            final int written = channel.write(buffer);
+            final int written = channel.write(buffer); // <3>
             buffer.compact();
-            if (written < remaining) { // <2>
+            if (written < remaining) { // <4>
                 break;
             }
         }
-        for (buffer.flip(); buffer.hasRemaining();) { // <3>
+        for (buffer.flip(); buffer.hasRemaining();) { // <5>
             channel.write(buffer);
         }
+        buffer.compact();
         return count;
     }
 
+    /**
+     * The underlying channel to which encoded characters are written.
+     */
     protected WritableByteChannel channel;
 
+    /**
+     * The encoder for encoding bytes to characters.
+     */
     protected HexEncoder encoder;
 
     private final int capacity;

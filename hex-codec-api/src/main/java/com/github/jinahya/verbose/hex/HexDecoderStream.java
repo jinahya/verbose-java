@@ -29,87 +29,140 @@ import java.nio.ByteBuffer;
 public class HexDecoderStream extends FilterInputStream {
 
     /**
-     * Creates a new instance with given input stream and decoder.
+     * Creates a new instance on top of specified input stream.
      *
      * @param in the input stream
-     * @param decoder the decoder
+     * @param dec the decoder
      */
-    public HexDecoderStream(final InputStream in, final HexDecoder decoder) {
+    public HexDecoderStream(final InputStream in, final HexDecoder dec) {
         super(in);
-        this.decoder = decoder;
+        this.dec = dec;
     }
 
+    /**
+     * Reads the next byte of data from the input stream. The {@code read()}
+     * method of {@code HexDecoderStream} class reads two bytes from the
+     * underlying input stream and decodes them into a single byte using
+     * {@link #dec} and returns the result.
+     *
+     * @return the next byte of data, or -1 if the end of the stream is reached.
+     * @throws IOException if an I/O error occurs.
+     */
+    @Override
+    public int read() throws IOException {
+        if (buf == null) { // <1>
+            buf = ByteBuffer.allocate(2);
+        }
+        final int b1 = super.read(); // <2>
+        if (b1 == -1) {
+            return b1;
+        }
+        buf.put((byte) b1);
+        final int b2 = super.read(); // <3>
+        if (b2 == -1) {
+            throw new EOFException();
+        }
+        buf.put((byte) b2);
+        buf.flip();
+        final int b = dec.decodeOctet(buf); // <4>
+        buf.compact();
+        return b;
+    }
+
+    /**
+     * Reads up to {@code len} bytes of data from this input stream into an
+     * array of bytes. The {@code read(byte[], int, int)} method of
+     * {@code HexDecoderStream} class tries to read up to most {@code len} bytes
+     * via {@link #read()}.
+     *
+     * @param b the buffer into which the data is read.
+     * @param off the start offset in the destination array {@code b}
+     * @param len the maximum number of bytes read.
+     * @return the total number of bytes read into the buffer, or -1 if there is
+     * no more data because the end of the stream has been reached.
+     * @throws IOException if an I/O error occurs.
+     */
+    @Override
+    public final int read(final byte[] b, final int off, final int len)
+            throws IOException {
+        if (b == null) {
+            throw new NullPointerException();
+        }
+        if (off < 0 || len < 0 || len > b.length - off) {
+            throw new IndexOutOfBoundsException();
+        }
+        int count = 0;
+        for (; count < len; count++) {
+            final int read = read();
+            if (read == -1) { // <1>
+                if (count == 0) {
+                    return -1;
+                }
+                break;
+            }
+            b[off + count] = (byte) read;
+        }
+        return count;
+    }
+
+    /**
+     * Marks the current position in this input stream. The {@code mark(int)}
+     * method of {@code HexDecoderStream} class invokes
+     * {@link InputStream#mark(int)} on {@link #in} with doubled value of given
+     * {@code readLimit}.
+     *
+     * @param readlimit the maximum limit of bytes that can be read before the
+     * mark position becomes invalid.
+     */
     @Override
     public synchronized void mark(final int readlimit) {
+        final int reallimit = Integer.MAX_VALUE / 2; // <1>
+        if (readlimit > reallimit) {
+            throw new IllegalArgumentException(
+                    "readlimit(" + readlimit + ") > " + reallimit);
+        }
         super.mark(readlimit * 2);
     }
 
+    /**
+     * Returns an estimate of the number of bytes that can be read (or skipped
+     * over) from this input stream without blocking by the next invocation of a
+     * method for this input stream. The {@code available()} method of
+     * {@code HexDecoderStream} class invokes {@link InputStream#available()} on
+     * {@link #in} and returns the value divided by {@code 2}.
+     *
+     * @return an estimate of the number of bytes that can be read (or skipped
+     * over) from this input stream without blocking or {@code 0} when it
+     * reaches the end of the input stream.
+     * @throws IOException if an I/O error occurs.
+     */
     @Override
     public int available() throws IOException {
         return super.available() / 2;
     }
 
+    /**
+     * Skips over and discards n bytes of data from this input stream. The
+     * {@code skip(long)} method of {@code HexDecoderStream} class tries to read
+     * up to most {@code n} bytes using {@link #read()} utile an
+     * {@code end-of-stream} reached.
+     *
+     * @param n the number of bytes to be skipped.
+     * @return the actual number of bytes skipped.
+     * @throws IOException if the stream does not support seek, or if some other
+     * I/O error occurs.
+     */
     @Override
     public long skip(final long n) throws IOException {
         long count = 0L;
-        for (long i = 0; i < n; i++) {
-            final int r = read();
-            if (r == -1) {
-                break;
-            }
-        }
+        for (; count < n && read() != -1; count++);
         return count;
     }
 
-    @Override
-    public final int read(final byte[] b, final int off, final int len)
-            throws IOException {
-        int i;
-        for (i = 0; i < len; i++) {
-            final int r = read();
-            if (r == -1) {
-                if (i == 0) {
-                    return -1;
-                }
-                break;
-            }
-            b[off + i] = (byte) r;
-        }
-        return i;
-    }
-
     /**
-     * {@inheritDoc} The {@code read()} method of {@code HexDecoderStream} class
-     * read two byte from the underlying input stream and decodes them into a
-     * single octet using {@link #decoder} and returns the result.
-     *
-     * @return {@inheritDoc}
-     * @throws IOException {@inheritDoc}
+     * The decoder for decoding hex characters to bytes.
      */
-    @Override
-    public int read() throws IOException {
-        if (decoded == null) {
-            decoded = ByteBuffer.allocate(2);
-        }
-        decoded.position(0);
-        final int b1 = super.read(); // <1>
-        if (b1 == -1) {
-            return b1;
-        }
-        decoded.put((byte) b1);
-        final int b2 = super.read(); // <2>
-        if (b2 == -1) {
-            throw new EOFException();
-        }
-        decoded.put((byte) b2);
-        decoded.position(0);
-        return decoder.decodeOctet(decoded); // <3>
-    }
+    protected HexDecoder dec;
 
-    /**
-     * The encoder to encode two hex characters to a octet.
-     */
-    protected HexDecoder decoder;
-
-    private ByteBuffer decoded;
+    private ByteBuffer buf;
 }

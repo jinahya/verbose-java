@@ -16,19 +16,19 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public interface HexEncoder {
 
     /**
-     * Encodes given octet and puts those encoded hex characters to specified
-     * byte buffer. Only lower 8 bits of given {@code octet} is encoded. A
+     * Encodes given byte and puts two hex characters to specified byte buffer.
+     * Only lower 8 bits of given byte is used for encoding. A
      * {@link BufferOverflowException} will be thrown if
      * {@code encoded.remaining} is less than {@code 2}.
      *
-     * @param decoded the octet to encode
+     * @param decoded the byte to encode
      * @param encoded the byte buffer on which encoded characters are put.
      */
     void encodeOctet(int decoded, ByteBuffer encoded);
 
     /**
      * Encodes bytes from given input buffer and puts results to specified
-     * output byte buffer. This method continuously invokes
+     * output buffer. This method continuously invokes
      * {@link #encodeOctet(int, java.nio.ByteBuffer)} with {@code decoded.get()}
      * and {@code encoded} as its arguments while {@code decoded.hasRemaining()}
      * returns {@code true} and {@code encoded.remaining()} is greater than or
@@ -36,7 +36,7 @@ public interface HexEncoder {
      *
      * @param decoded the input buffer
      * @param encoded the output buffer
-     * @return number of encoded bytes
+     * @return number of bytes encoded from {@code decoded}.
      */
     default int encode(final ByteBuffer decoded, final ByteBuffer encoded) {
         int count = 0;
@@ -58,7 +58,7 @@ public interface HexEncoder {
         final ByteBuffer encoded // <1>
                 = ByteBuffer.allocate(decoded.remaining() << 1);
         encode(decoded, encoded);
-        encoded.position(0); // <2>
+        encoded.position(0);
         return encoded;
     }
 

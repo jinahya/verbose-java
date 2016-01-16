@@ -64,10 +64,10 @@ public interface HelloWorld {
 ----
     // 주어진 퍼버에 hello, world 바이트들을 담은 후 그 버퍼를 반환한다.
     // 버퍼의 위치(position)가 BYTES 만큼 증가된다.
-include::../../../../hello-world-api/src/main/java/com/github/jinahya/verbose/hello/HelloWorld.java[lines=66..82]
+include::../../../../hello-world-api/src/main/java/com/github/jinahya/verbose/hello/HelloWorld.java[lines=67..82]
 ----
 <1> `buffer` 인자가 `null` 이면 `NullPointerException` 을 던진다.
-<2> `buffer` 에 충분한 공간이 없으면 `IllegalArgumentException` 을 던진다.
+<2> `buffer` 에 충분한 공간이 없으면 `BufferOverflowException` 을 던진다.
 <3> `buffer` 가 내부적으로 배열을 사용한다면 `set(byte[], int)` 메서드를 사용하여 그 배열에 값을 기록한 후 버퍼의 위치(position)를 임의로 `BYTES` 만큼 증가시킨 후 반환하다.
 <4> 배열을 생성하고 `set(byte[], int)` 메서드를 이용해 값을 채운 다음 버퍼에 담은 후 반환한다.
 
@@ -133,7 +133,8 @@ include::../../../../hello-world-api/src/test/java/com/github/jinahya/verbose/he
 ----
     private HelloWorld impl() {
         return new HelloWorld() {
-            @Override public void set(final byte[] array, final int offset) {
+            @Override public void set(final byte[] array,
+                                      final int offset) {
                 // empty
             }
         }
@@ -189,7 +190,7 @@ TIP: 맨 마지막에 사용된 세미콜론(`;`)은 `return` 구문의 끝맺�
 include::../../../../hello-world-api/src/test/java/com/github/jinahya/verbose/hello/HelloWorldTest.java[lines=61..79]
 ----
 <1> `buffer` 값이 `null` 이면 `NullPointerException` 을 던지는지 확인한다.
-<2> `buffer` 에 충분한 공간이 없으면 `IllegalArgumentException` 을 던지는지 확인한다.
+<2> `buffer` 에 충분한 공간이 없으면 `BufferOverflowException` 을 던지는지 확인한다.
 <3> `byte[]` 를 사용하는 `buffer` 를 가지고 확인한다.
 <4> `byte[]` 를 사용하지 않는 `buffer` 를 가지고 확인한다.
 
@@ -629,7 +630,7 @@ public class HelloWorldDemo implements HelloWorld {
 ----
 ====
 
-`HelloWorld` 객체들은 주입받는 클래스를 정의하자.
+`HelloWorld` 객체들을 주입받는 클래스를 정의하자.
 
 [source,java]
 .HelloWorldInjectionTest.java
@@ -880,14 +881,14 @@ include::../../../../hello-world-app/src/main/java/com/github/jinahya/verbose/he
 ----
 <1> `HelloWorld` 객체를 적재한다.
 <2> 적재된 `HelloWorld` 객체의 `write(OutputStream)` 메서드에 `System.out` 을 전달한다.
-<3> 반환된 값(`System.out`)에 `println()`을 호출한다.
+<3> 반환된 값(`System.out`)에 `println()` 을 호출한다.
 
 다음과 같이 실행해 보자.
 [source,text]
 ----
 $ pwd
-/.../path/to/.../verbose-java
-$ mvn -q -pl hello-world-app compile exec:java
+/.../path/to/.../verbose-java/hello-world-app
+$ mvn -q compile exec:java
 hello, world
 $
 ----
@@ -929,7 +930,7 @@ $
 ----
 
 ===== class-path
-실행에 필요한 모듈들을 별도의 디렉토리에 복사한 후 `META-INF/MANIFEST.MF` 항목에 별도의 `Class-Path` 값을 추가하는 방식으로 생성되었다. 다음과 같이 실행해 볼 수 있다.
+실행에 필요한 모듈들을 별도의 디렉토리에 복사한 후 `META-INF/MANIFEST.MF` 항목에 별도의 `Class-Path` 값을 추가하는 방식으로 생성되었다. 다음과 같이 실행해 볼 수 있다.
 [source,text]
 ----
 $ pwd
@@ -950,9 +951,9 @@ $ ls -lF target
 ...
 $ unzip -p target/hello-world-app-<version>-class-path.jar META-INF/MANIFEST.MF
 ...
-Class-Path: hello-world-app-<version>-classpath.lib/hello-world-api-<v
-ersion>.jar hello-world-app-<version>-classpath.lib/hello-world-lib-<v
-ersion>.jar
+Class-Path: hello-world-app-<version>-class-path.lib/hello-world-api-<
+version>.jar hello-world-app-<version>-class-path.lib/hello-world-lib-
+<version>.jar
 ...
 $
 ----

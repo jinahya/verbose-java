@@ -28,40 +28,41 @@ import java.nio.ByteBuffer;
 public class HexEncoderStream extends FilterOutputStream {
 
     /**
-     * Creates a new instance.
+     * Creates a new instance on top of given output stream.
      *
-     * @param out the output stream for {@link #out}.
-     * @param encoder the encoder to use.
+     * @param out the output stream
+     * @param enc the encoder for {@link #enc}
      */
-    public HexEncoderStream(final OutputStream out, final HexEncoder encoder) {
+    public HexEncoderStream(final OutputStream out, final HexEncoder enc) {
         super(out);
-        this.encoder = encoder;
+        this.enc = enc;
     }
 
     /**
-     * {@inheritDoc} The {@code write(int)} method of {@code HexEncodingStream}
-     * class encode given byte using {@link #encoder} and write two bytes which
-     * each is a hex character to underlying output stream.
+     * Writes the specified byte to this output stream. The {@code write(int)}
+     * method of {@code HexEncoderStream} class encode given byte using
+     * {@link #enc} and write two bytes which each is a hex character to
+     * {@link #out}.
      *
-     * @param b {@inheritDoc}
-     * @throws IOException {@inheritDoc}
+     * @param b the byte
+     * @throws IOException if an I/O error occurs.
      */
     @Override
     public void write(final int b) throws IOException {
-        if (encoded == null) {
-            encoded = ByteBuffer.allocate(2);
+        if (buf == null) { // <1>
+            buf = ByteBuffer.allocate(2);
         }
-        encoded.position(0);
-        encoder.encodeOctet(b, encoded); // <1>
-        encoded.position(0);
-        super.write(encoded.get()); // <2>
-        super.write(encoded.get()); // <3>
+        enc.encodeOctet(b, buf); // <2>
+        buf.flip();
+        super.write(buf.get()); // <3>
+        super.write(buf.get()); // <3>
+        buf.compact();
     }
 
     /**
-     * The encoder to encode a octet to two hex characters.
+     * The encoder for encoding bytes to hex characters.
      */
-    protected HexEncoder encoder;
+    protected HexEncoder enc;
 
-    private ByteBuffer encoded;
+    private ByteBuffer buf;
 }

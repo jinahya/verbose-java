@@ -18,6 +18,7 @@ package com.github.jinahya.verbose.hello;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.WritableByteChannel;
@@ -61,9 +62,9 @@ public class HelloWorldTest {
     @Test
     public void put() {
         assertThrows(NullPointerException.class, () -> impl().put(null)); // <1>
-        assertThrows(IllegalArgumentException.class, // <2>
+        assertThrows(BufferOverflowException.class, // <2>
                      () -> impl().put(ByteBuffer.allocate(0)));
-        assertThrows(IllegalArgumentException.class, // <2>
+        assertThrows(BufferOverflowException.class, // <2>
                      () -> impl().put(ByteBuffer.allocateDirect(0)));
         { // <3>
             final ByteBuffer expected = ByteBuffer.allocate(HelloWorld.BYTES);

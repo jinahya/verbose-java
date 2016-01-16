@@ -35,9 +35,9 @@ public class HexEncoderImpl implements HexEncoder {
 
     @Override
     public void encodeOctet(final int decoded, final ByteBuffer encoded) {
-        final int high = (decoded >> 0b100) & 017; // <1>
-        final int low = decoded & 0xF; // <2>
-        encoded.put((byte) encodeNibble(high));
-        encoded.put((byte) encodeNibble(low));
+        final int upper = (decoded >> 0b100) & 017; // <1>
+        final int lower = decoded & 0xF; // <2>
+        encoded.put((byte) encodeNibble(upper));
+        encoded.put((byte) encodeNibble(lower));
     }
 }

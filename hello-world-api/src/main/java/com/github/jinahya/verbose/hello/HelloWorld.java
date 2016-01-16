@@ -17,6 +17,7 @@ package com.github.jinahya.verbose.hello;
 
 import java.io.IOException;
 import java.io.OutputStream;
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
 
@@ -57,7 +58,7 @@ public interface HelloWorld {
      * @param buffer the byte buffer
      * @return given byte buffer
      * @throws NullPointerException if {@code buffer} is {@code null}.
-     * @throws IllegalArgumentException if {@code buffer.remaining} is less than
+     * @throws BufferOverflowException if {@code buffer.remaining} is less than
      * {@value #BYTES}
      *
      * @see #set(byte[], int)
@@ -68,8 +69,7 @@ public interface HelloWorld {
             throw new NullPointerException("null buffer");
         }
         if (buffer.remaining() < BYTES) { // <2>
-            throw new IllegalArgumentException(
-                    "buffer.remaining(" + buffer.remaining() + ") < " + BYTES);
+            throw new BufferOverflowException();
         }
         if (buffer.hasArray()) { // <3>
             set(buffer.array(), buffer.arrayOffset() + buffer.position());
