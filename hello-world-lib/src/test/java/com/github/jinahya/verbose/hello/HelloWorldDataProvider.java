@@ -38,15 +38,15 @@ class HelloWorldDataProvider {
     static Object[][] provideOffsetNegative() {
         return new Object[][]{
             new Object[]{new byte[HelloWorld.BYTES], -1},
-            new Object[]{new byte[HelloWorld.BYTES - 1], -2},
-            new Object[]{new byte[HelloWorld.BYTES - 2], -3}
+            new Object[]{new byte[HelloWorld.BYTES], -2},
+            new Object[]{new byte[HelloWorld.BYTES], -3}
         };
     }
 
     @DataProvider
     static Iterator<Object[]> provideCapacityNotEnough() {
         return Arrays.asList(
-                new Object[]{new byte[HelloWorld.BYTES], 1},
+                new Object[]{new byte[HelloWorld.BYTES + 0], 1},
                 new Object[]{new byte[HelloWorld.BYTES + 1], 2},
                 new Object[]{new byte[HelloWorld.BYTES + 2], 3},
                 new Object[]{new byte[HelloWorld.BYTES + 3], 4}

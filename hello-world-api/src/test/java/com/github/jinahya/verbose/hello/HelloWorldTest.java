@@ -23,6 +23,7 @@ import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import java.nio.channels.WritableByteChannel;
 import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertSame;
 import static org.testng.Assert.assertThrows;
@@ -63,9 +64,8 @@ public class HelloWorldTest {
     public void put() {
         assertThrows(NullPointerException.class, () -> impl().put(null)); // <1>
         assertThrows(BufferOverflowException.class, // <2>
-                     () -> impl().put(ByteBuffer.allocate(0)));
-        assertThrows(BufferOverflowException.class, // <2>
-                     () -> impl().put(ByteBuffer.allocateDirect(0)));
+                     () -> impl().put(ByteBuffer.allocate(
+                             current().nextInt(HelloWorld.BYTES))));
         { // <3>
             final ByteBuffer expected = ByteBuffer.allocate(HelloWorld.BYTES);
             final ByteBuffer actual = impl().put(expected);

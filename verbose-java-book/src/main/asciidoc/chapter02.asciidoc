@@ -5,9 +5,12 @@ ________________________________________________________________________________
 컴퓨터는 0과 1밖에 모르는 바보다.
 ________________________________________________________________________________
 
-아직 저 '`바보`' 보다 더 똑똑한 사람을 만난적은 없지만 '`숫자`'밖에 모르는 컴퓨터와 '`문자`'를 사용하는 사람과의 사이에 종종 발생하는 문제점들을 해결해야 하는 경우가 있다. 본 장에서는 이 '`문자`'와 '`숫자`' 사이의 관계에 대해 살펴본다.
+[quote, 지은이]
+________________________________________________________________________________
+0과 1밖에 모르는 컴퓨터보다 똑똑한 사람을 만난 적은 없다.
+________________________________________________________________________________
 
-우선 자바의 자료형에 대해 간략하고 알아본 후 [http://tools.ietf.org/html/rfc4648#section-8[Base 16 Encoding]]과 [https://tools.ietf.org/html/rfc3986#section-2.1[Percent-Encoding]]에 대해 알아보자.
+본 장에서는 '`숫자`'밖에 모르는 컴퓨터와 '`문자`'를 사용하는 사람과의 사이에 종종 발생하는 문제점들을 해결해는 방법들을 살펴본다. 우선 자바의 자료형에 대해 간략하고 알아본 후 [http://tools.ietf.org/html/rfc4648#section-8[Base 16 Encoding(RFC 4648)]]과 [https://tools.ietf.org/html/rfc3986#section-2.1[Percent-Encoding (RFC 3986)]]에 대해 알아보자.
 
 === Types and Values
 
@@ -15,13 +18,13 @@ ________________________________________________________________________________
 자바의 `int` 형은 몇 비트인가요? `signed` 인가요? 아니면 `unsigned` 인가요? 표현할 수 있는 최소값과 최대값은 무엇인가요?
 ****
 
-위의 질문들에 대한 올바른 답을 아직 모른다면 [https://docs.oracle.com/javase/specs/jls/se8/html/jls-4.html[JSL 4. Types, Values, and Variables]] 항목을 꼭 읽어보도록 하자. 해당 항목을 원시형을 중심으로 요약하자면 다음과 같다.
+위의 질문들에 대한 올바른 답을 아직 모른다면 [https://docs.oracle.com/javase/specs/jls/se8/html/jls-4.html[JSL 4. Types, Values, and Variables]] 항목을 꼭 읽어보도록 하자. 원시형을 중심으로 해당 항몬을 요약하자면 다음과 같다.
 
 - 자바 프로그래밍 언어에는 두가지 데이터 형이 있다. 하나는 원시형(primitive types)이고 또 다른 하나는 참조형(reference types)이다.
 - 원시형(primitive types)에는 `boolean` 과 수치형(numeric types)이 있다.
 - 수치형(numeric types)에는 정수형(integral types)과 부동소수점형(floating-point types)이 있다.
 - 정수형(integral types)에는 `byte`, `short`, `int`, `long`, 그리고 `char` 가 이다.
-- 부동소수점형(floating-point types)에는 `float`(32bit IEEE 754)과 `double`(64-bit IEEE 754)이 있다.
+- 부동소수점형(floating-point types)에는 `float` 과 `double` 이 있다.
 
 [options="header"]
 .Primitive types
@@ -66,7 +69,7 @@ MIN  -4  100 \
 
 보통의 (거의 모든) 컴퓨터들은 자료를 저장할 때 여덟개의 비트로 구성된 최소 단위로 나누어 저장한다. 우리가 일반적으로 사용하는 모든 파일들(텍스트, 이미지, 오디오, 동영상 등)이 모두 이 `octet` 이라고 불리는 숫자로 나누어 저장된다. `'a'` 라는 문자는 `01100001` 로, `'홍'` 이라는 문자는 (`UTF-8` 로 인코딩 되었을 때) `111011011 00110011 0001101` 로 저장된다. 아래 표에 여덟개의 비트로 표현할 수 있는 몇몇 값들을 10진법, 8진법, 2진법, 그리고 자바의 `byte` 값으로 표현하였다.
 
-[cols=">1,>1,>2,>1,<2",frame="top",options="header"]
+[cols=">1,>1,>1,>1,<2",frame="top",options="header"]
 .8-bit values
 |===============================================
 |base10 |base8|base2     |byte  |notes
@@ -182,7 +185,7 @@ public interface HexEncoder {
 ----
     // decoded 버퍼의 바이트들을 인코딩하고 그 결과를 encoded 버퍼에 담는다.
     // decoded 버퍼에서 소비된 바이트의 개수를 반환한다.
-include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/HexEncoder.java[lines=41..48]
+include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/HexEncoder.java[lines=40..47]
 ----
 <1> `decoded` 버퍼에 읽을 바이트가 있고 `encoded` 버버에 최소한 두 개의 바이트를 담을 수 있는 동안 `encode(int, ByteBuffer)` 를 호출한다.
 
@@ -190,7 +193,7 @@ include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/
 .HexEncoder.java#encode(ByteBuffer)
 ----
     // encoded 버퍼의 모든 바이트들을 인코딩하고 결과를 새 버퍼에 담아 반환한다.
-include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/HexEncoder.java[lines=57..63]
+include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/HexEncoder.java[lines=56..62]
 ----
 <1> `decoded` 버퍼에서 읽을 수 있는 바이트 개수의 두 배만큼의 버퍼를 생생한 후 `encode(ByteBuffer, ByteBuffer)` 메서드를 호출한다.
 
@@ -198,11 +201,11 @@ include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/
 .HexEncoder.java#encode(String, Charset)
 ----
     // 주어진 문자열(encoded)을 코딩하고 결과를 문자열로 반환한다.
-include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/HexEncoder.java[lines=73..79]
+include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/HexEncoder.java[lines=72..78]
 ----
 <1> `charset` 을 이용해 주어진 문자열에서 입력 배열을 생성한다.
 <2> 두배의 길이를 갖는 출력 배열을 생성한다.
-<3> 이 두 배열을 감싸는 버퍼들을 생성하고 `encoded(ByteBuffer, ByteBuffer)` 를 호출한다.
+<3> 이 두 배열을 감싸는 버퍼들을 이용해 `encoded(ByteBuffer, ByteBuffer)` 를 호출한다.
 <4> 출력 배열로부터 문자열을 생성하고 반환한다.
 
 ==== HexDecoder.java
@@ -213,9 +216,10 @@ include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/
 .HexDecoder.java
 ----
 @FunctionalInterface
-public interface HexEncoder {
+public interface HexDecoder {
 
     // 버퍼에서 hex 문자 두개를 디코딩하고 그 결과값(octet)을 반환한다.
+    // 버퍼가 두개 이하의 바이트를 담고 있으면 BufferUnderflowException 을 던진다.
     int decodeOctet(ByteBuffer encoded);
 }
 ----
@@ -505,6 +509,25 @@ default void decode(final byte[] inarr, final int inoff, final int inlen,
     // inlen 이 홀수이면 유효한 값일까?
     // outarr 의 outoff 부터 최소한 몇 개의 배열공간이 필요할까?
 }
+----
+. `HexEncoderImplTest` 에 메서드들 하나 추가 하고 클래스 파일의 magic 바이트를 출력해 보자.
++
+[source,java]
+----
+    @Test
+    public void cafebaby() throws IOException {
+        final Class<?> type = getClass();
+        final String name = type.getSimpleName() + ".class";
+        try (DataInputStream input
+                = new DataInputStream(type.getResourceAsStream(name))) {
+            final byte[] decodedBytes = new byte[4];
+            input.readFully(decodedBytes);
+            final byte[] encodedBytes = new byte[decodedBytes.length << 1];
+            new HexEncoderImpl().encode(ByteBuffer.wrap(decodedBytes),
+                                        ByteBuffer.wrap(encodedBytes));
+            logger.info("magic: {}", new String(encodedBytes, US_ASCII));
+        }
+    }
 ----
 
 === percent-codec-api

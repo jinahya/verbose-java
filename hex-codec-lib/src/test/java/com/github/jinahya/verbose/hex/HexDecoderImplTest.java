@@ -29,7 +29,7 @@ public class HexDecoderImplTest {
 
     @Test
     public void decodeAndCompareToRFC4648TestVectors() {
-        TestVectors.acceptRFC4648ByteArrays((d, e) -> {
+        Rfc4648TestVectors.base16Bytes((d, e) -> {
             final ByteBuffer decoded
                     = new HexDecoderImpl().decode(ByteBuffer.wrap(e));
             assertEquals(decoded, ByteBuffer.wrap(d));

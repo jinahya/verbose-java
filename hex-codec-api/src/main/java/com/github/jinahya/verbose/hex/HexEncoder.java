@@ -19,7 +19,7 @@ public interface HexEncoder {
      * Encodes given byte and puts two hex characters to specified byte buffer.
      * Only lower 8 bits of given byte is used for encoding. A
      * {@link BufferOverflowException} will be thrown if
-     * {@code encoded.remaining} is less than {@code 2}.
+     * {@code encoded.remaining()} is less than {@code 2}.
      *
      * @param decoded the byte to encode
      * @param encoded the byte buffer on which encoded characters are put.
@@ -30,9 +30,8 @@ public interface HexEncoder {
      * Encodes bytes from given input buffer and puts results to specified
      * output buffer. This method continuously invokes
      * {@link #encodeOctet(int, java.nio.ByteBuffer)} with {@code decoded.get()}
-     * and {@code encoded} as its arguments while {@code decoded.hasRemaining()}
-     * returns {@code true} and {@code encoded.remaining()} is greater than or
-     * equals to {@code 2}.
+     * and {@code encoded} as its arguments while {@code decoded} has remaining
+     * and {@code encoded} has {@code 2} or more remaining.
      *
      * @param decoded the input buffer
      * @param encoded the output buffer

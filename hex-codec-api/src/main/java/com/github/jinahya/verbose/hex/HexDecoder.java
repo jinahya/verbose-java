@@ -8,7 +8,7 @@ import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
- * And interface for hex decoding.
+ * An interface for hex decoding.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
@@ -29,8 +29,9 @@ public interface HexDecoder {
      * Decodes bytes from given input buffer and put results to specified output
      * buffer. This method continuously invokes
      * {@link #decodeOctet(java.nio.ByteBuffer)} with {@code encoded} as its
-     * arguments while {@code encoded.remaining()} is greater than or equals to
-     * {@code 2} and {@code decoded.hasRemaining()} returns {@code true}.
+     * arguments and put the result to {@code decoced} while
+     * {@code encoded.remaining()} is greater than or equals to {@code 2} and
+     * {@code decoded.hasRemaining()} returns {@code true}.
      *
      * @param encoded the input buffer
      * @param decoded the output buffer

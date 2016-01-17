@@ -16,11 +16,18 @@
 package com.github.jinahya.verbose.hello;
 
 /**
+ * An implmentation of {@link HelloWorld}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 public class HelloWorldImpl implements HelloWorld {
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param array {@inheritDoc}
+     * @param offset {@inheritDoc}
+     */
     @Override
     public void set(final byte[] array, int offset) {
         if (array == null) {
