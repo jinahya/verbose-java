@@ -2,7 +2,6 @@ package com.github.jinahya.verbose.percent;
 
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
-import java.nio.InvalidMarkException;
 import java.nio.charset.Charset;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -12,10 +11,14 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
+@FunctionalInterface
 public interface PercentEncoder {
 
     /**
-     * Encodes given octet and put encoded characters to specified byte buffer.
+     * Encodes given byte and put encoded characters to specified byte buffer. A
+     * caution should be taken that this method may lazily throw a
+     * {@code BufferOverflowException} while some bytes already have been
+     * provided to specified output buffer.
      *
      * @param decoded the octet to encode
      * @param encoded the byte buffer to which encoded characters are put.
@@ -23,51 +26,35 @@ public interface PercentEncoder {
     void encodeOctet(int decoded, ByteBuffer encoded);
 
     /**
-     * Encodes all remaining bytes from given input buffer and put result to
+     * Encodes bytes in given input buffer and put encoded characters to
      * specified output buffer.
      *
-     * @param decoded the input byte buffer
-     * @param encoded the output byte buffer
+     * @param decoded the input buffer
+     * @param encoded the output buffer
      * @return number of bytes encoded
      */
     default int encode(final ByteBuffer decoded, final ByteBuffer encoded) {
         int count = 0;
-        Integer mark = null; // <1>
-        {
-            final int position = encoded.position();
-            try {
-                encoded.reset();
-                mark = encoded.position();
-            } catch (final InvalidMarkException ime) {
-            }
-            encoded.position(position);
-        }
         while (decoded.hasRemaining()) {
-            encoded.mark();
+            final int position = encoded.position();
             try {
                 encodeOctet(decoded.get(), encoded);
                 count++;
             } catch (final BufferOverflowException boe) {
                 decoded.position(decoded.position() - 1);
-                encoded.reset();
+                encoded.position(position);
                 break;
             }
-        }
-        if (mark != null) { // <2>
-            final int position = encoded.position();
-            encoded.position(mark);
-            encoded.mark();
-            encoded.position(position);
         }
         return count;
     }
 
     /**
-     * Encodes all remaining bytes of given input buffer and returns a byte
-     * buffer containing the result.
+     * Encodes bytes in given buffer and returns a new byte buffer containing
+     * the result.
      *
-     * @param decoded the input byte buffer
-     * @return a new byte buffer containing encoded bytes.
+     * @param decoded the buffer containing bytes to encode
+     * @return a new byte buffer containing encoded characters.
      */
     default ByteBuffer encode(final ByteBuffer decoded) {
         final ByteBuffer encoded = ByteBuffer.allocate(decoded.remaining() * 3);
@@ -77,11 +64,12 @@ public interface PercentEncoder {
     }
 
     /**
-     * Encodes given string using specified character set to obtain the bytes.
+     * Encodes given string using specified character set to obtain a byte
+     * array.
      *
      * @param decoded the string to encode
-     * @param charset the character set to encode the input string to byte
-     * array.
+     * @param charset the character set to obtain a byte array from given
+     * string.
      *
      * @return encoded String
      */

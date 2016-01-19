@@ -64,7 +64,6 @@
     <java.secure.socket.extension.classes>${java.home}/lib/jsse.jar</java.secure.socket.extension.classes>
     <github.site.noJekyll>true</github.site.noJekyll>
     <com.google.dagger.version>2.0.2</com.google.dagger.version>
-    <com.google.http-client.version>1.21.0</com.google.http-client.version>
     <com.squareup.dagger.version>1.2.2</com.squareup.dagger.version>
     <org.jacocco.version>	0.7.5.201505241946</org.jacocco.version>
     <org.glassfish.hk2.version>2.5.0-b01</org.glassfish.hk2.version>
@@ -83,11 +82,6 @@
         <groupId>com.google.dagger</groupId>
         <artifactId>dagger-compiler</artifactId>
         <version>${com.google.dagger.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.google.inject</groupId>
-        <artifactId>guice</artifactId>
-        <version>4.0</version>
       </dependency>
       <dependency>
         <groupId>com.squareup.dagger</groupId>
@@ -134,9 +128,15 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>com.google.inject</groupId>
+      <artifactId>guice</artifactId>
+      <version>4.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>com.google.http-client</groupId>
       <artifactId>google-http-client</artifactId>
-      <version>${com.google.http-client.version}</version>
+      <version>1.21.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>

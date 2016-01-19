@@ -29,7 +29,7 @@ class PercentDecoderDemo implements PercentDecoder {
     /**
      * {@inheritDoc} The {@code decodeOctet(ByteBuffer)} method of
      * {@code PercentDecoderDemo} class tries to increment
-     * {@code encoded.posotion} by {@code 1} or {@code 3} and throws an instance
+     * {@code encoded.position} by {@code 1} or {@code 3} and throws an instance
      * of {@code BufferUnderflowException} if failed.
      *
      * @param encoded {@inheritDoc}
