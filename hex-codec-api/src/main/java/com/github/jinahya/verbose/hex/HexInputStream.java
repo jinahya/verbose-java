@@ -32,7 +32,7 @@ public class HexInputStream extends FilterInputStream {
      * Creates a new instance on top of specified input stream.
      *
      * @param in the input stream
-     * @param dec the decoder
+     * @param dec the decoder for decoding hex characters
      */
     public HexInputStream(final InputStream in, final HexDecoder dec) {
         super(in);
@@ -108,20 +108,15 @@ public class HexInputStream extends FilterInputStream {
     /**
      * Marks the current position in this input stream. The {@code mark(int)}
      * method of {@code HexInputStream} class invokes
-     * {@link InputStream#mark(int)} on {@link #in} with doubled value of given
-     * {@code readLimit}.
+     * {@link FilterInputStream#mark(int)} with doubled value of given
+     * {@code readlimit}.
      *
      * @param readlimit the maximum limit of bytes that can be read before the
      * mark position becomes invalid.
      */
     @Override
     public synchronized void mark(final int readlimit) {
-        final int reallimit = Integer.MAX_VALUE >> 1; // <1>
-        if (readlimit > reallimit) {
-            throw new IllegalArgumentException(
-                    "readlimit(" + readlimit + ") > " + reallimit);
-        }
-        super.mark(readlimit * 2);
+        super.mark(readlimit * 2); // <1>
     }
 
     /**
@@ -155,9 +150,9 @@ public class HexInputStream extends FilterInputStream {
     @Override
     public long skip(final long n) throws IOException {
         long skipped = in.skip((n >> 1) << 1); // <1>
-        if ((skipped & 1) == 1) { // <2>
+        if ((skipped & 1L) == 1L) { // <2>
             if (in.read() == -1) {
-                throw new EOFException();
+                throw new EOFException(); // unexpected end-of-stream
             }
             skipped++;
         }

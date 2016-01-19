@@ -18,7 +18,6 @@ package com.github.jinahya.verbose.hex;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channel;
-import java.nio.channels.FileChannel;
 import java.nio.channels.WritableByteChannel;
 
 /**
@@ -28,55 +27,11 @@ import java.nio.channels.WritableByteChannel;
  */
 public class WritableHexChannel implements WritableByteChannel {
 
-    public static WritableHexChannel newInstance(
-            final FileChannel channel, final HexEncoder encoder,
-            final int capacity, final boolean direct, final boolean metaData)
-            throws IOException {
-        return new WritableHexChannel(channel, encoder, capacity, direct) {
-            @Override
-            public void close() throws IOException {
-                ((FileChannel) channel).force(metaData);
-                super.close();
-            }
-        };
-    }
-
-//    public static WritableHexChannel open(
-//            final Path path, final HexEncoder encoder, final int capacity,
-//            final boolean direct, final boolean metaData,
-//            final OpenOption... options)
-//            throws IOException {
-//        return new WritableHexChannel(
-//                FileChannel.open(path, options), encoder, capacity, direct) {
-//            @Override
-//            public void close() throws IOException {
-//                ((FileChannel) channel).force(metaData);
-//                super.close();
-//            }
-//        };
-//    }
-//
-//    public static WritableHexChannel open(
-//            final Path path, final HexEncoder encoder, final int capacity,
-//            final boolean direct, final boolean metaData,
-//            final Set<? extends OpenOption> options,
-//            final FileAttribute<?>... attrs)
-//            throws IOException {
-//        return new WritableHexChannel(
-//                FileChannel.open(path, options, attrs), encoder, capacity,
-//                direct) {
-//            @Override
-//            public void close() throws IOException {
-//                ((FileChannel) channel).force(metaData);
-//                super.close();
-//            }
-//        };
-//    }
     /**
      * Creates a new instance on top of given channel.
      *
      * @param channel the channel to wrap.
-     * @param encoder the encoder for encoding bytes to hex characters
+     * @param encoder the encoder for encoding bytes
      * @param capacity the capacity of intermediate buffer.
      * @param direct the flag for direct allocation of the intermediate buffer.
      */
@@ -97,16 +52,12 @@ public class WritableHexChannel implements WritableByteChannel {
     /**
      * Tells whether or not this channel is open. The {@code isOpen()} method of
      * {@code WritableHexChannel} class invokes {@link Channel#isOpen()} on
-     * {@link #channel} and returns the result. An {@code IllegalStateException}
-     * will be thrown if {@link #channel} is {@code null}.
+     * {@link #channel} and returns the result.
      *
      * @return {@code true} if, and only if, the {@link #channel} is open
      */
     @Override
     public boolean isOpen() {
-        if (channel == null) {
-            throw new IllegalStateException("channel is currently null");
-        }
         return channel.isOpen();
     }
 
@@ -128,12 +79,12 @@ public class WritableHexChannel implements WritableByteChannel {
 
     /**
      * Writes a sequence of bytes to this channel from the given buffer. The
-     * {@code write(ByteBuffer)} method of {@code WritableHexChannel} encodes
-     * given buffer using {@link #encoder} and writes the result to
+     * {@code write(ByteBuffer)} method of {@code WritableHexChannel} class
+     * encodes given buffer using {@link #encoder} and writes the result to
      * {@link #channel}.
      *
      * @param src The buffer from which bytes are to be retrieved
-     * @return The number of bytes written, possibly zero
+     * @return The number of bytes consumed from the buffer, possibly zero
      * @throws IOException If some other I/O error occurs
      */
     @Override
@@ -162,12 +113,12 @@ public class WritableHexChannel implements WritableByteChannel {
     }
 
     /**
-     * The channel for writing characters.
+     * The underlying channel which encoded bytes are written to.
      */
     protected WritableByteChannel channel;
 
     /**
-     * The encoder for encoding bytes to characters.
+     * The encoder for encoding bytes.
      */
     protected HexEncoder encoder;
 

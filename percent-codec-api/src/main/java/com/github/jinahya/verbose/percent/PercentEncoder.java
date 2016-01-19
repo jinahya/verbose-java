@@ -1,6 +1,8 @@
 package com.github.jinahya.verbose.percent;
 
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
+import java.nio.InvalidMarkException;
 import java.nio.charset.Charset;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -26,11 +28,38 @@ public interface PercentEncoder {
      *
      * @param decoded the input byte buffer
      * @param encoded the output byte buffer
+     * @return number of bytes encoded
      */
-    default void encode(final ByteBuffer decoded, final ByteBuffer encoded) {
-        while (decoded.hasRemaining()) {
-            encodeOctet(decoded.get(), encoded);
+    default int encode(final ByteBuffer decoded, final ByteBuffer encoded) {
+        int count = 0;
+        Integer mark = null; // <1>
+        {
+            final int position = encoded.position();
+            try {
+                encoded.reset();
+                mark = encoded.position();
+            } catch (final InvalidMarkException ime) {
+            }
+            encoded.position(position);
         }
+        while (decoded.hasRemaining()) {
+            encoded.mark();
+            try {
+                encodeOctet(decoded.get(), encoded);
+                count++;
+            } catch (final BufferOverflowException boe) {
+                decoded.position(decoded.position() - 1);
+                encoded.reset();
+                break;
+            }
+        }
+        if (mark != null) { // <2>
+            final int position = encoded.position();
+            encoded.position(mark);
+            encoded.mark();
+            encoded.position(position);
+        }
+        return count;
     }
 
     /**

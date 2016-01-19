@@ -125,10 +125,16 @@ public class HexCodecImplTest {
         encodedPath.toFile().deleteOnExit();
         try (FileChannel readable = FileChannel.open(
                 createdPath, StandardOpenOption.READ)) {
-            try (WritableHexChannel writable = WritableHexChannel.newInstance(
+            try (WritableHexChannel writable = new WritableHexChannel(
                     FileChannel.open(encodedPath, StandardOpenOption.WRITE),
                     new HexEncoderImpl(), current().nextInt(2, 128),
-                    current().nextBoolean(), false)) {
+                    current().nextBoolean()) {
+                @Override
+                public void close() throws IOException {
+                    ((FileChannel) channel).force(false);
+                    super.close();
+                }
+            }) {
                 final long copied = copy(readable, writable);
                 assertEquals(copied, Files.size(createdPath));
             }

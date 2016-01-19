@@ -15,25 +15,33 @@
  */
 package com.github.jinahya.verbose.percent;
 
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
-import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.util.concurrent.ThreadLocalRandom.current;
 
 /**
+ * A demonstrative implementation.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class PercentEncoderDemo implements PercentEncoder {
+class PercentEncoderDemo implements PercentEncoder {
 
+    /**
+     * {@inheritDoc} The {@code encodedOctet(int, ByteBuffer)} method of
+     * {@code PercentEncodeDemo} class tries to increment the
+     * {@code encoded.position} by {@code 1} or {@code 3} and throws an instance
+     * of {@code BufferOverflowException} if failed.
+     *
+     * @param decoded {@inheritDoc}
+     * @param encoded {@inheritDoc}
+     */
     @Override
     public void encodeOctet(final int decoded, final ByteBuffer encoded) {
-        if ((decoded >= 0x30 && decoded <= 0x39)
-            || (decoded >= 0x41 && decoded <= 0x5A)
-            || (decoded >= 0x61 && decoded <= 0x7A) || decoded == 0x2D
-            || decoded == 0x5F || decoded == 0x2E || decoded == 0x7E) {
-            encoded.put((byte) decoded);
-            return;
+        try {
+            encoded.position(
+                    encoded.position() + (current().nextBoolean() ? 1 : 3));
+        } catch (final IllegalArgumentException iae) {
+            throw new BufferOverflowException();
         }
-        encoded.put((byte) 0x25);
-        encoded.put(String.format("%02X", decoded & 0xFF).getBytes(US_ASCII));
     }
 }

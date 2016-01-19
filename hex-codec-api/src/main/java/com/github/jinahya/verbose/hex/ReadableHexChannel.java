@@ -46,23 +46,19 @@ public class ReadableHexChannel implements ReadableByteChannel {
         }
         this.channel = channel;
         this.decoder = decoder;
-        this.capacity = (capacity >> 1) << 1;
+        this.capacity = capacity;
         this.direct = direct;
     }
 
     /**
      * Tells whether or not this channel is open. The {@code isOpen()} method of
      * {@code WritableHexChannel} class invokes {@link Channel#isOpen()} on
-     * {@link #channel} and returns the result. An {@code IllegalStateException}
-     * will be thrown if {@link #channel} is {@code null}.
+     * {@link #channel} and returns the result.
      *
      * @return {@code true} if, and only if, the {@link #channel} is open
      */
     @Override
     public boolean isOpen() {
-        if (channel == null) {
-            throw new IllegalStateException("channel is currently null");
-        }
         return channel.isOpen();
     }
 
@@ -99,8 +95,8 @@ public class ReadableHexChannel implements ReadableByteChannel {
         int count = 0;
         while (dst.hasRemaining()) {
             final int max = dst.remaining() * 2;
-            if (buffer.position() + buffer.remaining() > max) { // <1>
-                buffer.limit(max - buffer.position());
+            if (buffer.limit() > max) { // <1>
+                buffer.limit(max);
             }
             final int remaining = buffer.remaining();
             final int read = channel.read(buffer);
@@ -132,7 +128,7 @@ public class ReadableHexChannel implements ReadableByteChannel {
     }
 
     /**
-     * The channel for reading hex characters.
+     * The underlying channel which encoded bytes are read from.
      */
     protected ReadableByteChannel channel;
 

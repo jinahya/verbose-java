@@ -67,7 +67,7 @@ MIN  -4  100 \
 
 === hex-codec-api
 
-보통의 (거의 모든) 컴퓨터들은 자료를 저장할 때 여덟개의 비트로 구성된 최소 단위로 나누어 저장한다. 우리가 일반적으로 사용하는 모든 파일들(텍스트, 이미지, 오디오, 동영상 등)이 모두 이 `octet` 이라고 불리는 숫자들로 나뉘어 저장된다. 'a' 라는 문자는 (거의 모든 경우에) `01100001` 로, '홍' 이라는 문자는 (`UTF-8` 로 인코딩 되었을 때) `111011011 00110011 0001101` 로 저장된다. 아래 표에 여덟개의 비트로 표현할 수 있는 몇몇 값들을 10진법, 8진법, 2진법, 그리고 자바의 `byte` 값으로 표현하였다.
+거의 모든 컴퓨터들은 자료를 저장할 때, `octet` 으로 불리는, 여덟개의 비트로 구성된 최소 단위로 나누어 저장한다. 'a' 라는 문자는 (거의 모든 경우에) `01100001` 로, '홍' 이라는 문자는 (`UTF-8` 로 인코딩 되었을 때) `111011011 00110011 0001101` 로 저장된다. 아래 표에 여덟개의 비트로 표현할 수 있는 몇몇 값들을 10진법, 8진법, 2진법, 그리고 자바의 `byte` 값으로 표현하였다.
 
 [cols=">1,>1,>1,>1,<2",frame="top",options="header"]
 .8-bit values
@@ -110,7 +110,7 @@ upper  H H H H
 lower          L L L L
 ----
 
-그리고 (네 개의 비트로 구성된) 각 그룹의 값을 아래 표에 정의된 열 여섯개(`2^4^`)의 문자 중 하나로 변경한다.
+그리고 (네 개의 비트로 구성된) 각 그룹의 값(`0` ~ `15`)을 아래 표에 정의된 열 여섯개(`2^4^`)의 문자 중 하나로 변경한다.
 
 [cols=">, >, >, >", options="header"]
 .hexadecimal encoding/decoding
@@ -134,7 +134,7 @@ lower          L L L L
 |        `1111`|   `15 (0xF)`|            `'F'`|  `70 (0x46)`
 |============================================================
 
-NOTE: `10` 부터 `15` 까지의 숫자를 소문자(`'a'` 부터 `'f'`)로 변환해도 된다.
+NOTE: `10` 부터 `15` 까지의 숫자를 소문자(`'a'` 부터 `'f'` 까지)로 변환해도 된다.
 
 아래는 `hello, world` 가 `base16` 으로 인코딩될 때 적용되는 방식을 보여준다.
 
@@ -442,15 +442,33 @@ include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/
 
 ==== ReadableHexChannel.java
 
-`HexDecoder` 인터페이스를 이용하여 `read(ByteBuffer)` 메서드에 전달된 버퍼에 디코딩된 바이트들을 저장하는 채널이다. 생성자와 `isOpen()`, `close()` 등의 메서드는 `WritableHexChannel` 과 동일한 방식으로 구현되었다. 아래는 `read(ByteBufffer)` 메서드가 구현된 모습니다.
+`HexDecoder` 인터페이스를 이용하여 `read(ByteBuffer)` 메서드에 전달된 버퍼에 디코딩된 바이트들을 저장하는 채널이다. 생성자와 `isOpen()`, `close()` 등의 메서드는 `WritableHexChannel` 과 동일한 방식으로 구현되었다. 아래는 `read(ByteBufffer)` 메서드의 내용이다.
+
+
+[ditaa,asciidoctor-diagram-process]
+....
+                   +-------------+
+                   | Asciidoctor |-------+
+                   |   diagram   |       |
+                   +-------------+       | PNG out
+                       ^                 |
+                       | ditaa in        |
+                       |                 v
+ +--------+   +--------+----+    /---------------\
+ |        | --+ Asciidoctor +--> |               |
+ |  Text  |   +-------------+    |   Beautiful   |
+ |Document|   |   !magic!   |    |    Output     |
+ |     {d}|   |             |    |               |
+ +---+----+   +-------------+    \---------------/
+     :                                   ^
+     |          Lots of work             |
+     +-----------------------------------+
+....
 
 [source,java]
 .ReadableHexChannel.java#read(ByteBuffer)
 ----
-public class ReadableHexChannel implements ReadableByteChannel {
-
-include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/ReadableHexChannel.java[lines=91..124]
-}
+include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/ReadableHexChannel.java[lines=93..132]
 ----
 
 === hex-codec-lib

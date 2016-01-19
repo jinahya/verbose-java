@@ -15,22 +15,34 @@
  */
 package com.github.jinahya.verbose.percent;
 
+import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
+import static java.util.concurrent.ThreadLocalRandom.current;
 
 /**
+ * A demonstrative implementation.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class PercentDecoderDemo implements PercentDecoder {
+class PercentDecoderDemo implements PercentDecoder {
 
+    /**
+     * {@inheritDoc} The {@code decodeOctet(ByteBuffer)} method of
+     * {@code PercentDecoderDemo} class tries to increment
+     * {@code encoded.posotion} by {@code 1} or {@code 3} and throws an instance
+     * of {@code BufferUnderflowException} if failed.
+     *
+     * @param encoded {@inheritDoc}
+     * @return {@code 0}
+     */
     @Override
     public int decodeOctet(final ByteBuffer encoded) {
-        final byte e = encoded.get();
-        if (e == 0x25) {
-            final String string = String.format(
-                    "%c%c", (char) encoded.get(), (char) encoded.get());
-            return Integer.parseInt(string, 16);
+        try {
+            encoded.position(
+                    encoded.position() + (current().nextBoolean() ? 1 : 3));
+        } catch (final IllegalArgumentException iae) {
+            throw new BufferUnderflowException();
         }
-        return e;
+        return 0;
     }
 }

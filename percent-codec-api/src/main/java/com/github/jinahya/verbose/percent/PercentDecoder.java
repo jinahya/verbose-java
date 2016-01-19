@@ -1,6 +1,8 @@
 package com.github.jinahya.verbose.percent;
 
+import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
+import java.nio.InvalidMarkException;
 import java.nio.charset.Charset;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -13,17 +15,40 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public interface PercentDecoder {
 
     /**
-     * Decodes characters for a single octet from given byte buffer.
+     * Decodes characters in given buffer and returns a decoded byte.
      *
      * @param encoded the byte buffer
-     * @return decoded octet
+     * @return decoded byte
      */
     int decodeOctet(ByteBuffer encoded);
 
-    default void decode(final ByteBuffer encoded, final ByteBuffer decoded) {
-        while (encoded.hasRemaining()) {
-            decoded.put((byte) decodeOctet(encoded));
+    default int decode(final ByteBuffer encoded, final ByteBuffer decoded) {
+        int count = 0;
+        Integer mark = null; // <1>
+        {
+            final int position = encoded.position();
+            try {
+                encoded.reset();
+                mark = encoded.position();
+            } catch (final InvalidMarkException ime) {
+            }
+            encoded.position(position);
         }
+        while (decoded.hasRemaining()) {
+            encoded.mark();
+            try {
+                decoded.put((byte) decodeOctet(encoded));
+            } catch (final BufferUnderflowException bue) {
+                encoded.reset();
+                break;
+            }
+        }
+        if (mark != null) { // <2>
+            final int position = encoded.position();
+            encoded.position(mark);
+            encoded.mark();
+        }
+        return count;
     }
 
     default ByteBuffer decode(final ByteBuffer encoded) {

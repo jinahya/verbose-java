@@ -28,7 +28,7 @@ import org.testng.annotations.Test;
  */
 public class PercentCodecDemoTest {
 
-    @Test(invocationCount = 128)
+    @Test(enabled = false, invocationCount = 128)
     public void encodeDecodeString() {
         final String created = RandomStringUtils.random(current().nextInt(2));
         final String encoded = new PercentEncoderDemo().encode(created);
