@@ -35,7 +35,7 @@ public interface HexEncoder {
      *
      * @param decoded the input buffer
      * @param encoded the output buffer
-     * @return number of bytes encoded from {@code decoded}.
+     * @return number of bytes consumed from {@code decoded}.
      */
     default int encode(final ByteBuffer decoded, final ByteBuffer encoded) {
         int count = 0;
@@ -57,7 +57,7 @@ public interface HexEncoder {
         final ByteBuffer encoded // <1>
                 = ByteBuffer.allocate(decoded.remaining() << 1);
         encode(decoded, encoded);
-        encoded.position(0);
+        encoded.flip();
         return encoded;
     }
 

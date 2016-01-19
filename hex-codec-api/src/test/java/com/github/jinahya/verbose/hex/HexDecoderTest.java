@@ -28,29 +28,23 @@ import org.testng.annotations.Test;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HexDecoderTest {
-
-    private HexDecoder impl() {
-        return e -> {
-            e.position(e.position() + 2);
-            return 0;
-        };
-    }
+public class HexDecoderTest extends AbstractHexDecoderTest {
 
     @Test
     public void decodeBuffer() {
         final int capacity = (current().nextInt(128) >> 1) << 1;
-        final ByteBuffer decoded = impl().decode(ByteBuffer.allocate(capacity));
+        final ByteBuffer decoded
+                = decoder().decode(ByteBuffer.allocate(capacity));
         assertEquals(decoded.remaining(), capacity >> 1);
-        impl().decode(ByteBuffer.allocate(capacity),
-                      ByteBuffer.allocate(capacity >> 1));
+        decoder().decode(ByteBuffer.allocate(capacity),
+                         ByteBuffer.allocate(capacity >> 1));
     }
 
     @Test
     public void decodeString() {
         final int count = (current().nextInt(128) >> 1) << 1;
         final String encoded = RandomStringUtils.random(count);
-        final String decoded = impl().decode(encoded);
+        final String decoded = decoder().decode(encoded);
     }
 
     private transient final Logger logger = getLogger(getClass());

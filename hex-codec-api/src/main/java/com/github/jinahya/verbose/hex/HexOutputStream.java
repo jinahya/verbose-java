@@ -25,7 +25,7 @@ import java.nio.ByteBuffer;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HexEncoderStream extends FilterOutputStream {
+public class HexOutputStream extends FilterOutputStream {
 
     /**
      * Creates a new instance on top of given output stream.
@@ -33,16 +33,15 @@ public class HexEncoderStream extends FilterOutputStream {
      * @param out the output stream
      * @param enc the encoder for {@link #enc}
      */
-    public HexEncoderStream(final OutputStream out, final HexEncoder enc) {
+    public HexOutputStream(final OutputStream out, final HexEncoder enc) {
         super(out);
         this.enc = enc;
     }
 
     /**
      * Writes the specified byte to this output stream. The {@code write(int)}
-     * method of {@code HexEncoderStream} class encode given byte using
-     * {@link #enc} and write two bytes which each is a hex character to
-     * {@link #out}.
+     * method of {@code HexOutputStream} class encodes given byte using
+     * {@link #enc} and writes two hex characters to {@link #out}.
      *
      * @param b the byte
      * @throws IOException if an I/O error occurs.
@@ -55,7 +54,7 @@ public class HexEncoderStream extends FilterOutputStream {
         enc.encodeOctet(b, buf); // <2>
         buf.flip();
         super.write(buf.get()); // <3>
-        super.write(buf.get()); // <3>
+        super.write(buf.get());
         buf.compact();
     }
 

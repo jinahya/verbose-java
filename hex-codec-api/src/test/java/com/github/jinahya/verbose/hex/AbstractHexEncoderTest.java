@@ -15,15 +15,30 @@
  */
 package com.github.jinahya.verbose.hex;
 
-import org.slf4j.Logger;
-import static org.slf4j.LoggerFactory.getLogger;
+import com.google.inject.Inject;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import org.testng.annotations.Guice;
 
 /**
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HexEncoderStreamTest {
+@Guice(modules = HexEncoderDemoModule.class)
+abstract class AbstractHexEncoderTest {
 
-    private transient final Logger logger = getLogger(getClass());
+    protected HexEncoder encoder() {
+        return encoder;
+    }
 
+    protected void accept(final Consumer<HexEncoder> consumer) {
+        consumer.accept(encoder());
+    }
+
+    protected <R> R apply(final Function<HexEncoder, R> function) {
+        return function.apply(encoder());
+    }
+
+    @Inject
+    private HexEncoder encoder;
 }

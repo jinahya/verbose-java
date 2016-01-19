@@ -22,14 +22,23 @@ import java.nio.channels.Channel;
 import java.nio.channels.ReadableByteChannel;
 
 /**
+ * A readable byte channel decodes hex characters to bytes.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HexDecoderChannel implements ReadableByteChannel {
+public class ReadableHexChannel implements ReadableByteChannel {
 
-    public HexDecoderChannel(final ReadableByteChannel channel,
-                             final HexDecoder decoder, final int capacity,
-                             final boolean direct) {
+    /**
+     * Creates a new instance on top of given channel.
+     *
+     * @param channel the underlying channel
+     * @param decoder a decoder to decode bytes from the underlying channel
+     * @param capacity capacity for decoding buffer
+     * @param direct a flag for direct allocation of decoding buffer.
+     */
+    public ReadableHexChannel(final ReadableByteChannel channel,
+                              final HexDecoder decoder, final int capacity,
+                              final boolean direct) {
         super();
         if (capacity < 2) {
             throw new IllegalArgumentException(
@@ -43,7 +52,7 @@ public class HexDecoderChannel implements ReadableByteChannel {
 
     /**
      * Tells whether or not this channel is open. The {@code isOpen()} method of
-     * {@code HexEncoderChannel} class invokes {@link Channel#isOpen()} on
+     * {@code WritableHexChannel} class invokes {@link Channel#isOpen()} on
      * {@link #channel} and returns the result. An {@code IllegalStateException}
      * will be thrown if {@link #channel} is {@code null}.
      *
@@ -59,8 +68,10 @@ public class HexDecoderChannel implements ReadableByteChannel {
 
     /**
      * Closes this channel. The {@code close()} method of
-     * {@code HexEncoderChannel} class, if {@link #channel} is not {@code null},
-     * invokes {@link Channel#close()} on {@link #channel}.
+     * {@code ReadableHexChannel} class, if {@link #channel} is not
+     * {@code null}, invokes {@link Channel#close()} on {@link #channel}.
+     * Override this method if any prerequisite tasks need to be done on
+     * {@link #channel} before closed.
      *
      * @throws IOException if an I/O error occurs
      */
@@ -81,41 +92,53 @@ public class HexDecoderChannel implements ReadableByteChannel {
      */
     @Override
     public int read(final ByteBuffer dst) throws IOException {
-        if (buffer == null) { // <1>
+        if (buffer == null) {
             buffer = direct ? ByteBuffer.allocateDirect(capacity)
                      : ByteBuffer.allocate(capacity);
         }
         int count = 0;
         while (dst.hasRemaining()) {
-            buffer.limit(Math.min(buffer.limit(), dst.remaining() * 2)); // <2>
+            final int max = dst.remaining() * 2;
+            if (buffer.position() + buffer.remaining() > max) { // <1>
+                buffer.limit(max - buffer.position());
+            }
             final int remaining = buffer.remaining();
             final int read = channel.read(buffer);
-            if (read == -1) { // <3>
-                if (count == 0) {
+            if (read == -1) { // <2>
+                if (count == 0 && buffer.position() == 0) {
                     return -1;
                 }
                 break;
             }
-            if ((read & 1) == 1) { // <4>
-                buffer.limit(buffer.position() + 1);
-                while (buffer.hasRemaining()) {
-                    if (channel.read(buffer) == -1) {
-                        throw new EOFException(); // unexpected end-of-stream
-                    }
-                }
-            }
-            buffer.flip();
-            count += decoder.decode(buffer, dst); // <5>
+            buffer.flip(); // <3>
+            count += decoder.decode(buffer, dst);
             buffer.compact();
-            if (read < remaining) {
+            if (read < remaining) { // <4>
                 break;
             }
         }
+        if ((buffer.position() & 1) == 1) { // <5>
+            buffer.limit(buffer.position() + 1);
+            while (buffer.hasRemaining()) {
+                if (channel.read(buffer) == -1) {
+                    throw new EOFException(); // unexpected end-of-stream
+                }
+            }
+        }
+        buffer.flip();
+        count += decoder.decode(buffer, dst);
+        buffer.compact();
         return count;
     }
 
+    /**
+     * The channel for reading hex characters.
+     */
     protected ReadableByteChannel channel;
 
+    /**
+     * The decoder for decoding hex characters to bytes.
+     */
     protected HexDecoder decoder;
 
     private final int capacity;

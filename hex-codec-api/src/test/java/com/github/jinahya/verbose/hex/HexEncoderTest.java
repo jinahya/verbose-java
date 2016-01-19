@@ -15,7 +15,9 @@
  */
 package com.github.jinahya.verbose.hex;
 
+import com.google.inject.Inject;
 import java.nio.ByteBuffer;
+import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
@@ -28,27 +30,42 @@ import org.testng.annotations.Test;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HexEncoderTest {
-
-    private HexEncoder impl() {
-        return (d, e) -> e.position(e.position() + 2);
-    }
+public class HexEncoderTest extends AbstractHexEncoderTest {
 
     @Test
     public void encodeBuffer() {
-        final int capacity = current().nextInt(128);
-        final ByteBuffer encoded = impl().encode(ByteBuffer.allocate(capacity));
-        assertEquals(encoded.remaining(), capacity << 1);
-        impl().encode(ByteBuffer.allocate(capacity),
-                      ByteBuffer.allocate(capacity << 1));
+        {
+            final int capacity = current().nextInt(128);
+            final ByteBuffer decoded = ByteBuffer.allocate(capacity);
+            final ByteBuffer encoded = encoder().encode(decoded);
+            assertEquals(encoded.remaining(), decoded.capacity() << 1);
+        }
+        {
+            final int capacity = current().nextInt(128);
+            final ByteBuffer decoded = ByteBuffer.allocate(capacity);
+            final ByteBuffer encoded = ByteBuffer.allocate(capacity << 1);
+            final int count = encoder().encode(decoded, encoded);
+            assertEquals(count, decoded.capacity());
+        }
     }
 
     @Test
     public void encodeString() {
-        final int count = current().nextInt(128);
-        final String decoded = RandomStringUtils.random(count);
-        final String encoded = impl().encode(decoded);
+        {
+            final int count = current().nextInt(128);
+            final String decoded = RandomStringUtils.random(count);
+            final String encoded = encoder().encode(decoded);
+        }
+        {
+            final int count = current().nextInt(128);
+            final String decoded = RandomStringUtils.randomAscii(count);
+            final String encoded = encoder().encode(decoded, US_ASCII);
+            assertEquals(encoded.length(), decoded.length() << 1);
+        }
     }
 
     private transient final Logger logger = getLogger(getClass());
+
+    @Inject
+    private HexEncoder encoder;
 }

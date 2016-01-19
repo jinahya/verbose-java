@@ -15,29 +15,30 @@
  */
 package com.github.jinahya.verbose.hex;
 
-import java.nio.BufferUnderflowException;
-import java.nio.ByteBuffer;
+import com.google.inject.Inject;
+import java.util.function.Consumer;
+import java.util.function.Function;
+import org.testng.annotations.Guice;
 
 /**
- * A demonstrative implementation of {@link HexDecoder}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-class HexDecoderDemo implements HexDecoder {
+@Guice(modules = HexDecoderDemoModule.class)
+abstract class AbstractHexDecoderTest {
 
-    /**
-     * {@inheritDoc}
-     *
-     * @param encoded {@inheritDoc}
-     * @return {@inheritDoc}
-     */
-    @Override
-    public int decodeOctet(final ByteBuffer encoded) {
-        if (encoded.remaining() < 2) {
-            throw new BufferUnderflowException();
-        }
-        encoded.position(encoded.position() + 2);
-        return 0;
+    protected HexDecoder decoder() {
+        return encoder;
     }
 
+    protected void accept(final Consumer<HexDecoder> consumer) {
+        consumer.accept(decoder());
+    }
+
+    protected <R> R apply(final Function<HexDecoder, R> function) {
+        return function.apply(decoder());
+    }
+
+    @Inject
+    private HexDecoder encoder;
 }

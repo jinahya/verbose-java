@@ -26,7 +26,7 @@ import java.nio.ByteBuffer;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HexDecoderStream extends FilterInputStream {
+public class HexInputStream extends FilterInputStream {
 
     /**
      * Creates a new instance on top of specified input stream.
@@ -34,16 +34,16 @@ public class HexDecoderStream extends FilterInputStream {
      * @param in the input stream
      * @param dec the decoder
      */
-    public HexDecoderStream(final InputStream in, final HexDecoder dec) {
+    public HexInputStream(final InputStream in, final HexDecoder dec) {
         super(in);
         this.dec = dec;
     }
 
     /**
      * Reads the next byte of data from the input stream. The {@code read()}
-     * method of {@code HexDecoderStream} class reads two bytes from the
-     * underlying input stream and decodes them into a single byte using
-     * {@link #dec} and returns the result.
+     * method of {@code HexInputStream} class reads two hex characters from
+     * {@link #in} and decodes them into a single byte using {@link #dec} and
+     * returns the result.
      *
      * @return the next byte of data, or -1 if the end of the stream is reached.
      * @throws IOException if an I/O error occurs.
@@ -72,7 +72,7 @@ public class HexDecoderStream extends FilterInputStream {
     /**
      * Reads up to {@code len} bytes of data from this input stream into an
      * array of bytes. The {@code read(byte[], int, int)} method of
-     * {@code HexDecoderStream} class tries to read up to most {@code len} bytes
+     * {@code HexInputStream} class tries to read up to most {@code len} bytes
      * via {@link #read()}.
      *
      * @param b the buffer into which the data is read.
@@ -107,7 +107,7 @@ public class HexDecoderStream extends FilterInputStream {
 
     /**
      * Marks the current position in this input stream. The {@code mark(int)}
-     * method of {@code HexDecoderStream} class invokes
+     * method of {@code HexInputStream} class invokes
      * {@link InputStream#mark(int)} on {@link #in} with doubled value of given
      * {@code readLimit}.
      *
@@ -116,7 +116,7 @@ public class HexDecoderStream extends FilterInputStream {
      */
     @Override
     public synchronized void mark(final int readlimit) {
-        final int reallimit = Integer.MAX_VALUE / 2; // <1>
+        final int reallimit = Integer.MAX_VALUE >> 1; // <1>
         if (readlimit > reallimit) {
             throw new IllegalArgumentException(
                     "readlimit(" + readlimit + ") > " + reallimit);
@@ -128,7 +128,7 @@ public class HexDecoderStream extends FilterInputStream {
      * Returns an estimate of the number of bytes that can be read (or skipped
      * over) from this input stream without blocking by the next invocation of a
      * method for this input stream. The {@code available()} method of
-     * {@code HexDecoderStream} class invokes {@link InputStream#available()} on
+     * {@code HexInputStream} class invokes {@link InputStream#available()} on
      * {@link #in} and returns the value divided by {@code 2}.
      *
      * @return an estimate of the number of bytes that can be read (or skipped
@@ -143,7 +143,7 @@ public class HexDecoderStream extends FilterInputStream {
 
     /**
      * Skips over and discards n bytes of data from this input stream. The
-     * {@code skip(long)} method of {@code HexDecoderStream} class tries to read
+     * {@code skip(long)} method of {@code HexInputStream} class tries to read
      * up to most {@code n} bytes using {@link #read()} utile an
      * {@code end-of-stream} reached.
      *
@@ -154,9 +154,14 @@ public class HexDecoderStream extends FilterInputStream {
      */
     @Override
     public long skip(final long n) throws IOException {
-        long count = 0L;
-        for (; count < n && read() != -1; count++);
-        return count;
+        long skipped = in.skip((n >> 1) << 1); // <1>
+        if ((skipped & 1) == 1) { // <2>
+            if (in.read() == -1) {
+                throw new EOFException();
+            }
+            skipped++;
+        }
+        return skipped / 2; // <3>
     }
 
     /**

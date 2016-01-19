@@ -7,10 +7,10 @@ ________________________________________________________________________________
 
 [quote, 지은이]
 ________________________________________________________________________________
-0과 1밖에 모르는 컴퓨터보다 똑똑한 사람을 만난 적은 없다.
+0과 1밖에 모르는 어떤 '바보' 보다 더 똑똑한 사람을 본 적이 없다.
 ________________________________________________________________________________
 
-본 장에서는 '`숫자`'밖에 모르는 컴퓨터와 '`문자`'를 사용하는 사람과의 사이에 종종 발생하는 문제점들을 해결해는 방법들을 살펴본다. 우선 자바의 자료형에 대해 간략하고 알아본 후 [http://tools.ietf.org/html/rfc4648#section-8[Base 16 Encoding(RFC 4648)]]과 [https://tools.ietf.org/html/rfc3986#section-2.1[Percent-Encoding (RFC 3986)]]에 대해 알아보자.
+본 장에서는 '숫자' 밖에 모르는 컴퓨터와 '문자' 를 사용하는 사람과의 사이에 종종 발생하는 문제점들을 해결하는 방법들을 살펴본다. 우선 자바의 자료형에 대해 간략하고 알아본 후 [http://tools.ietf.org/html/rfc4648#section-8[Base 16 Encoding (RFC 4648)]]과 [https://tools.ietf.org/html/rfc3986#section-2.1[Percent-Encoding (RFC 3986)]]에 대해 알아보자.
 
 === Types and Values
 
@@ -18,7 +18,7 @@ ________________________________________________________________________________
 자바의 `int` 형은 몇 비트인가요? `signed` 인가요? 아니면 `unsigned` 인가요? 표현할 수 있는 최소값과 최대값은 무엇인가요?
 ****
 
-위의 질문들에 대한 올바른 답을 아직 모른다면 [https://docs.oracle.com/javase/specs/jls/se8/html/jls-4.html[JSL 4. Types, Values, and Variables]] 항목을 꼭 읽어보도록 하자. 원시형을 중심으로 해당 항몬을 요약하자면 다음과 같다.
+위의 질문들에 대한 올바른 답을 아직 모른다면 [https://docs.oracle.com/javase/specs/jls/se8/html/jls-4.html[JSL 4. Types, Values, and Variables]] 항목을 꼭 읽어보도록 하자. 원시형을 중심으로 해당 항목을 요약하자면 다음과 같다.
 
 - 자바 프로그래밍 언어에는 두가지 데이터 형이 있다. 하나는 원시형(primitive types)이고 또 다른 하나는 참조형(reference types)이다.
 - 원시형(primitive types)에는 `boolean` 과 수치형(numeric types)이 있다.
@@ -28,7 +28,7 @@ ________________________________________________________________________________
 
 [options="header"]
 .Primitive types
-|==================================================
+|====
 |type       |                 |        |size|signed
 |NumericType|IntegralType     |`byte`  | `8`|yes
 |           |                 |`short` |`16`|yes
@@ -38,7 +38,7 @@ ________________________________________________________________________________
 |           |FloatingPointType|`float` |`32`|yes
 |           |                 |`double`|`64`|yes
 |`boolean`  |                 |        |    |
-|==================================================
+|====
 
 ****
 자바의 정수형(integral types) 중에 unsigned 형이 존재하는가? 있다면 무엇인가?
@@ -67,12 +67,12 @@ MIN  -4  100 \
 
 === hex-codec-api
 
-보통의 (거의 모든) 컴퓨터들은 자료를 저장할 때 여덟개의 비트로 구성된 최소 단위로 나누어 저장한다. 우리가 일반적으로 사용하는 모든 파일들(텍스트, 이미지, 오디오, 동영상 등)이 모두 이 `octet` 이라고 불리는 숫자로 나누어 저장된다. `'a'` 라는 문자는 `01100001` 로, `'홍'` 이라는 문자는 (`UTF-8` 로 인코딩 되었을 때) `111011011 00110011 0001101` 로 저장된다. 아래 표에 여덟개의 비트로 표현할 수 있는 몇몇 값들을 10진법, 8진법, 2진법, 그리고 자바의 `byte` 값으로 표현하였다.
+보통의 (거의 모든) 컴퓨터들은 자료를 저장할 때 여덟개의 비트로 구성된 최소 단위로 나누어 저장한다. 우리가 일반적으로 사용하는 모든 파일들(텍스트, 이미지, 오디오, 동영상 등)이 모두 이 `octet` 이라고 불리는 숫자들로 나뉘어 저장된다. 'a' 라는 문자는 (거의 모든 경우에) `01100001` 로, '홍' 이라는 문자는 (`UTF-8` 로 인코딩 되었을 때) `111011011 00110011 0001101` 로 저장된다. 아래 표에 여덟개의 비트로 표현할 수 있는 몇몇 값들을 10진법, 8진법, 2진법, 그리고 자바의 `byte` 값으로 표현하였다.
 
 [cols=">1,>1,>1,>1,<2",frame="top",options="header"]
 .8-bit values
-|===============================================
-|base10 |base8|base2     |byte  |notes
+|====
+|base10|base8|base2     |byte  |notes
 |   `0`|  `0`|       `0`|   `0`|
 |  `15`| `17`|    `1111`|  `15`|
 |  `31`| `37`|   `11111`|  `31`|
@@ -83,7 +83,7 @@ MIN  -4  100 \
 | `224`|`340`|`11100000`| `-32`|
 | `240`|`360`|`11110000`| `-16`|
 | `255`|`377`|`11111111`|  `-1`|
-|===============================================
+|====
 
 자바의 `byte` 형은 여덟개의 비트를 사용하고 부호를 가지며 2의 보수체계를 사용한다.
 
@@ -99,7 +99,7 @@ Byte.MIN_VALUE  -128  10000000 \
                                 +1
 ----
 
-거의 모든 문자셋의 기본이 되는 `US-ASCII` 문자셋에는 줄바뀜(CR, LF), 탭(TAB) 등의 제어 문자들과 보통의 자판에서 찾아볼 수 있는 문자들을 포함하여 `128`(`2^7^`)개의 코드가 정의되어 있다. 때문에 여덟개의 비트로 표현할 수 있는 `256`(`2^8^`)개의 수에 모든 문자를 할당하는 것이 불가능하다. 이를 해결하는 방법 중에 하나가 `base16`(`hex`) 로 표현하는 것이다. `base16` 표기는 여덟 개의 비트를 네 개씩 두 그룹으로 나눈 후에 각 그룹의 값을 미리 정의된 문자로 표현한다.
+거의 모든 문자셋의 기본이 되는 `US-ASCII` 문자셋에는 줄바뀜(CR, LF), 탭(TAB) 등의 제어 문자들과 보통의 자판에서 찾아볼 수 있는 문자들을 포함하여 `128`(`2^7^`)개의 코드가 정의되어 있다. 때문에 여덟개의 비트로 표현할 수 있는 `256`(`2^8^`)개의 수에 모든 문자를 할당하는 것이 불가능하다. 이를 해결하는 방법 중에 하나가 `base16`(`hex`) 로 표현하는 것이다. `base16` 표기는 여덟 개의 비트를 네 개씩 두 그룹으로 나눈 후에 각 그룹의 값을 미리 정의된 문자들 중 하나로 표현한다.
 
 우선 아래와 같이 여덟 개의 비트를 네 개씩 두 그룹으로 나눈다.
 
@@ -110,7 +110,7 @@ upper  H H H H
 lower          L L L L
 ----
 
-그리고 (네 개의 비트로 구성된) 각 그룹의 값을 아래 표에 정의된 열 여섯개(`2^4^`)의 문자로 변경한다.
+그리고 (네 개의 비트로 구성된) 각 그룹의 값을 아래 표에 정의된 열 여섯개(`2^4^`)의 문자 중 하나로 변경한다.
 
 [cols=">, >, >, >", options="header"]
 .hexadecimal encoding/decoding
@@ -144,9 +144,9 @@ NOTE: `10` 부터 `15` 까지의 숫자를 소문자(`'a'` 부터 `'f'`)로 변�
     h  e  l  l  o  , SP  w  o  r  l  d
    -- -- -- -- -- -- -- -- -- -- -- --
 0x 68 65 6C 6C 6F 2C 20 77 6F 72 6C 64
-   --
-    \
-   -- --
+   --                --
+    \                 \-----------------\
+   -- --                               -- --
     6  8  6  5  6  C  6  C  6  F  2  C  2  0  7  7  6  F  7  2  6  C  6  4
    -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- -- --
 0x 36 38 36 35 36 43 36 43 36 46 32 43 32 30 37 37 36 46 37 32 36 43 36 34
@@ -161,7 +161,7 @@ NOTE: `10` 부터 `15` 까지의 숫자를 소문자(`'a'` 부터 `'f'`)로 변�
            1000  (  8, 0x08)    =>    '8' = 0011 1000  ( 56, 0x38)
 ----
 
-hex-codec-api 모듈에는 `base16` 을 위한 두 개의 인터페이스가 정의되어 있다.
+hex-codec-api 모듈에는 `base16` 코덱을 위한 두 개의 인터페이스가 정의되어 있다.
 
 ==== HexEncoder.java
 
@@ -174,11 +174,12 @@ hex-codec-api 모듈에는 `base16` 을 위한 두 개의 인터페이스가 정
 public interface HexEncoder {
 
     // 주어진 숫자(octet)를 인코딩하여 hex 문자 두개를 버퍼에 담는다.
+    // 버퍼의 remaining 값이 2 보다 작으면 BufferOverflowException 을 던진다.
     void encodeOctet(int decoded, ByteBuffer encoded);
 }
 ----
 
-`HexEncoder` 인터페이스에는 몇개의 `default` 메서드들이 정의되어 있다.
+`HexEncoder` 인터페이스에는 몇몇 `default` 메서드들이 정의되어 있다.
 
 [source,java]
 .HexEncoder.java#encode(ByteBuffer, ByteBuffer)
@@ -187,12 +188,13 @@ public interface HexEncoder {
     // decoded 버퍼에서 소비된 바이트의 개수를 반환한다.
 include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/HexEncoder.java[lines=40..47]
 ----
-<1> `decoded` 버퍼에 읽을 바이트가 있고 `encoded` 버버에 최소한 두 개의 바이트를 담을 수 있는 동안 `encode(int, ByteBuffer)` 를 호출한다.
+<1> `decoded` 버퍼에 읽을 바이트들이 님아 있고 `encoded` 버퍼에 최소한 두 개의 바이트를 기록할 수 있는 동안 `encode(int, ByteBuffer)` 를 호출한다.
 
 [source,java]
 .HexEncoder.java#encode(ByteBuffer)
 ----
     // encoded 버퍼의 모든 바이트들을 인코딩하고 결과를 새 버퍼에 담아 반환한다.
+    // 반환되는 버퍼는 바로 읽을 수 있는 상태이다.
 include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/HexEncoder.java[lines=56..62]
 ----
 <1> `decoded` 버퍼에서 읽을 수 있는 바이트 개수의 두 배만큼의 버퍼를 생생한 후 `encode(ByteBuffer, ByteBuffer)` 메서드를 호출한다.
@@ -200,12 +202,12 @@ include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/
 [source,java]
 .HexEncoder.java#encode(String, Charset)
 ----
-    // 주어진 문자열(encoded)을 코딩하고 결과를 문자열로 반환한다.
+    // 주어진 문자열(encoded)을 인코딩하고 결과를 문자열로 반환한다.
 include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/HexEncoder.java[lines=72..78]
 ----
 <1> `charset` 을 이용해 주어진 문자열에서 입력 배열을 생성한다.
 <2> 두배의 길이를 갖는 출력 배열을 생성한다.
-<3> 이 두 배열을 감싸는 버퍼들을 이용해 `encoded(ByteBuffer, ByteBuffer)` 를 호출한다.
+<3> 이 두 배열을 감싸는 버퍼들을 `encoded(ByteBuffer, ByteBuffer)` 메서드에 전달한다.
 <4> 출력 배열로부터 문자열을 생성하고 반환한다.
 
 ==== HexDecoder.java
@@ -219,23 +221,37 @@ include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/
 public interface HexDecoder {
 
     // 버퍼에서 hex 문자 두개를 디코딩하고 그 결과값(octet)을 반환한다.
-    // 버퍼가 두개 이하의 바이트를 담고 있으면 BufferUnderflowException 을 던진다.
+    // 버퍼에서 읽을 수 있는 바이트들의 개수가 두 개 이하이면 BufferUnderflowException 을 던진다.
     int decodeOctet(ByteBuffer encoded);
 }
 ----
 
 `HexDecoder` 인터페이스에도 `HexEncoder` 인터페이스에 정의된 `default` 메서드들과 대응하는 `default` 메서드들이 정의되어 있다.
 
-==== HexEncoderStream.java
+[source,java]
+.HexDecoder.java#decode(ByteBuffer, ByteBuffer)
+----
+include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/HexDecoder.java[lines=40..47]
+----
+<1> `encoded` 버퍼에 읽을 바이트의 개수가 2개 이상 있고 `decoded` 버퍼에 쓸 수 있는 공간이 남아 있는 동안 `decodeOctet(ByteBuffer)` 메서드에 `encoded` 버퍼를 전달하고 반환된 값을 `decoded` 버퍼에 담는다.
+
+[source,java]
+.HexDecoder.java#decode(ByteBuffer)
+----
+include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/HexDecoder.java[lines=56..62]
+----
+<1> `encoded` 버퍼에서 읽을 수 있는 바이트 개수의 절반 만큼의 버퍼를 생성하고 `encode(ByteBuffer, ByteBuffer)` 메서드에 전달한다.
+
+==== HexOutputStream.java
 
 한 개의 바이트가 기록될 때 자동으로 두 개의 `base16` 문자들로 바꾸어 기록하는 `OutputStream` 이다. `java.io.FilterInputStream` 클래스를 확장하여 작성되었다.
 
 [source,java]
-.HexEncoderStream.java
+.HexOutputStream.java
 ----
-public class HexEncoderStream extends FilterOutputStream {
+public class HexOutputStream extends FilterOutputStream {
 
-    public HexEncoderStream(final OutputStream out, final HexEncoder enc) {
+    public HexOutputStream(final OutputStream out, final HexEncoder enc) {
         super(out);
         this.enc = enc;
     }
@@ -248,16 +264,16 @@ public class HexEncoderStream extends FilterOutputStream {
 다음과 같이 `write()` 메서드가 재작성되었다.
 
 [source,java]
-.HexEncoderStream.java#write(int)
+.HexOutputStream.java#write(int)
 ----
-include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/HexEncoderStream.java[lines=50..60]
+include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/HexOutputStream.java[lines=50..60]
 ----
 <1> `buf` 가 `null` 이면 두개의 hex 문자를 담을수 있을 만큼의 크기로 생성한다.
 <2> `HexEncoder` 인터페이스의 `encode(int, ByteBuffer)` 메서드들 이용해 주어진 바이트를 변환한다.
-<3> 변환된 두개의 hex 문자들을 `out` 필드에 기록한다.
+<3> 변환된 두개의 hex 문자들을 `out` 에 기록한다.
 
 ****
-`FilterOutputStream` 클래스의 생성자는 `out` 인자가 `null` 인지 확인하지 않는다. 대신 `protected` 접근자를 가지는 `out` 필드를 통해 값을 수정할 수 있다. 아마도 `null` 을 이용하여 생성한 후 실제로 사용할 필요가 있을 때 게으르게(lazily) 초기화될(initialized) 수 있는 여지를 남겨둔 듯 하다. `HexEncoderStream` 클래스의 생성자도 `enc` 인자가 `null` 인지 확인하지 않는다. `null` 값을 이용하여 생성한 후 다음과 같이 사용할 수도 있다.
+`FilterOutputStream` 클래스의 생성자는 `out` 인자가 `null` 인지 확인하지 않는다. 대신 `protected` 접근자를 가지는 `out` 필드를 통해 값을 수정할 수 있다. 아마도 `null` 을 이용하여 생성한 후 실제로 사용할 필요가 있을 때 게으르게(lazily) 초기화될(initialized) 수 있는 여지를 남겨둔 듯 하다. `HexOutputStream` 클래스의 생성자도 `enc` 인자가 `null` 인지 확인하지 않는다. `null` 값을 이용하여 생성한 후 다음과 같이 사용할 수도 있다.
 [source,java]
 ----
 final OutputStream hos = new HexOutputStream(null, null) {
@@ -268,7 +284,7 @@ final OutputStream hos = new HexOutputStream(null, null) {
     }
 };
 ----
-주의 할 점은 `flush()`, `close()` 등의 메서드들이 `out` 필드가 `null` 인지 확인하지 않는다.
+주의 할 점은 `flush()`, `close()` 등의 메서드들이 `out` 필드가 `null` 인지 확인하지 않도록 구현되어 있다는 점이다.
 [source,java]
 .FilterOutputStream.java (http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/7u40-b43/java/io/FilterOutputStream.java[7u40-b43])
 ----
@@ -283,7 +299,7 @@ public void close() throws IOException {
     out.close();
 }
 ----
-최근의 소스를 보면 다음과 같이 수정되었지만 여전히 `flush()` 메서드에서는 `out` 필드의 값을 확인하지 않고 사용한다.
+이후의 소스를 보면 다음과 같이 개선되었지만 여전히 `flush()` 메서드에서는 `out` 필드의 값을 확인하지 않고 사용한다.
 [source,java]
 .FilterOutputStream.java (http://grepcode.com/file/repository.grepcode.com/java/root/jdk/openjdk/8u40-b25/java/io/FilterOutputStream.java[8u40-b25])
 ----
@@ -299,16 +315,16 @@ public void close() throws IOException {
 <1> `ostream` 이 `null` 이면 `close()` 를 호출하지 않는다.
 ****
 
-==== HexDecoderStream.java
+==== HexInputStream.java
 
 `HexDecoder` 인터페이스를 이용하여 두개의 hex 문자들을 하나의 바이트로 바꿔서 읽어들이는 `InputStream` 이다. `FilterInputStream` 을 확장하여 만들어졌다.
 
 [source,java]
-.HexDecoderStream.java
+.HexInputStream.java
 ----
-public class HexDecoderStream extends FilterInputStream {
+public class HexInputStream extends FilterInputStream {
 
-    public HexDecoderStream(final InputStream in, final HexDecoder dec) {
+    public HexInputStream(final InputStream in, final HexDecoder dec) {
         super(in);
         this.dec = dec;
     }
@@ -320,9 +336,9 @@ public class HexDecoderStream extends FilterInputStream {
 다음과 같이 `read()` 메서드를 재정의 하여 두개의 바이트들을 읽고 하나로 디코딩한 후 반환한다.
 
 [source,java]
-.HexDecoderStream.java#read()
+.HexInputStream.java#read()
 ----
-include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/HexDecoderStream.java[lines=51..70]
+include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/HexInputStream.java[lines=51..70]
 ----
 <1> `buf` 값이 아직 `null` 이면 두개의 hex 문자를 담을 수 있을 만큼의 크기로 생성한다.
 <2> 첫번째 바이트를 읽고 `buf` 에 담는다. 그 값이 `-1` 이면 `-1` 을 반환한다.
@@ -334,18 +350,18 @@ include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/
 - `FilterInputStream` 클래스의 `read(byte[], int, int)` 메서드는 `in` 필드에 직접 `read(byte[], int, int)` 메서드를 호출한다. 다음과 같이 재정의된 `read()` 메서드를 호출하도록 재정의되었다.
 +
 [source,java]
-.HexDecoderStream.java#read(byte[], int, int)
+.HexInputStream.java#read(byte[], int, int)
 ----
-include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/HexDecoderStream.java[lines=85..106]
+include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/HexInputStream.java[lines=85..106]
 ----
 <1> `len` 만큼 `read()` 메서드가 `-1` 을 반환하기 전까지 호출한다. 첫 바이트가 `-1` 이면 `-1` 을 반환한다.
 
-- `mark(int)` 메서드에 주어진 값의 두 배를 실제로 사용한다. (두개의 문자를 읽어서 하나로 반환하므로 두 배의 값을 사용한다.)
+- 재정의된 `mark(int)` 메서드는 주어진 값의 두 배를 실제로 사용한다. (두개의 문자를 읽어서 하나로 반환하므로 두 배의 값을 사용한다.)
 +
 [source,java]
-.HexDecoderStream.java#mark(int)
+.HexInputStream.java#mark(int)
 ----
-include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/HexDecoderStream.java[lines=117..125]
+include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/HexInputStream.java[lines=117..125]
 ----
 <1> 두 배의 값을 사용하기 위해 인자의 최대치를 반으로 줄인다.
 +
@@ -354,33 +370,36 @@ CAUTION: `reallimit` 이라는 변수의 이름이 `readlimit` 이라는 인자�
 - `available()` 메서드가 반환하는 값을 반으로 줄인다.
 +
 [source,java]
-.HexDecoderStream.java#available()
+.HexInputStream.java#available()
 ----
-include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/HexDecoderStream.java[lines=139..142]
+include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/HexInputStream.java[lines=139..142]
 ----
 
-- `skip(long)` 메서드는 `-1` 이 읽혀지기 전까지 `n` 만큼 `read()` 메서드를 호출한다.
+- `skip(long)` 메서드는 주어진 값보다 최대 1이 작은 짝수만큼 시도하고 홀수만큼 스킵되면 무조건 하나를 더 소비한다.
 +
 [source,java]
-.HexDecoderStream.java#skip(long)
+.HexInputStream.java#skip(long)
 ----
-include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/HexDecoderStream.java[lines=155..160]
+include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/HexInputStream.java[lines=155..165]
 ----
+<1> `n` 을 기준으로 짝수만큼 시도한다.
+<2> 실제로 건너 띈 개수가 홀수이면 하나를 더 읽어서 버린다.
+<3> 실제로 건너 띈 개수의 절반에 해당하는 값을 반환한다.
 
-==== HexEncoderChannel.java
+==== WritableHexChannel.java
 
 `HexEncoder` 인터페이스를 이용해 `write(ByteBuffer)` 메서드에 전달된 버퍼의 값을 자동으로 인코딩하여 기록하는 체널이다. `FilterOutputStream` 과 같은 클래스가 존재하지 않으므로 직접 `WritableByteChannel` 을 구현하여 사용한다.
 
 [source,java]
-.HexEncoderChannel.java
+.WritableHexChannel.java
 ----
-public class HexEncoderChannel implements WritableByteChannel {
+public class WritableHexChannel implements WritableByteChannel {
 
     // channel: 실제로 인코딩된 데이터가 기록될 채널
     // encoder: 인코딩에 사용할 인코더
     // capacity: 인코딩 버퍼의 용량
     // direct: true 이면 인코딩 버퍼를 생성할 때 다이렉트 버퍼를 생성한다
-include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/HexEncoderChannel.java[lines=38..50]
+include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/WritableHexChannel.java[lines=38..50]
 
     protected WritableByteChannel channel;
     protected HexEncoder encoder;
@@ -389,41 +408,50 @@ include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/
     private ByteBuffer buffer;
 }
 ----
-<1> 인코딩 버버의 크기는 최소한 2보다 커야 한다.
+<1> 인코딩 버퍼의 크기는 최소한 2보다 커야 한다.
 
 `write(ByteBuffer)` 메서드를 구현하기 전에 `java.nio.channels.Channel` 인터페이스에 정의된 두개의 메서드를 구현하였다.
 
 [source,java]
-.HexEncoderChannel.java#isOpen()
+.WritableHexChannel.java#isOpen()
 ----
     // channel.isOpen() 값을 반환한다.
     // channel 이 null 이면 IllegalStateException 을 던진다.
-include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/HexEncoderChannel.java[lines=60..66]
+include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/WritableHexChannel.java[lines=60..66]
 ----
 
 [source,java]
-.HexEncoderChannel.java#close()
+.WritableHexChannel.java#close()
 ----
     // channel 이 null 이 아니면 channel.close() 를 호출한다.
-include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/HexEncoderChannel.java[lines=75..80]
+include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/WritableHexChannel.java[lines=75..80]
 ----
 
 이제 `write(ByteBuffer)` 메서드를 다음과 같이 구현하였다.
 
 [source,java]
-.HexEncoderChannel.java#close()
+.WritableHexChannel.java#close()
 ----
-include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/HexEncoderChannel.java[lines=92..115]
+include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/WritableHexChannel.java[lines=92..115]
 ----
 <1> 버퍼가 `null` 이면 `capacity` 와 `direct` 값을 이용하여 생성한다.
-<2> `encoder` 를 이용해 전달된 버퍼(`src`)의 내용을 `buffer`에 인코딩한다.
+<2> `encoder` 를 이용해 전달된 버퍼(`src`)의 내용을 `buffer` 에 인코딩한다.
 <3> 인코딩된 값을 `channel` 에 기록한다.
 <4> `buffer` 에 남은 데이터가 한번에 모두 기록되지 않았다면 non-blocking mode 의 채널이라 가정하고 반복 구문을 빠져 나간다.
 <5> `buffer` 에 남아 있는 모든 데이터를 `channel` 에 기록한다.
 
-==== HexDecoderChannel.java
+==== ReadableHexChannel.java
 
-`HexDecoder` 인터페이스를 이용하여 `read(ByteBuffer)` 메서드에 전달된 버퍼에 디코딩된 바이트들을 저장하는 채널이다.
+`HexDecoder` 인터페이스를 이용하여 `read(ByteBuffer)` 메서드에 전달된 버퍼에 디코딩된 바이트들을 저장하는 채널이다. 생성자와 `isOpen()`, `close()` 등의 메서드는 `WritableHexChannel` 과 동일한 방식으로 구현되었다. 아래는 `read(ByteBufffer)` 메서드가 구현된 모습니다.
+
+[source,java]
+.ReadableHexChannel.java#read(ByteBuffer)
+----
+public class ReadableHexChannel implements ReadableByteChannel {
+
+include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/ReadableHexChannel.java[lines=91..124]
+}
+----
 
 === hex-codec-lib
 hex-codec-api 모듈에 정의되어 있는 두개의 인터페이스를 구현할 모듈이다.
@@ -564,7 +592,7 @@ Percent Decoding을 위한 인터페이스이다.
 ----
 public interface PercentDecoder {
 
-    // 버버에서 필요한 만큼(1개 혹은 3개)의 문자를 디코딩하고 그 결과를 반환한다.
+    // 버퍼에서 필요한 만큼(1개 혹은 3개)의 문자를 디코딩하고 그 결과를 반환한다.
     int decodeOctet(final ByteBuffer encoded);
 }
 ----

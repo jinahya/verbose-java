@@ -15,21 +15,28 @@
  */
 package com.github.jinahya.verbose.hex;
 
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
-import static java.nio.charset.StandardCharsets.US_ASCII;
 
 /**
- * A demonstrative implementation.
+ * A demonstrative implementation of {@link HexEncoder}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 class HexEncoderDemo implements HexEncoder {
 
+    /**
+     * {@inheritDoc}
+     *
+     * @param decoded {@inheritDoc}
+     * @param encoded {@inheritDoc}
+     */
     @Override
     public void encodeOctet(final int decoded, final ByteBuffer encoded) {
-        final String s = String.format("%02X", decoded & 0xFF);
-        encoded.put(s.getBytes(US_ASCII));
-//        encoded.position(encoded.position() + 2);
+        if (encoded.remaining() < 2) {
+            throw new BufferOverflowException();
+        }
+        encoded.position(encoded.position() + 2);
     }
 
 }

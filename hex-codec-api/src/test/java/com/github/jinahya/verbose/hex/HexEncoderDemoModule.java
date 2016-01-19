@@ -15,29 +15,17 @@
  */
 package com.github.jinahya.verbose.hex;
 
-import java.nio.BufferUnderflowException;
-import java.nio.ByteBuffer;
+import com.google.inject.AbstractModule;
 
 /**
- * A demonstrative implementation of {@link HexDecoder}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-class HexDecoderDemo implements HexDecoder {
+class HexEncoderDemoModule extends AbstractModule {
 
-    /**
-     * {@inheritDoc}
-     *
-     * @param encoded {@inheritDoc}
-     * @return {@inheritDoc}
-     */
     @Override
-    public int decodeOctet(final ByteBuffer encoded) {
-        if (encoded.remaining() < 2) {
-            throw new BufferUnderflowException();
-        }
-        encoded.position(encoded.position() + 2);
-        return 0;
+    protected void configure() {
+        bind(HexEncoder.class).to(HexEncoderDemo.class);
     }
 
 }
