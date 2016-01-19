@@ -40,7 +40,7 @@ public interface PercentEncoder {
             try {
                 encodeOctet(decoded.get(), encoded);
                 count++;
-            } catch (final BufferOverflowException boe) {
+            } catch (final BufferOverflowException boe) { // NOSONAR
                 decoded.position(decoded.position() - 1);
                 encoded.position(position);
                 break;

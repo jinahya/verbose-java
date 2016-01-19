@@ -1,20 +1,28 @@
+apply plugin: 'com.github.ben-manes.versions'
+
+buildscript {
+  repositories {
+    jcenter();
+  }
+
+  dependencies {
+    classpath 'com.github.ben-manes:gradle-versions-plugin:0.12.0'
+  }
+}
+
 ext {
   daggerVersion = "1.2.2"
-  daggerGroup = "com.squareup.dagger"
-  daggerVersion = "1.2.2"
-  dagger2Group = "com.google.dagger"
   dagger2Version = "2.0.2"
-  hk2Version = "2.4.0-b34"
-  springGroup = "org.springframework"
+  hk2Version = "2.5.0-b01"
   springVersion = "4.2.4.RELEASE"
-  libraries = ['dagger': [group: daggerGroup, name: 'dagger', version: daggerVersion],
-               'dagger-compiler': [group: daggerGroup, name: 'dagger-compiler', version: daggerVersion],
-               'dagger2': [group: dagger2Group, name: 'dagger', version: dagger2Version],
-               'dagger2-compiler': [group: dagger2Group, name: 'dagger-compiler', version: dagger2Version],
+  libraries = ['dagger': [group: 'com.squareup.dagger', name: 'dagger', version: daggerVersion],
+               'dagger-compiler': [group: 'com.squareup.dagger', name: 'dagger-compiler', version: daggerVersion],
+               'dagger2': [group: 'com.google.dagger', name: 'dagger', version: dagger2Version],
+               'dagger2-compiler': [group: 'com.google.dagger', name: 'dagger-compiler', version: dagger2Version],
                'guice': [group: 'com.google.inject', name: 'guice', version: '4.0'],
                'hk2-core': [group: 'org.glassfish.hk2', name: 'hk2-core', version: hk2Version],
                'hk2-testng': [group: 'org.glassfish.hk2', name: 'hk2-testng', version: hk2Version],
-               'spring-context': [group: springGroup, name: 'spring-context', version: springVersion]
+               'spring-context': [group: 'org.springframework', name: 'spring-context', version: springVersion]
               ]
 }
 
@@ -35,7 +43,7 @@ subprojects {
     testCompile 'commons-io:commons-io:2.4'
     testCompile 'org.apache.commons:commons-lang3:3.4'
     testCompile 'org.glassfish.jersey.core:jersey-client:2.22.1'
-    testCompile 'org.mockito:mockito-core:2.0.36-beta'
+    testCompile 'org.mockito:mockito-core:2.0.39-beta'
     testCompile 'org.slf4j:slf4j-api:1.7.13'
     testCompile 'org.testng:testng:6.9.10'
   }

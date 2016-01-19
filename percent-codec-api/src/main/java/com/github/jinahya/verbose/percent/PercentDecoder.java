@@ -41,7 +41,7 @@ public interface PercentDecoder {
                 final int octet = decodeOctet(encoded);
                 decoded.put((byte) octet);
                 count++;
-            } catch (final BufferUnderflowException bue) {
+            } catch (final BufferUnderflowException bue) { // NOSONAR
                 encoded.position(position);
                 break;
             }
