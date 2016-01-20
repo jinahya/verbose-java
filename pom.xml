@@ -198,7 +198,7 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.3</version>
+          <version>3.5</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -322,7 +322,7 @@
           <execution>
             <id>default-prepare-agent</id>
             <goals>
-              <!--goal>prepare-agent</goal-->
+              <goal>prepare-agent</goal>
             </goals>
           </execution>
         </executions>
@@ -408,12 +408,10 @@
           </reportSet>
         </reportSets>
       </plugin>
-      <!--
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-        </plugin>
-        -->
+    </plugin>
     </plugins>
   </reporting>
 </project>
