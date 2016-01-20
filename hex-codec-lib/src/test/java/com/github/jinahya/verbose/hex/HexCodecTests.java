@@ -85,17 +85,18 @@ final class HexCodecTests {
     }
 
     /**
-     * Copies all bytes from given input stream to specified output stream.
+     * Copies all available bytes from given input stream to specified output
+     * stream.
      *
      * @param input the input stream
      * @param output the output stream
-     * @return number of copied bytes.
+     * @return the number of copied bytes.
      * @throws IOException if an I/O error occurs.
      */
     static long copy(final InputStream input, final OutputStream output)
             throws IOException {
         long count = 0L;
-        final byte[] buffer = new byte[8192];
+        final byte[] buffer = new byte[4096];
         for (int read; (read = input.read(buffer)) != -1; count += read) {
             output.write(buffer, 0, read);
         }
@@ -103,8 +104,8 @@ final class HexCodecTests {
     }
 
     /**
-     * Computes a hash from all bytes read from given input stream using
-     * specified algorithm name.
+     * Computes a hash from all available bytes in given input stream using
+     * specified algorithm.
      *
      * @param input the input stream
      * @param algorithm the algorithm name
@@ -116,19 +117,19 @@ final class HexCodecTests {
             throws NoSuchAlgorithmException, IOException {
         final MessageDigest digest // <1>
                 = MessageDigest.getInstance(algorithm);
-        final byte[] buffer = new byte[8192]; // <2>
-        for (int read; (read = input.read(buffer)) != -1;) { // <3>
-            digest.update(buffer, 0, read); // <4>
+        final byte[] buffer = new byte[4096];
+        for (int read; (read = input.read(buffer)) != -1;) { // <2>
+            digest.update(buffer, 0, read);
         }
-        return digest.digest(); // <5>
+        return digest.digest(); // <3>
     }
 
     /**
-     * Computes a hash from all bytes read from given input stream using
-     * specified algorithm name.
+     * Computes a hash of all available bytes in given input stream using
+     * specified algorithm.
      *
      * @param input the input stream
-     * @param algorithm algorithm name
+     * @param algorithm the algorithm name
      * @return the computed hash value.
      * @throws NoSuchAlgorithmException if {@code algorithm} is unknown
      * @throws IOException if an I/O error occurs.
@@ -137,14 +138,14 @@ final class HexCodecTests {
             throws NoSuchAlgorithmException, IOException {
         final MessageDigest digest = MessageDigest.getInstance(algorithm);
         input = new DigestInputStream(input, digest); // <1>
-        final byte[] buffer = new byte[8192];
-        for (int read; (read = input.read(buffer)) != -1;); // <2>
-        return digest.digest();
+        final byte[] buffer = new byte[4096];
+        while (input.read(buffer) != -1); // <2>
+        return digest.digest(); // <3>
     }
 
     /**
-     * Computes hash from all bytes read from given input stream using specified
-     * algorithm name. This method forwards given arguments to either
+     * Computes a hash of all available bytes in given input stream using
+     * specified algorithm name. This method forwards given arguments to either
      * {@link #digest1(java.io.InputStream, java.lang.String)} or
      * {@link #digest2(java.io.InputStream, java.lang.String)}.
      *
@@ -154,15 +155,14 @@ final class HexCodecTests {
      * @throws NoSuchAlgorithmException if {@code algorithm} is unknown.
      * @throws IOException if an I/O error occurs.
      */
-    static byte[] digest(InputStream input, final String algorithm)
+    static byte[] digest(final InputStream input, final String algorithm)
             throws NoSuchAlgorithmException, IOException {
         return current().nextBoolean()
                ? digest1(input, algorithm) : digest2(input, algorithm);
     }
 
     /**
-     * Computes a hash from all bytes in given file using specified algorithm
-     * name.
+     * Computes a hash of given file using specified algorithm name.
      *
      * @param file the file
      * @param algorithm the algorithm name
@@ -177,20 +177,52 @@ final class HexCodecTests {
         }
     }
 
-    static long copy(final ReadableByteChannel readable,
-                     final WritableByteChannel writable)
+    /**
+     * Copies all available bytes from given input channel to specified output
+     * channel.
+     *
+     * @param readable the input channel
+     * @param writable the output channel
+     * @return the number of bytes copied
+     * @throws IOException if an I/O error occurs.
+     */
+    static long copy1(final ReadableByteChannel readable,
+                      final WritableByteChannel writable)
             throws IOException {
         long count = 0L;
         final ByteBuffer buffer = ByteBuffer.allocate(4096);
-        for (int read; (read = readable.read(buffer)) != -1;) {
+        while (readable.read(buffer) != -1) {
             buffer.flip();
-            count += writable.write(buffer);
-            buffer.compact();
+            count += writable.write(buffer); // <1>
+            buffer.compact(); // <2>
         }
-        for (buffer.flip(); buffer.hasRemaining();) {
+        for (buffer.flip(); buffer.hasRemaining();) { // <3>
             count += writable.write(buffer);
         }
         return count;
+    }
+
+    static long copy2(final ReadableByteChannel readable,
+                      final WritableByteChannel writable)
+            throws IOException {
+        long count = 0L;
+        final ByteBuffer buffer = ByteBuffer.allocate(4096);
+        while (readable.read(buffer) != -1) {
+            buffer.flip();
+            while (buffer.hasRemaining()) { // <1>
+                count += writable.write(buffer);
+            }
+            buffer.clear(); // <2>
+        }
+        return count;
+    }
+
+    static long copy(final ReadableByteChannel readable,
+                     final WritableByteChannel writable)
+            throws IOException {
+
+        return current().nextBoolean()
+               ? copy1(readable, writable) : copy2(readable, writable);
     }
 
     /**
@@ -207,11 +239,11 @@ final class HexCodecTests {
                          final String algorithm)
             throws NoSuchAlgorithmException, IOException {
         final MessageDigest digest = MessageDigest.getInstance(algorithm);
-        final ByteBuffer buffer = ByteBuffer.allocate(8192);
-        for (int read; (read = channel.read(buffer)) != -1;) {
+        final ByteBuffer buffer = ByteBuffer.allocate(4096);
+        while (channel.read(buffer) != -1) {
             buffer.flip(); // <1>
             digest.update(buffer); // <2>
-            buffer.compact(); // <3>
+            buffer.clear(); // <3>
         }
         return digest.digest();
     }

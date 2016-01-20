@@ -1,6 +1,5 @@
 package com.github.jinahya.verbose.hex;
 
-import static com.github.jinahya.verbose.hex.HexCodecTests.copy;
 import static com.github.jinahya.verbose.hex.HexCodecTests.digest;
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,6 +24,11 @@ import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
+import static com.github.jinahya.verbose.hex.HexCodecTests.copy1;
+import static com.github.jinahya.verbose.hex.HexCodecTests.copy;
+import static com.github.jinahya.verbose.hex.HexCodecTests.digest;
+import static org.slf4j.LoggerFactory.getLogger;
+import static org.testng.Assert.assertEquals;
 
 /**
  * Test class for testing encoding/decoding.
@@ -135,7 +139,7 @@ public class HexCodecImplTest {
                     super.close();
                 }
             }) {
-                final long copied = copy(readable, writable);
+                final long copied = copy1(readable, writable);
                 assertEquals(copied, Files.size(createdPath));
             }
         }
@@ -148,7 +152,7 @@ public class HexCodecImplTest {
                 current().nextBoolean())) {
             try (FileChannel writable = FileChannel.open(
                     decodedPath, StandardOpenOption.WRITE)) {
-                final long copied = copy(readable, writable);
+                final long copied = copy1(readable, writable);
                 assertEquals(copied, Files.size(createdPath));
                 writable.force(false);
             }
