@@ -420,7 +420,7 @@ include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/
 <3> 실제로 건너 띈 개수의 절반에 해당하는 값을 반환한다.
 
 ==== FilterChannel.java
-이제 `HexOutputStream` 클래스와 `HexInputStream` 클래스와 동일한 기능을 수행하는 클래스들을  `java.nio.channels` 패키지에 정의된 클래스들을 사용하여 구현해 보자. `FilterOutputStream`, `FilterInputStream` 등의 기능을 위한 클래스들이 존재하지 않으므로 `WritableByteChannel` 과 `ReadableByteChanel` 을 직접 구현해야 한다. 다만 두 인터페이스가 공통으로 확장하는 `java.nio.channels.Channel` 인터페이스를 기반으로 추상클래스를 하나 정의하고 공통의 기능을 미리 구현하도록 하겠다.
+이제 `HexOutputStream` 클래스와 `HexInputStream` 클래스와 동일한 기능을 수행하는 클래스들을  `java.nio.channels` 패키지에 정의된 클래스들을 사용하여 구현해 보자. `FilterOutputStream`, `FilterInputStream` 에 해당하는 클래스들이 존재하지 않으므로 `WritableByteChannel` 과 `ReadableByteChanel` 을 직접 구현해야 한다. 다만 두 인터페이스가 공통으로 확장하는 `java.nio.channels.Channel` 인터페이스를 기반으로 추상클래스를 하나 정의하고 공통의 기능을 미리 구현하도록 하겠다.
 
 [source,java]
 .FilterChannel.java
@@ -483,7 +483,7 @@ include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/
 ----
 include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/WritableHexChannel.java[lines=59..77]
 ----
-<1> `filter(HexEncoder)` 를 이용해 `src` 의 내용을 `buffer()` 에 인코딩한다.
+<1> `filter` 를 이용해 `src` 의 내용을 `buffer()` 에 인코딩한다.
 <2> 인코딩된 값을 `channel` 에 기록한다.
 <3> `buffer` 에 남은 데이터가 한번에 모두 기록되지 않았다면 non-blocking mode 의 채널이라 가정하고 반복 구문을 빠져 나간다.
 <4> `buffer` 에 (이미 인코딩된) 남아 있는 모든 데이터를 `channel` 에 기록한다.
@@ -508,11 +508,10 @@ include::../../../../hex-codec-api/src/main/java/com/github/jinahya/verbose/hex/
 ----
 <1> `src` 에 담을 수 있는 개수 보다 더 많이 읽지 안도록 설정한다.
 <2> 처음에 `-1`(end-of-stream) 이 읽히면 `-1` 을 반환한다.
-<3> `filter`(HexDecoder) 를 이용해 디코딩 한다.
-<4> 버퍼에 읽어 담을 수 있는 개수보다 더 적게 읽히면 non-blocking channel 이라 가정하고 순환문을 빠져 나간다.
-<5> 버버에 (디코딩 할) 바이트 개수가 홀수이면 하나를 더 읽어서 담는다.
+<3> `filter` 를 이용해 디코딩 한다.
+<4> 버퍼에 담을 수 있는 개수보다 더 적게 읽혔으면 non-blocking channel 이라 가정하고 순환문을 빠져 나간다.
+<5> 버버에 (디코딩 할) 바이트 개수가 홀수이면 하나를 더 읽어 담는다.
 <6> 버퍼이 남아 있는 모든 바이트들을 디코딩한다.
-
 
 === hex-codec-lib
 hex-codec-api 모듈에 정의되어 있는 두개의 인터페이스를 구현할 모듈이다.
@@ -663,35 +662,8 @@ http://.../files/a%2Fb?descriptor=c%26d%3De
 ----
 https://tools.ietf.org/html/rfc3986[RFC 3986]의 https://tools.ietf.org/html/rfc3986#section-2.1https://tools.ietf.org/html/rfc3986#section-2.1[Percent-Encoding] 항목에 위 예시에서 사용된 방법이 정의되어 있다. 주어진 문자가 https://tools.ietf.org/html/rfc3986#section-2.3[Unreserved Characters] 항목에 정의된 범위(알파벳, 숫자, `'-'`, `'.'`, `'_'`, `'~'`) 밖이면 `'%'` 문자 하나와 두개의 hex 문자로 표현한다.
 
-==== PercentEncoder.java
-Percent Encoding을 위한 인터페이스이다.
-[source,java]
-.PercentEncoder.java
-----
-@FunctionalInterface
-public interface PercentEncoder {
-
-    // 바이트를 인코딩 한 후 결과(한 개 혹은 세 개의 문자)를 버퍼에 담는다.
-    // 버버에 인코딩된 문자들이 일부만 기록된 채 BufferOverflowException 을 던질 수 있다.
-    void encodeOctet(final int decoded, final ByteBuffer encoded);
-}
-----
-
-==== PercentDecoder.java
-Percent Decoding을 위한 인터페이스이다.
-[source,java]
-.PercentDecoder.java
-----
-public interface PercentDecoder {
-
-    // 버퍼에서 필요한 만큼(1개 혹은 3개)의 문자를 디코딩하고 그 결과를 반환한다.
-    // 버퍼에 인코딩된 문자들이 일부만 사용된 채 BufferUnderflowException 을 던질 수 있다.
-    int decodeOctet(final ByteBuffer encoded);
-}
-----
-
 [NOTE]
-================================================================================
+====
 http://docs.oracle.com/javase/8/docs/api/java/net/URLEncoder.html[`java.net.URLEncoder`] 와 http://docs.oracle.com/javase/8/docs/api/java/net/URLDecoder.html[`java.net.URLDecoder`] 는 해당 문서에 기술되어 있듯이 http://www.w3.org/TR/html5/forms.html#url-encoded-form-data[HTML]에 정의된 `application/x-www-form-urlencoded` 형식을 위한 코덱이다. `"~"` 대신 `"*"` 를 그대로 표기하며 공백 문자(`"{nbsp}"`)를 `"%20"` 이 아닌 `"+"` 로 인코딩한다. 아래 코드는 `"value"` 라는 필드 이름과 `"홍 길동"` 이라는 필드 값을 서버에 전달하는 HTTP 요청 문서의 예시이다. (공백 문자(`"{nbsp}"`)가 `"+"` 로 인코딩되어 있다.)
 ----
 POST /names HTTP/1.1
@@ -701,7 +673,36 @@ Content-Length: 34
 
 value=%ED%99%8D+%EA%B8%B8%EB%8F%99
 ----
-================================================================================
+====
+
+==== PercentEncoder.java
+Percent Encoding을 위한 인터페이스이다.
+[source,java]
+.PercentEncoder.java
+----
+@FunctionalInterface
+public interface PercentEncoder {
+
+    // 바이트(decoded)를 인코딩 한 후 결과(한 개 혹은 세 개의 문자)를 버퍼(encoded)에 담는다.
+    // 버퍼(encoded)에 공간이 충분치 않으면 BufferOverflowException 을 던진다.
+    void encodeOctet(final int decoded, final ByteBuffer encoded);
+}
+----
+
+==== PercentDecoder.java
+Percent Decoding을 위한 인터페이스이다.
+[source,java]
+.PercentDecoder.java
+----
+@FunctionalInterface
+public interface PercentDecoder {
+
+    // 버퍼(encoded)에서 필요한 만큼(1개 혹은 3개)의 문자를 디코딩하고 그 결과를 반환한다.
+    // 버퍼(encoded)에 필요한 만큼의 문자가 없으면 BufferUnderflowException 을 던진다.
+    int decodeOctet(final ByteBuffer encoded);
+}
+----
+
 
 === percent-codec-lib
 pecent-codec-api 에 정의된 인터페이스들을 구현한 모듈이다. hex-codec-api 와 hex-codec-lib 을 통해 octet을 두개의 hex 문자로 변환하는 방법을 이미 구현했으므로 그 모듈들을 사용한다. 다음과 같이 의존성을 확인해 보자.
