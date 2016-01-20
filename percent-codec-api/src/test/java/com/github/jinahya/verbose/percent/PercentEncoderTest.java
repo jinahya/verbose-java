@@ -15,7 +15,7 @@
  */
 package com.github.jinahya.verbose.percent;
 
-import com.google.inject.Inject;
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.util.concurrent.ThreadLocalRandom.current;
@@ -23,7 +23,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.testng.Assert.assertTrue;
-import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 
 /**
@@ -31,13 +30,25 @@ import org.testng.annotations.Test;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-@Guice(modules = PercentEncoderModule.class)
 public class PercentEncoderTest {
+
+    private static PercentEncoder encoder() {
+        return (d, e) -> {
+            if (!e.hasRemaining()) {
+                throw new BufferOverflowException();
+            }
+            if (e.remaining() >= 3 && current().nextBoolean()) {
+                e.position(e.position() + 3);
+                return;
+            }
+            e.position(e.position() + 1);
+        };
+    }
 
     @Test(invocationCount = 128)
     public void encodeBuffer() {
         final ByteBuffer decoded = ByteBuffer.allocate(current().nextInt(128));
-        final ByteBuffer encoded = encoder.encode(decoded);
+        final ByteBuffer encoded = encoder().encode(decoded);
         assertTrue(encoded.remaining() >= decoded.capacity());
     }
 
@@ -47,14 +58,14 @@ public class PercentEncoderTest {
         final ByteBuffer encoded = ByteBuffer.allocate(
                 decoded.remaining() == 0
                 ? 0 : current().nextInt(decoded.remaining() * 3));
-        encoder.encode(decoded, encoded);
+        encoder().encode(decoded, encoded);
         assertTrue(encoded.position() >= decoded.position());
     }
 
     @Test(invocationCount = 128)
     public void encodeString() {
         final String decoded = RandomStringUtils.random(current().nextInt(128));
-        final String encoded = encoder.encode(decoded);
+        final String encoded = encoder().encode(decoded);
         assertTrue(encoded.length() >= decoded.length());
     }
 
@@ -62,12 +73,10 @@ public class PercentEncoderTest {
     public void encodeAscii() {
         final String decoded
                 = RandomStringUtils.randomAscii(current().nextInt(128));
-        final String encoded = encoder.encode(decoded, US_ASCII);
+        final String encoded = encoder().encode(decoded, US_ASCII);
         assertTrue(encoded.length() >= decoded.length());
     }
 
     private transient final Logger logger = getLogger(getClass());
 
-    @Inject
-    private PercentEncoder encoder;
 }

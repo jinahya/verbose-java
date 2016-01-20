@@ -27,7 +27,7 @@ import java.nio.channels.Channel;
  * @param <T> channel type parameter.
  * @param <U> filter type parameter.
  */
-abstract class FilterChannel<T extends Channel, U> implements Channel {
+public abstract class FilterChannel<T extends Channel, U> implements Channel {
 
     /**
      * Creates a new instance on top of given channel.
