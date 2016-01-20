@@ -15,56 +15,58 @@
  */
 package com.github.jinahya.verbose.percent;
 
+import com.google.inject.Inject;
 import java.nio.ByteBuffer;
 import static java.nio.charset.StandardCharsets.US_ASCII;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import org.apache.commons.lang3.RandomStringUtils;
+import org.slf4j.Logger;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.testng.Assert.assertTrue;
+import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 
 /**
+ * A class testing {@link PercentDecoder}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
+@Guice(modules = PercentDecoderModule.class)
 public class PercentDecoderTest {
 
-    private PercentDecoder decoder() {
-        return new PercentDecoderDemo();
+    @Test(invocationCount = 128)
+    public void decodeWithABuffer() {
+        final ByteBuffer encoded = ByteBuffer.allocate(current().nextInt(128));
+        final ByteBuffer decoded = decoder.decode(encoded);
+        assertTrue(decoded.remaining() <= encoded.capacity());
     }
 
-    @Test(invocationCount = 256)
-    public void encodeWithABuffer() {
-        final byte[] encodedBytes = new byte[current().nextInt(1024)];
-        current().nextBytes(encodedBytes);
-        final ByteBuffer encoded = ByteBuffer.wrap(encodedBytes);
-        final ByteBuffer decoded = decoder().decode(encoded);
-        assertTrue(decoded.remaining() <= encodedBytes.length);
-    }
-
-    @Test(invocationCount = 256)
-    public void encodeWithTwoBuffers() {
-        final byte[] encodedBytes = new byte[current().nextInt(1024)];
-        current().nextBytes(encodedBytes);
-        final ByteBuffer encoded = ByteBuffer.wrap(encodedBytes);
+    @Test(invocationCount = 128)
+    public void decodeWithDecodedBuffer() {
+        final ByteBuffer encoded = ByteBuffer.allocate(current().nextInt(128));
         final ByteBuffer decoded = ByteBuffer.allocate(encoded.remaining());
-        decoder().decode(encoded, decoded);
+        decoder.decode(encoded, decoded);
         assertTrue(decoded.position() <= encoded.position());
     }
 
-    @Test(invocationCount = 256)
-    public void encodeString() {
+    @Test(invocationCount = 128)
+    public void decodeString() {
         final String encoded
-                = RandomStringUtils.randomAscii(current().nextInt(1024));
-        final String decoded = decoder().decode(encoded, UTF_8);
+                = RandomStringUtils.randomAscii(current().nextInt(128));
+        final String decoded = decoder.decode(encoded);
         assertTrue(decoded.length() <= encoded.length());
     }
 
-    @Test(invocationCount = 256)
-    public void encodeAscii() {
-        final String decoded
+    @Test(invocationCount = 128)
+    public void decodeAscii() {
+        final String encoded
                 = RandomStringUtils.randomAscii(current().nextInt(1024));
-        final String encoded = decoder().decode(decoded, US_ASCII);
-        assertTrue(encoded.length() <= decoded.length());
+        final String decoded = decoder.decode(encoded, US_ASCII);
+        assertTrue(decoded.length() <= encoded.length());
     }
+
+    private transient final Logger logger = getLogger(getClass());
+
+    @Inject
+    private PercentDecoder decoder;
 }

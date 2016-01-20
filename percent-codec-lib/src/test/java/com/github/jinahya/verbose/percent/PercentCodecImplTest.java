@@ -15,12 +15,41 @@
  */
 package com.github.jinahya.verbose.percent;
 
-import org.jvnet.testing.hk2testng.HK2;
+import java.io.UnsupportedEncodingException;
+import static java.util.concurrent.ThreadLocalRandom.current;
+import javax.inject.Inject;
+import org.apache.commons.lang3.RandomStringUtils;
+import static org.testng.Assert.assertEquals;
+import org.testng.annotations.Guice;
+import org.testng.annotations.Test;
 
 /**
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-@HK2(binders = {PercentDecoderImplBinder.class, PercentEncoderImplBinder.class})
-public class PercentCodecImplTest extends PercentCodecTest {
+@Guice(modules = {PercentEncoderModule.class, PercentDecoderModule.class})
+public class PercentCodecImplTest {
+
+    @Test(invocationCount = 128)
+    public void encodeDecodeString() throws UnsupportedEncodingException {
+        final String created = RandomStringUtils.random(current().nextInt(128));
+        final String encoded = encoder.encode(created);
+        final String decoded = decoder.decode(encoded);
+        assertEquals(decoded, created);
+    }
+
+    @Test(invocationCount = 128)
+    public void encodeDecodeAscii() throws UnsupportedEncodingException {
+        final String created
+                = RandomStringUtils.randomAscii(current().nextInt(128));
+        final String encoded = encoder.encode(created);
+        final String decoded = decoder.decode(encoded);
+        assertEquals(decoded, created);
+    }
+
+    @Inject
+    private PercentEncoder encoder;
+
+    @Inject
+    private PercentDecoder decoder;
 }

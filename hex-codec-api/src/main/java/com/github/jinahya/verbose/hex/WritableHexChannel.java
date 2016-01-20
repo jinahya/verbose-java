@@ -17,7 +17,6 @@ package com.github.jinahya.verbose.hex;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.Channel;
 import java.nio.channels.WritableByteChannel;
 
 /**
@@ -25,12 +24,14 @@ import java.nio.channels.WritableByteChannel;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class WritableHexChannel implements WritableByteChannel {
+public class WritableHexChannel
+        extends FilterChannel<WritableByteChannel, HexEncoder>
+        implements WritableByteChannel {
 
     /**
      * Creates a new instance on top of given channel.
      *
-     * @param channel the channel to wrap.
+     * @param channel the channel to which encoded characters are written.
      * @param encoder the encoder for encoding bytes
      * @param capacity the capacity of intermediate buffer.
      * @param direct the flag for direct allocation of the intermediate buffer.
@@ -38,49 +39,17 @@ public class WritableHexChannel implements WritableByteChannel {
     public WritableHexChannel(final WritableByteChannel channel,
                               final HexEncoder encoder, final int capacity,
                               final boolean direct) {
-        super();
+        super(channel, encoder, capacity, direct);
         if (capacity < 2) { // <1>
             throw new IllegalArgumentException(
                     "capacity(" + capacity + ") < 2");
-        }
-        this.channel = channel;
-        this.encoder = encoder;
-        this.capacity = capacity;
-        this.direct = direct;
-    }
-
-    /**
-     * Tells whether or not this channel is open. The {@code isOpen()} method of
-     * {@code WritableHexChannel} class invokes {@link Channel#isOpen()} on
-     * {@link #channel} and returns the result.
-     *
-     * @return {@code true} if, and only if, the {@link #channel} is open
-     */
-    @Override
-    public boolean isOpen() {
-        return channel.isOpen();
-    }
-
-    /**
-     * Closes this channel. The {@code close()} method of
-     * {@code WritableHexChannel} class, if {@link #channel} is not
-     * {@code null}, invokes {@link Channel#close()} on {@link #channel}.
-     * Override this method if any prerequisite tasks need to be done on
-     * {@link #channel} before closed.
-     *
-     * @throws IOException if an I/O error occurs
-     */
-    @Override
-    public void close() throws IOException {
-        if (channel != null) {
-            channel.close();
         }
     }
 
     /**
      * Writes a sequence of bytes to this channel from the given buffer. The
      * {@code write(ByteBuffer)} method of {@code WritableHexChannel} class
-     * encodes given buffer using {@link #encoder} and writes the result to
+     * encodes given buffer using {@link #filter} and writes the result to
      * {@link #channel}.
      *
      * @param src The buffer from which bytes are to be retrieved
@@ -89,42 +58,22 @@ public class WritableHexChannel implements WritableByteChannel {
      */
     @Override
     public int write(final ByteBuffer src) throws IOException {
-        if (buffer == null) { // <1>
-            buffer = direct
-                     ? ByteBuffer.allocateDirect(capacity)
-                     : ByteBuffer.allocate(capacity);
-        }
         int count = 0;
         while (src.hasRemaining()) {
-            count += encoder.encode(src, buffer); // <2>
-            buffer.flip();
-            final int remaining = buffer.remaining();
-            final int written = channel.write(buffer); // <3>
-            buffer.compact();
-            if (written < remaining) { // <4>
+            count += filter.encode(src, buffer()); // <1>
+            buffer().flip(); // <2>
+            final int remaining = buffer().remaining();
+            final int written = channel.write(buffer());
+            buffer().compact();
+            if (written < remaining) { // <3>
                 break;
             }
         }
-        for (buffer.flip(); buffer.hasRemaining();) { // <5>
-            channel.write(buffer);
+        for (buffer().flip(); buffer().hasRemaining();) { // <4>
+            channel.write(buffer());
         }
-        buffer.compact();
+        buffer().compact();
         return count;
     }
 
-    /**
-     * The underlying channel which encoded bytes are written to.
-     */
-    protected WritableByteChannel channel;
-
-    /**
-     * The encoder for encoding bytes.
-     */
-    protected HexEncoder encoder;
-
-    private final int capacity;
-
-    private final boolean direct;
-
-    private ByteBuffer buffer;
 }

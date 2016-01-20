@@ -21,14 +21,14 @@ package com.github.jinahya.verbose.percent;
  */
 final class PercentCodecTests {
 
-    static String fromURLEncoded(final String urlEncoded) {
+    static String toPercentEncodedFromUrlEncoded(final String urlEncoded) {
         return urlEncoded
                 .replaceAll("\\*", "%2A")
                 .replaceAll("%7E", "~")
                 .replaceAll("\\+", "%20");
     }
 
-    static String toUrlEncoded(final String percentEncoded) {
+    static String toUrlEncodedFromPercentEncoded(final String percentEncoded) {
         return percentEncoded
                 .replaceAll("%2A", "\\*")
                 .replaceAll("~", "%7E")

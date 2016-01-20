@@ -13,16 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jinahya.verbose.percent;
-
 /**
+ * An API for encoding/decoding bytes to/from percent-encoded characters.
  *
- * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
+ * @see
+ * <a href="http://tools.ietf.org/html/rfc3986#section-2.1">2.1 Percent-Encoding
+ * (RFC 3986)</a>
  */
-public class PercentDecoderImplBinder
-        extends PercentDecoderBinder<PercentDecoderImpl> {
-
-    public PercentDecoderImplBinder() {
-        super(PercentDecoderImpl.class);
-    }
-}
+package com.github.jinahya.verbose.percent;

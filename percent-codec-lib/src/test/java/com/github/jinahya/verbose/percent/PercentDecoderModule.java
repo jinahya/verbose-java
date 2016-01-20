@@ -15,14 +15,17 @@
  */
 package com.github.jinahya.verbose.percent;
 
+import com.google.inject.AbstractModule;
+
 /**
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class PercentEncoderImplBinder
-        extends PercentEncoderBinder<PercentEncoderImpl> {
+class PercentDecoderModule extends AbstractModule {
 
-    public PercentEncoderImplBinder() {
-        super(PercentEncoderImpl.class);
+    @Override
+    protected void configure() {
+        bind(PercentDecoder.class).to(PercentDecoderImpl.class);
     }
+
 }

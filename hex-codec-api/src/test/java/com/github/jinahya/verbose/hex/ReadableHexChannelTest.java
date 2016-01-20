@@ -112,8 +112,8 @@ public class ReadableHexChannelTest extends AbstractHexDecoderTest {
                     channel = Channels.newChannel(
                             new ByteArrayInputStream(new byte[1024]));
                 }
-                if (decoder == null) {
-                    decoder = decoder();
+                if (filter == null) {
+                    filter = decoder();
                 }
                 return super.read(dst);
             }

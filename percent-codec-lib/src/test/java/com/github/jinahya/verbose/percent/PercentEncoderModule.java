@@ -15,27 +15,17 @@
  */
 package com.github.jinahya.verbose.percent;
 
-import static java.util.Objects.requireNonNull;
-import org.glassfish.hk2.utilities.binding.AbstractBinder;
+import com.google.inject.AbstractModule;
 
 /**
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
- * @param <T> percent encoder type
  */
-abstract class PercentEncoderBinder<T extends PercentEncoder>
-        extends AbstractBinder {
-
-    public PercentEncoderBinder(final Class<T> serviceType) {
-        super();
-
-        this.serviceType = requireNonNull(serviceType, "null serviceType");
-    }
+class PercentEncoderModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(serviceType).to(PercentEncoder.class);
+        bind(PercentEncoder.class).to(PercentEncoderImpl.class);
     }
 
-    protected final Class<T> serviceType;
 }

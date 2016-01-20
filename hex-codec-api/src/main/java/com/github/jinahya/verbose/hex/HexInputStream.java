@@ -63,8 +63,8 @@ public class HexInputStream extends FilterInputStream {
             throw new EOFException();
         }
         buf.put((byte) b2);
-        buf.flip();
-        final int b = dec.decodeOctet(buf); // <4>
+        buf.flip(); // <4>
+        final int b = dec.decodeOctet(buf);
         buf.compact();
         return b;
     }
@@ -108,15 +108,16 @@ public class HexInputStream extends FilterInputStream {
     /**
      * Marks the current position in this input stream. The {@code mark(int)}
      * method of {@code HexInputStream} class invokes
-     * {@link FilterInputStream#mark(int)} with doubled value of given
-     * {@code readlimit}.
+     * {@link FilterInputStream#mark(int)} with a doubled value of given
+     * {@code readlimit}. Note that specifying a value greater than
+     * {@code Integer.MAX_VALUE / 2} may yield an unexpected result.
      *
      * @param readlimit the maximum limit of bytes that can be read before the
      * mark position becomes invalid.
      */
     @Override
     public synchronized void mark(final int readlimit) {
-        super.mark(readlimit * 2); // <1>
+        super.mark(readlimit * 2);
     }
 
     /**
@@ -138,9 +139,10 @@ public class HexInputStream extends FilterInputStream {
 
     /**
      * Skips over and discards n bytes of data from this input stream. The
-     * {@code skip(long)} method of {@code HexInputStream} class tries to read
-     * up to most {@code n} bytes using {@link #read()} utile an
-     * {@code end-of-stream} reached.
+     * {@code skip(long)} method of {@code HexInputStream} class tries to skip
+     * up to most {@code (n >> 1) << 1} bytes using
+     * {@link FilterInputStream#skip(long)} and, if skipped by an odd number of
+     * bytes, tries to skip one more byte.
      *
      * @param n the number of bytes to be skipped.
      * @return the actual number of bytes skipped.
@@ -149,9 +151,9 @@ public class HexInputStream extends FilterInputStream {
      */
     @Override
     public long skip(final long n) throws IOException {
-        long skipped = in.skip((n >> 1) << 1); // <1>
+        long skipped = super.skip((n >> 1) << 1); // <1>
         if ((skipped & 1L) == 1L) { // <2>
-            if (in.read() == -1) {
+            if (super.read() == -1) {
                 throw new EOFException(); // unexpected end-of-stream
             }
             skipped++;

@@ -141,6 +141,5 @@ project(':percent-codec-lib') {
     compile project(':hex-codec-api')
     runtime project(':hex-codec-lib')
     compile project(':percent-codec-api')
-    testCompile libraries.'hk2-testng'
   }
 }

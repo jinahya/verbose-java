@@ -20,18 +20,33 @@ import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import static java.util.concurrent.ThreadLocalRandom.current;
+import javax.inject.Inject;
 import org.apache.commons.lang3.RandomStringUtils;
-import org.jvnet.testing.hk2testng.HK2;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.testng.Assert.assertEquals;
+import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
+import static org.slf4j.LoggerFactory.getLogger;
+import static org.testng.Assert.assertEquals;
+import static org.slf4j.LoggerFactory.getLogger;
+import static org.testng.Assert.assertEquals;
+import static org.slf4j.LoggerFactory.getLogger;
+import static org.testng.Assert.assertEquals;
+import static org.slf4j.LoggerFactory.getLogger;
+import static org.testng.Assert.assertEquals;
+import static org.slf4j.LoggerFactory.getLogger;
+import static org.testng.Assert.assertEquals;
+import static org.slf4j.LoggerFactory.getLogger;
+import static org.testng.Assert.assertEquals;
+import static org.slf4j.LoggerFactory.getLogger;
+import static org.testng.Assert.assertEquals;
 
 /**
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-@HK2(binders = PercentEncoderImplBinder.class)
+@Guice(modules = PercentEncoderModule.class)
 public class PercentEncoderImplTest {
 
     @Test
@@ -39,7 +54,7 @@ public class PercentEncoderImplTest {
             throws UnsupportedEncodingException {
         final Charset charset = StandardCharsets.UTF_8;
         final String decoded = "The string ü@foo-bar";
-        final String expected = PercentCodecTests.fromURLEncoded(
+        final String expected = PercentCodecTests.toPercentEncodedFromUrlEncoded(
                 URLEncoder.encode(decoded, charset.name()));
         final String actual = new PercentEncoderImpl().encode(decoded, charset);
         assertEquals(actual, expected);
@@ -50,15 +65,14 @@ public class PercentEncoderImplTest {
             throws UnsupportedEncodingException {
         final Charset charset = StandardCharsets.UTF_8;
         final String decoded = RandomStringUtils.random(current().nextInt(128));
-        String expected = PercentCodecTests.fromURLEncoded(
+        String expected = PercentCodecTests.toPercentEncodedFromUrlEncoded(
                 URLEncoder.encode(decoded, charset.name()));
         final String actual = new PercentEncoderImpl().encode(decoded, charset);
         assertEquals(actual, expected);
     }
 
-    @Test
-    public void testExample() {
-    }
-
     private transient final Logger logger = getLogger(getClass());
+
+    @Inject
+    private PercentEncoder encoder;
 }

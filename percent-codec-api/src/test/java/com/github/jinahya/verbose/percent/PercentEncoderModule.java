@@ -15,28 +15,29 @@
  */
 package com.github.jinahya.verbose.percent;
 
-import java.util.function.Consumer;
-import java.util.function.Function;
-import javax.inject.Inject;
+import com.google.inject.AbstractModule;
+import java.nio.BufferOverflowException;
+import static java.util.concurrent.ThreadLocalRandom.current;
 
 /**
+ * A module for {@link PercentEncoder}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-abstract class PercentEncoderTest {
+class PercentEncoderModule extends AbstractModule {
 
-    protected void accept(final Consumer<PercentEncoder> consumer) {
-        consumer.accept(percentEncoder());
+    @Override
+    protected void configure() {
+        bind(PercentEncoder.class).toInstance((d, e) -> {
+            if (!e.hasRemaining()) {
+                throw new BufferOverflowException();
+            }
+            if (e.remaining() >= 3 && current().nextBoolean()) {
+                e.position(e.position() + 3);
+                return;
+            }
+            e.position(e.position() + 1);
+        });
     }
 
-    protected <T> T apply(final Function<PercentEncoder, T> function) {
-        return function.apply(percentEncoder());
-    }
-
-    protected PercentEncoder percentEncoder() {
-        return percentEncoder;
-    }
-
-    @Inject
-    private PercentEncoder percentEncoder;
 }
