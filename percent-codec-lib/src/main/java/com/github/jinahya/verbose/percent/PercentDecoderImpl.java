@@ -16,49 +16,61 @@
 package com.github.jinahya.verbose.percent;
 
 import com.github.jinahya.verbose.hex.HexDecoder;
+import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
-import java.util.NoSuchElementException;
-import java.util.ServiceLoader;
+import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 import static java.util.ServiceLoader.load;
-import java.util.logging.Level;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 /**
- * A class implementing {@code PercentDecoder}. This class uses an instance of
- * {@link HexDecoder} loaded with {@link ServiceLoader#load(java.lang.Class)}.
+ * Default implementation of {@code PercentDecoder}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 public class PercentDecoderImpl implements PercentDecoder {
 
-    @Override
-    public int decodeOctet(final ByteBuffer encoded) {
-        final byte e = encoded.get();
-        if (e == 0x25) { // '%' <1>
-            return hexDecoder().decodeOctet(encoded); // <2>
-        }
-        return e; // <3>
+    /**
+     * Creates a new instance with given supplier of {@link HexDecoder}.
+     *
+     * @param hexDecoderSupplier the supplier
+     */
+    public PercentDecoderImpl(final Supplier<HexDecoder> hexDecoderSupplier) {
+        super();
+        this.hexDecoderSupplier = requireNonNull(hexDecoderSupplier);
     }
 
     /**
-     * Returns an instance of {@link HexDecoder}.
-     *
-     * @return an instance of {@link HexDecoder}
+     * Creates a new instance.
      */
-    protected HexDecoder hexDecoder() {
-        if (hexDecoder == null) {
-            try {
-                hexDecoder = load(HexDecoder.class).iterator().next();
-                logger.log(Level.FINE, "hex decoder loaded: {0}", hexDecoder);
-            } catch (final NoSuchElementException nsee) {
-                throw new RuntimeException("no hex decoder loaded", nsee);
-            }
+    public PercentDecoderImpl() {
+        this(() -> load(HexDecoder.class).iterator().next());
+    }
+
+    @Override
+    public int decodeOctet(final ByteBuffer encoded) {
+        if (encoded.remaining() < 1) {
+            throw new BufferUnderflowException();
         }
-        return hexDecoder;
+        final byte e = encoded.get(encoded.position()); // <2>
+        if (e == 0x25) { // <2>
+            if (encoded.remaining() < 3) {
+                throw new BufferUnderflowException();
+            }
+            encoded.position(encoded.position() + 1);
+            return ofNullable(hexDecoder) // <3>
+                    .orElseGet(hexDecoderSupplier)
+                    .decodeOctet(encoded);
+        }
+        encoded.position(encoded.position() + 1); // <4>
+        return e;
     }
 
     private transient final Logger logger
             = Logger.getLogger(getClass().getName());
+
+    private final Supplier<HexDecoder> hexDecoderSupplier;
 
     private HexDecoder hexDecoder;
 }

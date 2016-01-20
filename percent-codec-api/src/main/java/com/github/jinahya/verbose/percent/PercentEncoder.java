@@ -16,12 +16,13 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public interface PercentEncoder {
 
     /**
-     * Encodes given byte and put encoded characters on specified byte buffer.
-     * This method may lazily throw a {@code BufferOverflowException} while some
-     * bytes already have been provided to given buffer.
+     * Encodes given byte into the specified buffer. A
+     * {@code BufferOverflowException} will be thrown if the buffer has
+     * remaining less than required.
      *
      * @param decoded the byte to encode
-     * @param encoded the byte buffer onto which encoded characters are put
+     * @param encoded the buffer into which encoded characters are to be
+     * transfered.
      */
     void encodeOctet(int decoded, ByteBuffer encoded);
 
@@ -37,13 +38,11 @@ public interface PercentEncoder {
     default int encode(final ByteBuffer decoded, final ByteBuffer encoded) {
         int count = 0;
         while (decoded.hasRemaining()) { // <1>
-            final int position = encoded.position(); // <2>
             try {
                 encodeOctet(decoded.get(), encoded);
                 count++;
             } catch (final BufferOverflowException boe) { // NOSONAR
-                decoded.position(decoded.position() - 1);
-                encoded.position(position);
+                decoded.position(decoded.position() - 1); // <2>
                 break;
             }
         }

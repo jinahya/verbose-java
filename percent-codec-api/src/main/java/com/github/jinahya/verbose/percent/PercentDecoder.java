@@ -14,9 +14,9 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public interface PercentDecoder {
 
     /**
-     * Decodes characters in given byte buffer and returns a decoded byte. This
-     * method may lazily throw a {@code BufferUnderflowException} while some
-     * bytes already have been consumed from given buffer.
+     * Decodes a sequence of characters from the given buffer. A
+     * {@code BufferUnderflowException} will be thrown if the buffer has
+     * remaining less than required.
      *
      * @param encoded the byte buffer
      * @return the decoded byte
@@ -34,13 +34,11 @@ public interface PercentDecoder {
     default int decode(final ByteBuffer encoded, final ByteBuffer decoded) {
         int count = 0;
         while (decoded.hasRemaining()) { // <1>
-            final int position = encoded.position();
             try {
                 final int octet = decodeOctet(encoded);
                 decoded.put((byte) octet);
                 count++;
             } catch (final BufferUnderflowException bue) { // NOSONAR
-                encoded.position(position);
                 break;
             }
         }

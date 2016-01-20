@@ -16,11 +16,13 @@
 package com.github.jinahya.verbose.percent;
 
 import com.github.jinahya.verbose.hex.HexEncoder;
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
-import java.util.NoSuchElementException;
+import static java.util.Objects.requireNonNull;
+import static java.util.Optional.ofNullable;
 import java.util.ServiceLoader;
 import static java.util.ServiceLoader.load;
-import java.util.logging.Level;
+import java.util.function.Supplier;
 import java.util.logging.Logger;
 
 /**
@@ -31,8 +33,25 @@ import java.util.logging.Logger;
  */
 public class PercentEncoderImpl implements PercentEncoder {
 
+    /**
+     * Creates a new instance with given supplier of {@link HexEncoder}.
+     *
+     * @param hexEncoderSupplier the supplier
+     */
+    public PercentEncoderImpl(final Supplier<HexEncoder> hexEncoderSupplier) {
+        super();
+        this.hexEncoderSupplier = requireNonNull(hexEncoderSupplier);
+    }
+
+    public PercentEncoderImpl() {
+        this(() -> load(HexEncoder.class).iterator().next());
+    }
+
     @Override
     public void encodeOctet(final int decoded, final ByteBuffer encoded) {
+        if (encoded.remaining() < 1) {
+            throw new BufferOverflowException();
+        }
         if ((decoded >= 0x30 && decoded <= 0x39) // digit
             || (decoded >= 0x41 && decoded <= 0x5A) // upper case alpha
             || (decoded >= 0x61 && decoded <= 0x7A) // lower case alpha
@@ -43,29 +62,19 @@ public class PercentEncoderImpl implements PercentEncoder {
             encoded.put((byte) decoded); // <1>
             return;
         }
-        encoded.put((byte) 0x25); // '%'  // <2>
-        hexEncoder().encodeOctet(decoded, encoded); // <3>
-    }
-
-    /**
-     * Returns an instance of {@link HexEncoder}.
-     *
-     * @return an instance of {@link HexEncoder}
-     */
-    protected HexEncoder hexEncoder() {
-        if (hexEncoder == null) {
-            try {
-                hexEncoder = load(HexEncoder.class).iterator().next();
-                logger.log(Level.FINE, "hex encoder loaded: {0}", hexEncoder);
-            } catch (final NoSuchElementException nsee) {
-                throw new RuntimeException("no hex encoder loaded", nsee);
-            }
+        if (encoded.remaining() < 3) {
+            throw new BufferOverflowException();
         }
-        return hexEncoder;
+        encoded.put((byte) 0x25); // '%'  // <2>
+        ofNullable(hexEncoder) // <3>
+                .orElseGet(hexEncoderSupplier)
+                .encodeOctet(decoded, encoded);
     }
 
     private transient final Logger logger
             = Logger.getLogger(getClass().getName());
+
+    private final Supplier<HexEncoder> hexEncoderSupplier;
 
     private HexEncoder hexEncoder;
 }

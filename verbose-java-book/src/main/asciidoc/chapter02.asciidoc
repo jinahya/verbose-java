@@ -671,7 +671,7 @@ Percent Encoding을 위한 인터페이스이다.
 @FunctionalInterface
 public interface PercentEncoder {
 
-    // octet(decoded)을 인코딩 한 후 결과(한 개 혹은 세 개의 문자)를 버퍼(encoded)에 담는다.
+    // 바이트를 인코딩 한 후 결과(한 개 혹은 세 개의 문자)를 버퍼에 담는다.
     // 버버에 인코딩된 문자들이 일부만 기록된 채 BufferOverflowException 을 던질 수 있다.
     void encodeOctet(final int decoded, final ByteBuffer encoded);
 }
@@ -685,6 +685,7 @@ Percent Decoding을 위한 인터페이스이다.
 public interface PercentDecoder {
 
     // 버퍼에서 필요한 만큼(1개 혹은 3개)의 문자를 디코딩하고 그 결과를 반환한다.
+    // 버퍼에 인코딩된 문자들이 일부만 사용된 채 BufferUnderflowException 을 던질 수 있다.
     int decodeOctet(final ByteBuffer encoded);
 }
 ----
