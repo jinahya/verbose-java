@@ -322,16 +322,9 @@
           <execution>
             <id>default-prepare-agent</id>
             <goals>
-              <goal>prepare-agent</goal>
+              <!--goal>prepare-agent</goal-->
             </goals>
           </execution>
-          <!--          <execution>
-            <id>default-report</id>
-            <phase>prepare-package</phase>
-            <goals>
-              <goal>report</goal>
-            </goals>
-          </execution>-->
         </executions>
       </plugin>
     </plugins>
@@ -415,10 +408,12 @@
           </reportSet>
         </reportSets>
       </plugin>
+      <!--
       <plugin>
         <groupId>org.jacoco</groupId>
         <artifactId>jacoco-maven-plugin</artifactId>
-      </plugin>
+        </plugin>
+        -->
     </plugins>
   </reporting>
 </project>
