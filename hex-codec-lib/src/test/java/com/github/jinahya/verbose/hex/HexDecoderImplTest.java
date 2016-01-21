@@ -15,26 +15,52 @@
  */
 package com.github.jinahya.verbose.hex;
 
+import com.google.common.io.BaseEncoding;
 import java.nio.ByteBuffer;
-import org.slf4j.Logger;
-import static org.slf4j.LoggerFactory.getLogger;
+import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.concurrent.ThreadLocalRandom.current;
+import org.apache.commons.codec.DecoderException;
+import org.apache.commons.codec.binary.Hex;
+import org.apache.commons.lang3.RandomStringUtils;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
 /**
+ * A class testing {@link HexEncoderImpl}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 public class HexDecoderImplTest {
 
+    /**
+     * Tests decoding with {@code RFC4648} test vectors.
+     */
     @Test
-    public void decodeAndCompareToRFC4648TestVectors() {
-        Rfc4648TestVectors.base16Bytes((d, e) -> {
-            final ByteBuffer decoded
-                    = new HexDecoderImpl().decode(ByteBuffer.wrap(e));
-            assertEquals(decoded, ByteBuffer.wrap(d));
+    public void testDecodingAgainstRfc4648TestVectors() {
+        Rfc4648TestVectors.base16((d, e) -> {
+            final String decoded = new HexDecoderImpl().decode(e);
+            assertEquals(decoded, d);
         });
     }
 
-    private transient final Logger logger = getLogger(getClass());
+    @Test(invocationCount = 128)
+    public void encodeCommonsDecodeVerbose() throws DecoderException {
+        final byte[] created = new byte[current().nextInt(128)];
+        current().nextBytes(created);
+        final byte[] encoded = new Hex().encode(created);
+        final byte[] decoded = new byte[encoded.length >> 1];
+        new HexDecoderImpl().decode(
+                ByteBuffer.wrap(encoded), ByteBuffer.wrap(decoded));
+        assertEquals(decoded, created);
+    }
+
+    @Test(invocationCount = 128)
+    public void encodeGuavaDecodeVerbose() {
+        final String created = RandomStringUtils.random(current().nextInt(128));
+        final String encoded
+                = BaseEncoding.base16().encode(created.getBytes(UTF_8));
+        final String decoded = new HexDecoderImpl().decode(encoded);
+        assertEquals(decoded, created);
+    }
+
 }

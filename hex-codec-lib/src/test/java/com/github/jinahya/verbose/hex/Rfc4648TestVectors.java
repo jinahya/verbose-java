@@ -15,7 +15,9 @@
  */
 package com.github.jinahya.verbose.hex;
 
-import static java.nio.charset.StandardCharsets.UTF_8;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 import java.util.function.BiConsumer;
 
 /**
@@ -24,26 +26,20 @@ import java.util.function.BiConsumer;
  */
 final class Rfc4648TestVectors {
 
-    private static final String[] BASE16 = {
-        "", "",
-        "f", "66",
-        "fo", "666F",
-        "foo", "666F6F",
-        "foob", "666F6F62",
-        "fooba", "666F6F6261",
-        "foobar", "666F6F626172"
-    };
+    private static final List<String> BASE16 = Arrays.asList(
+            "", "",
+            "f", "66",
+            "fo", "666F",
+            "foo", "666F6F",
+            "foob", "666F6F62",
+            "fooba", "666F6F6261",
+            "foobar", "666F6F626172"
+    );
 
-    static void base16Strings(final BiConsumer<String, String> consumer) {
-        for (int i = 0; i < BASE16.length; i++) {
-            consumer.accept(BASE16[i], BASE16[++i]);
+    static void base16(final BiConsumer<String, String> consumer) {
+        for (final Iterator<String> i = BASE16.iterator(); i.hasNext();) {
+            consumer.accept(i.next(), i.next());
         }
-    }
-
-    static void base16Bytes(final BiConsumer<byte[], byte[]> consumer) {
-        base16Strings((d, e) -> {
-            consumer.accept(d.getBytes(UTF_8), e.getBytes(UTF_8));
-        });
     }
 
     private Rfc4648TestVectors() {

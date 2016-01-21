@@ -62,8 +62,8 @@ public class WritableHexChannel
         while (src.hasRemaining()) {
             count += filter.encode(src, buffer()); // <1>
             buffer().flip(); // <2>
-            final int remaining = buffer().remaining();
-            final int written = channel.write(buffer());
+            final int remaining = buffer().remaining(); // can write
+            final int written = channel.write(buffer()); // actaully written
             buffer().compact();
             if (written < remaining) { // <3>
                 break;

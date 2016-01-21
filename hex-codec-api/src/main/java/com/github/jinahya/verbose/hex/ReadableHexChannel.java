@@ -60,8 +60,8 @@ public class ReadableHexChannel
         int count = 0;
         while (dst.hasRemaining()) {
             buffer().limit(Math.min(buffer().limit(), dst.remaining() * 2)); // <1>
-            final int remaining = buffer().remaining();
-            final int read = channel.read(buffer());
+            final int remaining = buffer().remaining(); // can read
+            final int read = channel.read(buffer()); // actaully read
             if (read == -1) { // <2>
                 if (count == 0 && buffer().position() == 0) {
                     return -1;
