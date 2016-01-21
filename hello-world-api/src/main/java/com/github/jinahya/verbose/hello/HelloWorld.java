@@ -78,7 +78,7 @@ public interface HelloWorld {
         final byte[] array = new byte[BYTES]; // <4>
         final int offset = 0;
         set(array, offset);
-        return buffer.put(array);
+        return buffer.put(array); // <5>
     }
 
     /**
@@ -99,7 +99,7 @@ public interface HelloWorld {
         final byte[] array = new byte[BYTES]; // <2>
         final int offset = 0;
         set(array, offset);
-        stream.write(array);
+        stream.write(array); // <3>
         return stream;
     }
 

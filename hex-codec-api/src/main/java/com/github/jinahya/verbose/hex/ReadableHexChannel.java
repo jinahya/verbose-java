@@ -26,7 +26,7 @@ import java.nio.channels.ReadableByteChannel;
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 public class ReadableHexChannel
-        extends FilterChannel<ReadableByteChannel, HexDecoder>
+        extends HexChannel<ReadableByteChannel, HexDecoder>
         implements ReadableByteChannel {
 
     /**

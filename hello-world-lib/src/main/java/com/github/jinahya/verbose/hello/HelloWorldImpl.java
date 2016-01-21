@@ -16,7 +16,7 @@
 package com.github.jinahya.verbose.hello;
 
 /**
- * An implmentation of {@link HelloWorld}.
+ * A class implementing {@link HelloWorld}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
@@ -51,7 +51,7 @@ public class HelloWorldImpl implements HelloWorld {
         array[offset++] = 0x77; // 'w'
         array[offset++] = 0x6F; // 'o'
         array[offset++] = 0x72; // 'r'
-        array[offset++] = 0x6C; // 'l';
-        array[offset++] = 0x64; // 'd';
+        array[offset++] = 0x6C; // 'l'
+        array[offset++] = 0x64; // 'd' // <1>
     }
 }

@@ -154,8 +154,8 @@
                 </goals>
                 <configuration>
                   <target>
-                    <property name="final.name" value="${project.build.directory}/${project.build.finalName}"/>
-                    <property name="archive.includes" value="${project.build.finalName}-classpath.${project.packaging} ${project.build.finalName}-classpath.lib/*"/>
+                    <property name="final.name" value="${project.build.directory}/${project.build.finalName}-class-path"/>
+                    <property name="archive.includes" value="${project.build.finalName}-class-path.${project.packaging} ${project.build.finalName}-class-path.lib/*"/>
                     <property name="tar.destfile" value="${final.name}.tar"/>
                     <zip basedir="${project.build.directory}" destfile="${final.name}.zip" includes="${archive.includes}" />
                     <tar basedir="${project.build.directory}" destfile="${tar.destfile}" includes="${archive.includes}" />

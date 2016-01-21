@@ -29,11 +29,11 @@ import org.testng.annotations.Test;
  */
 public class UriTest {
 
-    @Test(enabled = false)
+    @Test(enabled = true)
     public void testUriComponent() {
         final String uriTemplate = "http://www.example.com/names/{file}";
-        final String pathValue = "a/b";
-        final String queryValue = "c&d=e";
+        final String pathValue = "a/b?c";
+        final String queryValue = "e&f=g/h";
         {
             final UriBuilder builder = UriBuilder.fromUri(uriTemplate);
             final String pathEncoded = UriComponent.encode(

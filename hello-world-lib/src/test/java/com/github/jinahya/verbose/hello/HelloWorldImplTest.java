@@ -41,7 +41,7 @@ public class HelloWorldImplTest {
     @Test(expectedExceptions = NullPointerException.class)
     public void expectNullPointerExceptionWhenArrayIsNull() {
         final byte[] array = null;
-        final int offset = 0;
+        final int offset = 0; // <1>
         new HelloWorldImpl().set(array, offset);
     }
 
@@ -77,7 +77,7 @@ public class HelloWorldImplTest {
         final byte[] array = new byte[HelloWorld.BYTES];
         final int offset = 0;
         new HelloWorldImpl().set(array, offset);
-        assertEquals(array[offset + 0x0], 'h');
+        assertEquals(array[offset + 0x0], 'h'); // <1>
         assertEquals(array[offset + 0x1], 'e');
         assertEquals(array[offset + 0x2], 'l');
         assertEquals(array[offset + 0x3], 'l');
@@ -138,7 +138,7 @@ public class HelloWorldImplTest {
      * Tests {@link HelloWorldImpl#write(java.nio.channels.WritableByteChannel)}
      * works as expected.
      *
-     * @throws IOException
+     * @throws IOException if an I/O error occurs.
      */
     @Test
     public void writeWithChannel() throws IOException {

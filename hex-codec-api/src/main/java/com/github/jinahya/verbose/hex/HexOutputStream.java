@@ -52,8 +52,8 @@ public class HexOutputStream extends FilterOutputStream {
             buf = ByteBuffer.allocate(2);
         }
         enc.encodeOctet(b, buf); // <2>
-        buf.flip();
-        super.write(buf.get()); // <3>
+        buf.flip(); // <3>
+        super.write(buf.get());
         super.write(buf.get());
         buf.compact();
     }

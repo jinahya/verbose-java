@@ -15,8 +15,6 @@
  */
 package com.github.jinahya.verbose.hello;
 
-import org.slf4j.Logger;
-import static org.slf4j.LoggerFactory.getLogger;
 import org.testng.annotations.Test;
 
 /**
@@ -89,6 +87,4 @@ abstract class HelloWorldDataTest {
     public void testCapacityNotEnough(final byte[] array, final int offset) {
         implementation().set(array, offset);
     }
-
-    private transient final Logger logger = getLogger(getClass());
 }

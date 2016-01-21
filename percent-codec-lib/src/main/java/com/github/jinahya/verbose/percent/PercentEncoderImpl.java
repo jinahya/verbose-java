@@ -23,7 +23,6 @@ import static java.util.Optional.ofNullable;
 import java.util.ServiceLoader;
 import static java.util.ServiceLoader.load;
 import java.util.function.Supplier;
-import java.util.logging.Logger;
 
 /**
  * A class implementing {@code PercentEncoder}. This class uses an instance of
@@ -70,9 +69,6 @@ public class PercentEncoderImpl implements PercentEncoder {
                 .orElseGet(hexEncoderSupplier)
                 .encodeOctet(decoded, encoded);
     }
-
-    private transient final Logger logger
-            = Logger.getLogger(getClass().getName());
 
     private final Supplier<HexEncoder> hexEncoderSupplier;
 

@@ -25,7 +25,7 @@ import java.nio.channels.WritableByteChannel;
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 public class WritableHexChannel
-        extends FilterChannel<WritableByteChannel, HexEncoder>
+        extends HexChannel<WritableByteChannel, HexEncoder>
         implements WritableByteChannel {
 
     /**

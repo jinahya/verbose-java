@@ -26,11 +26,4 @@ public class HelloWorldMain {
                 .write(System.out) // <2>
                 .println(); // <3>
     }
-
-    /**
-     * private constructor.
-     */
-    private HelloWorldMain() {
-        super();
-    }
 }

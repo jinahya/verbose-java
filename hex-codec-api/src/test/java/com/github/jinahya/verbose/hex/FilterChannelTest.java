@@ -27,26 +27,26 @@ import org.testng.annotations.Test;
 public class FilterChannelTest {
 
     /**
-     * Asserts {@link FilterChannel#isOpen()} throws a
-     * {@code NullPointerException} when the {@link FilterChannel#channel} is
+     * Asserts {@link HexChannel#isOpen()} throws a
+     * {@code NullPointerException} when the {@link HexChannel#channel} is
      * {@code null}.
      */
     @Test(expectedExceptions = NullPointerException.class)
     public void assertIsOpenThrowsNullPointerExceptionWhenChannelIsNull() {
-        new FilterChannel<Channel, Object>(null, null, 0, true) {
+        new HexChannel<Channel, Object>(null, null, 0, true) {
         }.isOpen();
     }
 
     /**
-     * Asserts {@link FilterChannel#close()} silently returns even if
-     * {@link FilterChannel#channel} is {@code null}.
+     * Asserts {@link HexChannel#close()} silently returns even if
+     * {@link HexChannel#channel} is {@code null}.
      *
      * @throws IOException if an I/O error occurs.
      */
     @Test
     public void assertCloseSilentlyReturnsEvenIfChannelIsNull()
             throws IOException {
-        new FilterChannel<Channel, Object>(null, null, 0, true) {
+        new HexChannel<Channel, Object>(null, null, 0, true) {
         }.close();
     }
 }

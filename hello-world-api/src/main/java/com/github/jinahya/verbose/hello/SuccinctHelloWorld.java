@@ -16,25 +16,19 @@
 package com.github.jinahya.verbose.hello;
 
 /**
- * A class whose {@code main} method prints out {@code hello, world}.
+ * A class whose {@code main} method prints out {@code hello, world} via
+ * {@link System#out}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 public class SuccinctHelloWorld {
 
     /**
-     * Prints {@code hello, world\n}.
+     * Prints {@code hello, world\n} via {@link System#out}.
      *
      * @param args command line arguments
      */
     public static void main(final String[] args) {
         System.out.printf("%s%n", "hello, world");
-    }
-
-    /**
-     * private constructor.
-     */
-    private SuccinctHelloWorld() {
-        super();
     }
 }

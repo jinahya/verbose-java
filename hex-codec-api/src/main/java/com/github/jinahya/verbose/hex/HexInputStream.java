@@ -92,9 +92,9 @@ public class HexInputStream extends FilterInputStream {
             throw new IndexOutOfBoundsException();
         }
         int count = 0;
-        for (; count < len; count++) {
+        for (; count < len; count++) { // <1>
             final int read = read();
-            if (read == -1) { // <1>
+            if (read == -1) {
                 if (count == 0) {
                     return -1;
                 }

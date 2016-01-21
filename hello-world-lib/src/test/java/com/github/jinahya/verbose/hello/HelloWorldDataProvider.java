@@ -20,12 +20,17 @@ import java.util.Iterator;
 import org.testng.annotations.DataProvider;
 
 /**
- * A class providing data for {@link HelloWorld#set(byte[], int)}.
+ * A class providing data for testing {@link HelloWorld#set(byte[], int)}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 class HelloWorldDataProvider {
 
+    /**
+     * Provides data set of {@code null} arrays.
+     *
+     * @return a data set
+     */
     @DataProvider
     static Object[][] provideArrayNull() {
         return new Object[][]{
@@ -34,19 +39,29 @@ class HelloWorldDataProvider {
         };
     }
 
+    /**
+     * Provides data set of negative {@code offset}s.
+     *
+     * @return a data set
+     */
     @DataProvider
     static Object[][] provideOffsetNegative() {
         return new Object[][]{
-            new Object[]{new byte[HelloWorld.BYTES], -1},
-            new Object[]{new byte[HelloWorld.BYTES], -2},
-            new Object[]{new byte[HelloWorld.BYTES], -3}
+            new Object[]{new byte[HelloWorld.BYTES - 0], -1},
+            new Object[]{new byte[HelloWorld.BYTES - 1], -2},
+            new Object[]{new byte[HelloWorld.BYTES - 2], -3}
         };
     }
 
+    /**
+     * Provides data set of insufficient array capacities.
+     *
+     * @return a data set
+     */
     @DataProvider
     static Iterator<Object[]> provideCapacityNotEnough() {
         return Arrays.asList(
-                new Object[]{new byte[HelloWorld.BYTES + 0], 1},
+                new Object[]{new byte[HelloWorld.BYTES + 0], 1}, // <1>
                 new Object[]{new byte[HelloWorld.BYTES + 1], 2},
                 new Object[]{new byte[HelloWorld.BYTES + 2], 3},
                 new Object[]{new byte[HelloWorld.BYTES + 3], 4}

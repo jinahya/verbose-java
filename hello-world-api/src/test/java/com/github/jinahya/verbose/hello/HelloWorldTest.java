@@ -88,8 +88,8 @@ public class HelloWorldTest {
     public void writeWithStream() throws IOException {
         assertThrows(NullPointerException.class, // <1>
                      () -> impl().write((OutputStream) null));
-        final OutputStream expected = new ByteArrayOutputStream(); // <2>
-        final OutputStream actual = impl().write(expected);
+        final OutputStream expected = new ByteArrayOutputStream();
+        final OutputStream actual = impl().write(expected); // <2>
         assertSame(actual, expected);
     }
 
@@ -102,9 +102,9 @@ public class HelloWorldTest {
     public void writeWithChannel() throws IOException {
         assertThrows(NullPointerException.class, // <1>
                      () -> impl().write((WritableByteChannel) null));
-        final WritableByteChannel expected // <2>
+        final WritableByteChannel expected
                 = Channels.newChannel(new ByteArrayOutputStream());
-        final WritableByteChannel actual = impl().write(expected);
+        final WritableByteChannel actual = impl().write(expected); // <2>
         assertSame(actual, expected);
     }
 }

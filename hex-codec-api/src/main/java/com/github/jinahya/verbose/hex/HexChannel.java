@@ -27,7 +27,7 @@ import java.nio.channels.Channel;
  * @param <T> channel type parameter.
  * @param <U> filter type parameter.
  */
-public abstract class FilterChannel<T extends Channel, U> implements Channel {
+public abstract class HexChannel<T extends Channel, U> implements Channel {
 
     /**
      * Creates a new instance on top of given channel.
@@ -37,8 +37,8 @@ public abstract class FilterChannel<T extends Channel, U> implements Channel {
      * @param capacity the capacity of intermediate buffer.
      * @param direct the flag for direct allocation of the intermediate buffer.
      */
-    public FilterChannel(final T channel, final U filter, final int capacity,
-                         final boolean direct) {
+    public HexChannel(final T channel, final U filter, final int capacity,
+                      final boolean direct) {
         super();
         this.channel = channel;
         this.filter = filter;
@@ -57,7 +57,7 @@ public abstract class FilterChannel<T extends Channel, U> implements Channel {
      */
     @Override
     public boolean isOpen() {
-        return channel.isOpen();
+        return channel.isOpen(); // <1>
     }
 
     /**
@@ -96,7 +96,7 @@ public abstract class FilterChannel<T extends Channel, U> implements Channel {
     protected T channel;
 
     /**
-     * The filter.
+     * The filter for converting bytes.
      */
     protected U filter;
 

@@ -40,7 +40,7 @@ public interface HexDecoder {
     default int decode(final ByteBuffer encoded, final ByteBuffer decoded) {
         int count = 0;
         while ((encoded.remaining() >= 2) && decoded.hasRemaining()) { // <1>
-            decoded.put((byte) decodeOctet(encoded));
+            decoded.put((byte) decodeOctet(encoded)); // <2>
             count++;
         }
         return count;
@@ -56,8 +56,8 @@ public interface HexDecoder {
     default ByteBuffer decode(final ByteBuffer encoded) {
         final ByteBuffer decoded // <1>
                 = ByteBuffer.allocate(encoded.remaining() >> 1);
-        decode(encoded, decoded);
-        decoded.flip(); // <2>
+        decode(encoded, decoded); // <2>
+        decoded.flip(); // <3>
         return decoded;
     }
 

@@ -20,7 +20,7 @@
 
   <properties>
     <maven.main.skip>true</maven.main.skip>
-    <maven.test.skip>true</maven.test.skip>
+    <!--<maven.test.skip>true</maven.test.skip>-->
     <jar.skipIfEmpty>true</jar.skipIfEmpty>
     <maven.install.skip>true</maven.install.skip>
   </properties>

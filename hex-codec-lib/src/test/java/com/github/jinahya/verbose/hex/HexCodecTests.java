@@ -202,6 +202,15 @@ final class HexCodecTests {
         return count;
     }
 
+    /**
+     * Copies all available bytes from given input channel to specified output
+     * channel.
+     *
+     * @param readable the input channel
+     * @param writable the output channel
+     * @return the number of bytes copied
+     * @throws IOException if an I/O error occurs.
+     */
     static long copy2(final ReadableByteChannel readable,
                       final WritableByteChannel writable)
             throws IOException {
@@ -217,6 +226,15 @@ final class HexCodecTests {
         return count;
     }
 
+    /**
+     * Copies all available bytes from given input channel to specified output
+     * channel.
+     *
+     * @param readable the input channel
+     * @param writable the output channel
+     * @return the number of bytes copied
+     * @throws IOException if an I/O error occurs.
+     */
     static long copy(final ReadableByteChannel readable,
                      final WritableByteChannel writable)
             throws IOException {

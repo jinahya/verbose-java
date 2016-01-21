@@ -22,7 +22,6 @@ import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
 import static java.util.ServiceLoader.load;
 import java.util.function.Supplier;
-import java.util.logging.Logger;
 
 /**
  * Default implementation of {@code PercentDecoder}.
@@ -66,9 +65,6 @@ public class PercentDecoderImpl implements PercentDecoder {
         encoded.position(encoded.position() + 1); // <4>
         return e;
     }
-
-    private transient final Logger logger
-            = Logger.getLogger(getClass().getName());
 
     private final Supplier<HexDecoder> hexDecoderSupplier;
 
