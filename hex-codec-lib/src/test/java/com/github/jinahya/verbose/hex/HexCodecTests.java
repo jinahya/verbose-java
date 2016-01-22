@@ -17,7 +17,6 @@ package com.github.jinahya.verbose.hex;
 
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -38,51 +37,6 @@ import static java.util.concurrent.ThreadLocalRandom.current;
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 final class HexCodecTests {
-
-    /**
-     * Fills some bytes to given file.
-     *
-     * @param file the file be filled.
-     * @return given file
-     * @throws IOException if an I/O error occurs.
-     */
-    static File fill(final File file) throws IOException {
-        try (OutputStream stream = new FileOutputStream(file)) {
-            final byte[] array = new byte[current().nextInt(128)];
-            final int count = current().nextInt(128);
-            for (int i = 0; i < count; i++) {
-                current().nextBytes(array);
-                stream.write(array);
-            }
-            stream.flush();
-        }
-        return file;
-    }
-
-    /**
-     * Fills some bytes to given path.
-     *
-     * @param path the path to be filled.
-     * @return given path
-     * @throws IOException if an I/O error occurs.
-     */
-    static Path fill(final Path path) throws IOException {
-        try (FileChannel channel
-                = FileChannel.open(path, StandardOpenOption.WRITE)) {
-            final byte[] array = new byte[current().nextInt(128)];
-            final ByteBuffer buffer = ByteBuffer.wrap(array);
-            final int count = current().nextInt(128);
-            for (int i = 0; i < count; i++) {
-                current().nextBytes(array);
-                while (buffer.hasRemaining()) { // <1>
-                    channel.write(buffer);
-                }
-                buffer.compact(); // <2>
-            }
-            channel.force(false); // <3>
-        }
-        return path;
-    }
 
     /**
      * Copies all available bytes from given input stream to specified output

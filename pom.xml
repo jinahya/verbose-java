@@ -65,8 +65,8 @@
     <github.site.noJekyll>true</github.site.noJekyll>
     <com.google.dagger.version>2.0.2</com.google.dagger.version>
     <com.squareup.dagger.version>1.2.2</com.squareup.dagger.version>
-    <org.jacocco.version>	0.7.5.201505241946</org.jacocco.version>
-    <org.glassfish.hk2.version>2.5.0-b01</org.glassfish.hk2.version>
+    <org.jacocco.version>0.7.5.201505241946</org.jacocco.version>
+    <org.glassfish.hk2.version>2.5.0-b02</org.glassfish.hk2.version>
     <org.glassfish.jersey.core.version>2.22.1</org.glassfish.jersey.core.version>
     <org.springframework.version>4.2.4.RELEASE</org.springframework.version>
   </properties>

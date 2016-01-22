@@ -16,12 +16,10 @@
 package com.github.jinahya.verbose.hex;
 
 import com.google.common.io.BaseEncoding;
-import java.nio.ByteBuffer;
-import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.nio.ByteBuffer.wrap;
+import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.util.concurrent.ThreadLocalRandom.current;
-import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
-import org.apache.commons.lang3.RandomStringUtils;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
@@ -33,33 +31,39 @@ import org.testng.annotations.Test;
 public class HexDecoderImplTest {
 
     /**
-     * Tests decoding with {@code RFC4648} test vectors.
+     * Tests decoding using {@code RFC4648} test vectors.
      */
     @Test
-    public void testDecodingAgainstRfc4648TestVectors() {
-        Rfc4648TestVectors.base16((d, e) -> {
-            final String decoded = new HexDecoderImpl().decode(e);
-            assertEquals(decoded, d);
-        });
+    public void decodeVerboseCompareRfc4648TestVector() {
+        Rfc4648TestVectors.base16(
+                (d, e) -> assertEquals(new HexDecoderImpl().decode(e), d)
+        );
     }
 
+    /**
+     * Cross-checks {@link HexDecoderImpl} against {@link Hex}.
+     */
     @Test(invocationCount = 128)
-    public void encodeCommonsDecodeVerbose() throws DecoderException {
-        final byte[] created = new byte[current().nextInt(128)];
+    public void encodeCommonsDecodeVerbose() {
+        final byte[] created = new byte[current().nextInt(128)]; // <1>
         current().nextBytes(created);
-        final byte[] encoded = new Hex().encode(created);
-        final byte[] decoded = new byte[encoded.length >> 1];
-        new HexDecoderImpl().decode(
-                ByteBuffer.wrap(encoded), ByteBuffer.wrap(decoded));
-        assertEquals(decoded, created);
+        final byte[] encoded = new Hex().encode(created); // <2>
+        final byte[] decoded = new byte[encoded.length >> 1]; // <3>
+        new HexDecoderImpl().decode(wrap(encoded), wrap(decoded));
+        assertEquals(decoded, created); // <4>
     }
 
+    /**
+     * Cross-checks {@link HexDecoderImpl} against {@link BaseEncoding}.
+     */
     @Test(invocationCount = 128)
     public void encodeGuavaDecodeVerbose() {
-        final String created = RandomStringUtils.random(current().nextInt(128));
-        final String encoded
-                = BaseEncoding.base16().encode(created.getBytes(UTF_8));
-        final String decoded = new HexDecoderImpl().decode(encoded);
+        final byte[] created = new byte[current().nextInt(128)];
+        current().nextBytes(created);
+        final byte[] encoded // <1>
+                = BaseEncoding.base16().encode(created).getBytes(US_ASCII);
+        final byte[] decoded = new byte[encoded.length >> 1];
+        new HexDecoderImpl().decode(wrap(encoded), wrap(decoded));
         assertEquals(decoded, created);
     }
 

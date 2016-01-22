@@ -44,6 +44,6 @@ public class HexDecoderImpl implements HexDecoder {
     public int decodeOctet(final ByteBuffer decoded) {
         final int upper = decodeNibble(decoded.get());
         final int lower = decodeNibble(decoded.get());
-        return (upper << 4) | lower; // <1>
+        return ((upper & 0xF) << 4) | (lower & 0xF); // <1>
     }
 }

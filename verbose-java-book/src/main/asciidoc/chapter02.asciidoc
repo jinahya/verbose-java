@@ -635,6 +635,95 @@ include::../../../../hex-codec-lib/src/main/java/com/github/jinahya/verbose/hex/
 ----
 첫 번째 문자를 디코딩하고 윈쪽으로 `4` 만큼 옮긴 값에 두번째 문자를 디코딩한 값을 OR(`|`) 연산하여 반환한다.
 
+==== Unit Testing Strategy
+
+`HexEncoderImpl` 클래스와 `HexDecoderImpl` 클래스가 올바르게 구현되었고 정상적으로 동작한다는 것을 어떻게 시험해야 할까? 단순히 시험에 사용할 데이터를 생성하고 `HexEncoderImpl` 객체를 이용해 인코딩한 후 다시 `HexDecoderImpl` 객체로 디코딩한 값을 비교하면 되지 않을까? 이 경우에 결과적으로 처음 입력한 데이터와 같은 결과를 얻었다 하더라도 두 클래스가 올바르게 작성되었다고 볼 수 없다. 두 클래스 모두 숫자 `15` 에 `'F'` 가 아닌 `'G'` 를 사용했더라도 시험을 통과하게 된다. 때문에 `HexEncoderImpl` 클래스와 `HexDecoderImpl` 클래스의 기능을 독립적으로 분리하여 각각의 기능을 비교해서 시험해 볼 수 있는 제 3의 자료 혹은 라이브러리를 사용할 필요가 있다.
+
+===== RFC 4648 The Base16, Base32, and Base64 Data Encodings
+{rfc-4648}[RFC 4648]의 http://tools.ietf.org/html/rfc4648#section-10[10. Test Vectors] 항목에 우리가 사용할 수 있는 테스트 벡터가 정의되어 있다. 아래와 같이 클래스를 하나를 만들고 시험 항목에서 사용할 수 있도록 한다.
+[source,java]
+.Rfc4648TestVectors.java#BASE16
+----
+include::../../../../hex-codec-lib/src/test/java/com/github/jinahya/verbose/hex/Rfc4648TestVectors.java[lines=29..37]
+----
+`BASE16` 필드를 직접 노출하지 않고 다음과 같이 메서드를 하나 추가하여 데이터를 사용할 수 있게 한다.
+[source,java]
+.Rfc4648TestVectors.java#base16(BiConsumer)
+----
+    // 주어진 BiConsumer 의 accpet(String, String) 메서드에 BASE16 리스트의 값들을 전달한다.
+    // 첫 번째 인자에은 BASE16 리스트의 짝수 번째 문자열을,
+    // 두 번째 인자에는 BASE16 리스트의 홀수 번째 문자열을 제공한다.
+include::../../../../hex-codec-lib/src/test/java/com/github/jinahya/verbose/hex/Rfc4648TestVectors.java[lines=45..49]
+----
+
+===== Apache Commons Codec
+{project-commons-codec}[Apache Commons Codec] 라이브러리의 {javadoc-commons-codec}/org/apache/commons/codec/binary/Hex.html[`Hex`] 클래스를 이용하여 인코딩/디코딩 결과를 교차 확인한다.
+
+===== Guava: Google Core Libraries for Java
+{project-guava}[Guava] 라이브러리에 포함된 {javadoc-guava}/com/google/common/io/BaseEncoding.html[`BaseEncoding`] 클래스를 이용하여 인코딩/디코딩 결과를 교차 확인한다.
+
+==== HexEncoderImplTest.java
+
+`HexEncoderImpl` 클래스의 기능을 확인하기 위한 시험클래스이다. 우선 아래와 같이 `Rfc4648TestVectors` 클래스를 `HexEncoderImpl` 클래스의 기능을 시험한다.
+[source,java]
+.HexEncoderImplTest.java#encodeVerboseCompareRfc4648TestVector()
+----
+    // 테스트 벡터의 입력값을 인코딩한 후 출력값을 비교한다.
+include::../../../../hex-codec-lib/src/test/java/com/github/jinahya/verbose/hex/HexEncoderImplTest.java[lines=37..42]
+----
+
+아래는 `Hex`(Commons-Codec) 클래스를 이용하여 `HexEncoderImpl` 클래스의 기능을 확인하는 시험항목이다.
+[source,java]
+.HexEncoderImplTest.java#encodeVerboseDecodeCommons()
+----
+    // HexEncoderImpl 클래스로 인코딩한 값을 Commons-Codec/Hex 클래스로 디코딩한 후 비교한다.
+include::../../../../hex-codec-lib/src/test/java/com/github/jinahya/verbose/hex/HexEncoderImplTest.java[lines=49..57]
+----
+<1> 인코딩에 사용할 배열을 생성한다.
+<2> 두배의 크기를 가지는 배열을 생성한 후 `encode(ByteBuffer, ByteBuffer)` 메서드를 이용하여 인코딩 한다.
+<3> 인코딩된 결과를 `Hex` 클래스를 이용하여 디코딩 한다.
+<4> 인코딩에 사용한 배열과 디코딩된 결과를 비교한다.
+
+아래는 `BaseEncoding`(Guava) 클래스를 이용하여 `HexEncoderImpl` 클래스의 기능을 확인하는 시험항목이다.
+[source,java]
+.HexEncoderImplTest.java#encodeVerboseDecodeGuava()
+----
+    // HexEncoderImpl 클래스로 인코딩한 값을 Guava/BaseEncoding 클래스로 디코딩한 후 비교한다.
+include::../../../../hex-codec-lib/src/test/java/com/github/jinahya/verbose/hex/HexEncoderImplTest.java[lines=62..71]
+----
+<1> `BaseEncoding`  클래스의 `decode` 메서드는 `CharSequence` 형의 인자를 받고 `byte[]` 형의 결과를 반환한다.
+
+==== HexDecoderImplTest.java
+
+`HexDecoderImpl` 클래스의 기능을 확인하기 위한 시험클래스이다. `HexEncderImplTest` 클래스와 마찬가지로 `Rfc4648TestVectors` 클래스를 이용하여 `HexDecoderImpl` 클래스의 기능을 시험한다.
+[source,java]
+.HexDecoderImplTest.java#decodeVerboseCompareRfc4648TestVector()
+----
+include::../../../../hex-codec-lib/src/test/java/com/github/jinahya/verbose/hex/HexDecoderImplTest.java[lines=36..41]
+----
+`Hex` 클래스를 이용하여 `HexDecoderImpl` 클래스의 기능을 확인하자.
+[source,java]
+.HexDecoderImplTest.java#encodeCommonsDecodeVerbose()
+----
+include::../../../../hex-codec-lib/src/test/java/com/github/jinahya/verbose/hex/HexDecoderImplTest.java[lines=46..54]
+----
+<1> 인코딩에 사용할 입력 배열을 생성한다.
+<2> `Hex` 클래스를 이용해 인코딩한다.
+<3> 절반 크기의 배열을 생성한 후 `decode(ByteBuffer, ByteBuffer)` 메서드를 이용해 디코딩한다.
+<4> 디코딩된 배열을 입력 배열과 비교한다.
+
+`BaseEncoding` 클래스를 이용하여 `HexDecoderImpl` 클래스의 기능을 확인한다.
+[source,java]
+.HexDecoderImplTest.java#encodeGuavaDecodeVerbose()
+----
+include::../../../../hex-codec-lib/src/test/java/com/github/jinahya/verbose/hex/HexDecoderImplTest.java[lines=59..68]
+----
+<1> `BaseEncoding` 클래스의 `encode` 메서드는 `byte[]` 형의 입력값을 받고 `String` 형의 출력값을 반환한다.
+
+==== HexCodecImplTest.java
+
+이제, 앞서 언급했듯이, Commons Codec 라이브러리와 Guava 라이브러리를 이용하여 교차 확인하는 시험 항목들을 작성해 보자.
+
 === Exercises
 . `HexEncoderImpl#encodeNible(int)` 과 `HexDecoderImpl#decodeNibble(int)` 의 `switch` 구문을 `if/else` 구문으로 바꿔보자.
 +
@@ -665,25 +754,36 @@ default void decode(final byte[] inarr, final int inoff, final int inlen,
     // outarr 의 outoff 부터 최소한 몇 개의 배열공간이 필요할까?
 }
 ----
-. `HexEncoderImplTest` 클래스에 테스트 메서드를 하나 추가 하고 클래스 파일의 magic 바이트를 `base16` 으로 출력해 보자.
+. 시험 클래스를 하나 추가하고 클래스 파일의 magic 바이트를 `base16` 으로 출력해 보자.
 +
 [source,java]
+.ClassFileTest.java
 ----
+public class ClassFileTest {
+
     @Test
     public void cafebabe() throws IOException {
         final Class<?> type = getClass();
         final String name = type.getSimpleName() + ".class";
         try (DataInputStream input
                 = new DataInputStream(type.getResourceAsStream(name))) {
-            final byte[] decodedBytes = new byte[4];
-            input.readFully(decodedBytes);
-            final byte[] encodedBytes = new byte[decodedBytes.length << 1];
-            new HexEncoderImpl().encode(ByteBuffer.wrap(decodedBytes),
-                                        ByteBuffer.wrap(encodedBytes));
-            logger.info("magic: {}", new String(encodedBytes, US_ASCII));
+            final byte[] decoded = new byte[4];
+            input.readFully(decoded);
+            final byte[] encoded = new byte[decoded.length << 1];
+            new HexEncoderImpl().encode(ByteBuffer.wrap(decoded),
+                                        ByteBuffer.wrap(encoded));
+            System.out.println("magic: " + new String(encoded, US_ASCII));
         }
     }
+}
 ----
++
+[NOTE]
+====
+`class` 파일의 첫 네 바이트는 클래스 파일임을 식별할 수 있는 고정 값이다.
+
+https://docs.oracle.com/javase/specs/jvms/se8/html/jvms-4.html#jvms-4.1[Chapter 4. The `class` File Format (The Java(R) Virtual Machine Specification)]
+====
 
 === percent-codec-api
 다음과 같이 정의된 URL이 있다고 가정하자.

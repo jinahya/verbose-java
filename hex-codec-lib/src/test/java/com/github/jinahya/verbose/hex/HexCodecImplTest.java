@@ -8,6 +8,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.RandomAccessFile;
 import static java.nio.ByteBuffer.wrap;
 import java.nio.channels.FileChannel;
 import static java.nio.channels.FileChannel.open;
@@ -34,6 +35,9 @@ import org.testng.annotations.Test;
  */
 public class HexCodecImplTest {
 
+    /**
+     * Encodes/decodes a random byte array.
+     */
     @Test(invocationCount = 128)
     public void encodeDecodeBytes() {
         final byte[] created = new byte[current().nextInt(128)];
@@ -45,6 +49,9 @@ public class HexCodecImplTest {
         assertEquals(decoded, created);
     }
 
+    /**
+     * Encodes/decodes a randomly generated string.
+     */
     @Test(invocationCount = 128)
     public void encodedDecodeString() {
         final String created = random(current().nextInt(128));
@@ -53,6 +60,9 @@ public class HexCodecImplTest {
         assertEquals(decoded, created);
     }
 
+    /**
+     * Encodes/decodes a randomly generated ascii string.
+     */
     @Test(invocationCount = 128)
     public void encodedDecodeAscii() {
         final String created = randomAscii(current().nextInt(128));
@@ -61,25 +71,33 @@ public class HexCodecImplTest {
         assertEquals(decoded, created);
     }
 
-    @Test(invocationCount = 128)
+    /**
+     * Encodes/decodes a randomly generated file.
+     *
+     * @throws IOException if an I/O error occurs.
+     * @throws NoSuchAlgorithmException if failed to digest files
+     */
+    @Test
     public void encodeDecodeFile()
             throws IOException, NoSuchAlgorithmException {
-        final File created = File.createTempFile("tmp", null);
+        final File created = File.createTempFile("tmp", null); // <1>
         created.deleteOnExit();
-        final File encoded = File.createTempFile("tmp", null);
+        try (RandomAccessFile raf = new RandomAccessFile(created, "rwd")) { // <2>
+            raf.setLength(current().nextLong(1048576));
+        }
+        final File encoded = File.createTempFile("tmp", null); // <3>
         encoded.deleteOnExit();
-        try (InputStream input = new FileInputStream(created)) {
+        try (InputStream input = new FileInputStream(created)) { // <4>
             try (OutputStream output = new HexOutputStream(
                     new FileOutputStream(encoded), new HexEncoderImpl())) {
                 final long copied = copy(input, output);
                 assertEquals(copied, created.length());
-                output.flush();
             }
         }
-        assertEquals(encoded.length(), created.length() << 1);
+        assertEquals(encoded.length(), created.length() << 1); // <5>
         final File decoded = File.createTempFile("tmp", null);
         decoded.deleteOnExit();
-        try (InputStream input = new HexInputStream(
+        try (InputStream input = new HexInputStream( // <6>
                 new FileInputStream(encoded), new HexDecoderImpl())) {
             try (OutputStream output = new FileOutputStream(decoded)) {
                 final long copied = copy(input, output);
@@ -87,21 +105,31 @@ public class HexCodecImplTest {
                 output.flush();
             }
         }
-        for (final String algorithm : new String[]{"MD5", "SHA-1", "SHA-256"}) {
+        for (final String algorithm : new String[]{"MD5", "SHA-1", "SHA-256"}) { // <7>
             final byte[] createdDigest = digest(created, algorithm);
             final byte[] decodedDigest = digest(decoded, algorithm);
             assertEquals(decodedDigest, createdDigest);
         }
     }
 
-    @Test(invocationCount = 128)
+    /**
+     * Encodes/decodes a randomly generated path.
+     *
+     * @throws IOException if an I/O error occurs.
+     * @throws NoSuchAlgorithmException if failed to digest paths.
+     */
+    @Test
     public void encodeDecodePath()
             throws IOException, NoSuchAlgorithmException {
-        final Path created = Files.createTempFile(null, null);
+        final Path created = Files.createTempFile(null, null); // <1>
         created.toFile().deleteOnExit();
-        final Path encoded = Files.createTempFile(null, null);
+        try (RandomAccessFile raf // <2>
+                = new RandomAccessFile(created.toFile(), "rwd")) {
+            raf.setLength(current().nextLong(1048576));
+        }
+        final Path encoded = Files.createTempFile(null, null); // <3>
         encoded.toFile().deleteOnExit();
-        try (ReadableByteChannel readable = open(created, READ)) {
+        try (ReadableByteChannel readable = open(created, READ)) { // <4>
             try (WritableHexChannel writable = new WritableHexChannel(
                     open(encoded, WRITE, DSYNC), new HexEncoderImpl(),
                     current().nextInt(2, 128), current().nextBoolean())) {
@@ -110,18 +138,17 @@ public class HexCodecImplTest {
             }
         }
         assertEquals(Files.size(encoded), Files.size(created) << 1);
-        final Path decoded = Files.createTempFile(null, null);
+        final Path decoded = Files.createTempFile(null, null); // <5>
         decoded.toFile().deleteOnExit();
-        try (ReadableByteChannel readable = new ReadableHexChannel(
+        try (ReadableByteChannel readable = new ReadableHexChannel( // <6>
                 open(encoded, READ), new HexDecoderImpl(),
                 current().nextInt(2, 128), current().nextBoolean())) {
             try (FileChannel writable = open(decoded, WRITE, DSYNC)) {
                 final long copied = copy(readable, writable);
                 assertEquals(copied, Files.size(created));
-                writable.force(false);
             }
         }
-        for (final String algorithm : new String[]{"MD5", "SHA-1", "SHA-256"}) {
+        for (final String algorithm : new String[]{"MD5", "SHA-1", "SHA-256"}) { // <7>
             final byte[] createdDigest = digest(created, algorithm);
             final byte[] decodedDigest = digest(decoded, algorithm);
             assertEquals(decodedDigest, createdDigest);

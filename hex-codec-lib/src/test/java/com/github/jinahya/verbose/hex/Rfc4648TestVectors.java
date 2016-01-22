@@ -36,6 +36,12 @@ final class Rfc4648TestVectors {
             "foobar", "666F6F626172"
     );
 
+    /**
+     * Accepts pairs of base 16 test vectors to given consumer.
+     *
+     * @param consumer the consumer accepts a pair of a decoded value and an
+     * encoded value.
+     */
     static void base16(final BiConsumer<String, String> consumer) {
         for (final Iterator<String> i = BASE16.iterator(); i.hasNext();) {
             consumer.accept(i.next(), i.next());

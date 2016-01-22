@@ -12,7 +12,7 @@ buildscript {
 ext {
   daggerVersion = "1.2.2"
   dagger2Version = "2.0.2"
-  hk2Version = "2.5.0-b01"
+  hk2Version = "2.5.0-b02"
   springVersion = "4.2.4.RELEASE"
   libraries = ['dagger': [group: 'com.squareup.dagger', name: 'dagger', version: daggerVersion],
                'dagger-compiler': [group: 'com.squareup.dagger', name: 'dagger-compiler', version: daggerVersion],
