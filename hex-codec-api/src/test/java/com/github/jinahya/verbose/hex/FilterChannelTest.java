@@ -27,9 +27,8 @@ import org.testng.annotations.Test;
 public class FilterChannelTest {
 
     /**
-     * Asserts {@link HexChannel#isOpen()} throws a
-     * {@code NullPointerException} when the {@link HexChannel#channel} is
-     * {@code null}.
+     * Asserts {@link HexChannel#isOpen()} throws a {@code NullPointerException}
+     * when the {@link HexChannel#channel} is {@code null}.
      */
     @Test(expectedExceptions = NullPointerException.class)
     public void assertIsOpenThrowsNullPointerExceptionWhenChannelIsNull() {

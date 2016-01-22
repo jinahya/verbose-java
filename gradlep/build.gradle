@@ -21,7 +21,7 @@ ext {
                'hk2-core': [group: 'org.glassfish.hk2', name: 'hk2-core', version: hk2Version],
                'hk2-testng': [group: 'org.glassfish.hk2', name: 'hk2-testng', version: hk2Version],
                'spring-context': [group: 'org.springframework', name: 'spring-context', version: springVersion]
-              ]
+  ]
 }
 
 subprojects {
