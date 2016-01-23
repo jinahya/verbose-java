@@ -52,6 +52,6 @@ public class HelloWorldImpl implements HelloWorld {
         array[offset++] = 0x6F; // 'o'
         array[offset++] = 0x72; // 'r'
         array[offset++] = 0x6C; // 'l'
-        array[offset++] = 0x64; // 'd' // <1>
+        array[offset++] = 0x64; // 'd' // NOSONAR <1>
     }
 }

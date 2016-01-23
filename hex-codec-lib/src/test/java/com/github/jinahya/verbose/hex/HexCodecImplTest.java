@@ -1,7 +1,7 @@
 package com.github.jinahya.verbose.hex;
 
-import static com.github.jinahya.verbose.hex.HexCodecTests.copy;
-import static com.github.jinahya.verbose.hex.HexCodecTests.digest;
+import static com.github.jinahya.verbose.hex.IoUtils.copy;
+import static com.github.jinahya.verbose.hex.MdUtils.digest;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -83,7 +83,12 @@ public class HexCodecImplTest {
         final File created = File.createTempFile("tmp", null); // <1>
         created.deleteOnExit();
         try (RandomAccessFile raf = new RandomAccessFile(created, "rwd")) { // <2>
-            raf.setLength(current().nextLong(1048576));
+            final byte[] bytes = new byte[current().nextInt(1024)];
+            final int count = current().nextInt(1024);
+            for (int i = 0; i < count; i++) {
+                current().nextBytes(bytes);
+                raf.write(bytes);
+            }
         }
         final File encoded = File.createTempFile("tmp", null); // <3>
         encoded.deleteOnExit();
@@ -125,7 +130,12 @@ public class HexCodecImplTest {
         created.toFile().deleteOnExit();
         try (RandomAccessFile raf // <2>
                 = new RandomAccessFile(created.toFile(), "rwd")) {
-            raf.setLength(current().nextLong(1048576));
+            final byte[] bytes = new byte[current().nextInt(1024)];
+            final int count = current().nextInt(1024);
+            for (int i = 0; i < count; i++) {
+                current().nextBytes(bytes);
+                raf.write(bytes);
+            }
         }
         final Path encoded = Files.createTempFile(null, null); // <3>
         encoded.toFile().deleteOnExit();

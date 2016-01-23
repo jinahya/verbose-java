@@ -36,7 +36,7 @@ public class HexDecoderImplTest {
     @Test
     public void decodeVerboseCompareRfc4648TestVector() {
         Rfc4648TestVectors.base16(
-                (d, e) -> assertEquals(new HexDecoderImpl().decode(e), d)
+                (d, e) -> assertEquals(new HexDecoderImpl().decode(e), d) // <1>
         );
     }
 

@@ -16,11 +16,14 @@
 package com.github.jinahya.verbose.hex;
 
 import java.nio.ByteBuffer;
+import java.nio.charset.Charset;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.ThreadLocalRandom.current;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.slf4j.Logger;
-import static org.slf4j.LoggerFactory.getLogger;
+import static org.apache.commons.lang3.RandomStringUtils.random;
+import static org.apache.commons.lang3.RandomStringUtils.randomAscii;
+import static org.mockito.Mockito.mock;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertThrows;
 import org.testng.annotations.Test;
 
 /**
@@ -32,21 +35,42 @@ public class HexDecoderTest extends AbstractHexDecoderTest {
 
     @Test
     public void decodeBuffer() {
-        final int capacity = (current().nextInt(128) >> 1) << 1;
-        final ByteBuffer decoded
-                = decoder().decode(ByteBuffer.allocate(capacity));
-        assertEquals(decoded.remaining(), capacity >> 1);
-        decoder().decode(ByteBuffer.allocate(capacity),
-                         ByteBuffer.allocate(capacity >> 1));
+        {
+            assertThrows(NullPointerException.class,
+                         () -> decoder().decode((ByteBuffer) null));
+            final int capacity = (current().nextInt(128) >> 1) << 1;
+            final ByteBuffer decoded
+                    = decoder().decode(ByteBuffer.allocate(capacity));
+            assertEquals(decoded.remaining(), capacity >> 1);
+        }
+        {
+            assertThrows(NullPointerException.class,
+                         () -> decoder().decode(null, (ByteBuffer) null));
+            assertThrows(NullPointerException.class,
+                         () -> decoder().decode(mock(ByteBuffer.class), null));
+            final int capacity = (current().nextInt(128) >> 1) << 1;
+            decoder().decode(ByteBuffer.allocate(capacity),
+                             ByteBuffer.allocate(capacity >> 1));
+        }
     }
 
     @Test
     public void decodeString() {
-        final int count = (current().nextInt(128) >> 1) << 1;
-        final String encoded = RandomStringUtils.random(count);
-        final String decoded = decoder().decode(encoded);
+        {
+            assertThrows(NullPointerException.class,
+                         () -> decoder().decode(null, mock(Charset.class)));
+            assertThrows(NullPointerException.class,
+                         () -> decoder().decode("", null));
+            final int count = (current().nextInt(128) >> 1) << 1;
+            final String encoded = randomAscii(count);
+            final String decoded = decoder().decode(encoded, UTF_8);
+        }
+        {
+            assertThrows(NullPointerException.class,
+                         () -> decoder().decode((String) null));
+            final int count = (current().nextInt(128) >> 1) << 1;
+            final String encoded = random(count);
+            final String decoded = decoder().decode(encoded);
+        }
     }
-
-    private transient final Logger logger = getLogger(getClass());
-
 }

@@ -3,6 +3,9 @@ include::cover.asciidoc[]
 :icons: font
 :source-highlighter: coderay
 
+:apidocs-javase: http://docs.oracle.com/javase/8/docs/api
+:apidocs-javaee: http://docs.oracle.com/javaee/7/api
+
 :rfc-4648: http://tools.ietf.org/html/rfc4648
 
 :project-commons-codec: https://commons.apache.org/proper/commons-codec/

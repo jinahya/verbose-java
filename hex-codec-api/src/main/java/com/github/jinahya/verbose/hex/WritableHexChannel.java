@@ -75,5 +75,4 @@ public class WritableHexChannel
         buffer().compact();
         return count;
     }
-
 }

@@ -2,6 +2,8 @@ package com.github.jinahya.verbose.hex;
 
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
+import static java.nio.ByteBuffer.allocate;
+import static java.nio.ByteBuffer.wrap;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import static java.nio.charset.StandardCharsets.US_ASCII;
@@ -63,8 +65,7 @@ public interface HexEncoder {
         if (decoded == null) {
             throw new NullPointerException("null decoded");
         }
-        final ByteBuffer encoded // <1>
-                = ByteBuffer.allocate(decoded.remaining() << 1);
+        final ByteBuffer encoded = allocate(decoded.remaining() << 1); // <1>
         encode(decoded, encoded); // <2>
         encoded.flip(); // <3>
         return encoded;
@@ -87,7 +88,7 @@ public interface HexEncoder {
         }
         final byte[] decodedBytes = decoded.getBytes(charset); // <1>
         final byte[] encodedBytes = new byte[decodedBytes.length * 2]; // <2>
-        encode(ByteBuffer.wrap(decodedBytes), ByteBuffer.wrap(encodedBytes)); // <3>
+        encode(wrap(decodedBytes), wrap(encodedBytes)); // <3>
         return new String(encodedBytes, US_ASCII); // <4>
     }
 
@@ -102,6 +103,9 @@ public interface HexEncoder {
      * @see #encode(java.lang.String, java.nio.charset.Charset)
      */
     default String encode(final String decoded) {
+        if (decoded == null) {
+            throw new NullPointerException("null decoded");
+        }
         return encode(decoded, UTF_8);
     }
 }

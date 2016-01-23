@@ -40,6 +40,10 @@ public abstract class HexChannel<T extends Channel, U> implements Channel {
     public HexChannel(final T channel, final U filter, final int capacity,
                       final boolean direct) {
         super();
+        if (capacity < 0) {
+            throw new IllegalArgumentException(
+                    "capacity(" + capacity + ") < 0");
+        }
         this.channel = channel;
         this.filter = filter;
         this.capacity = capacity;

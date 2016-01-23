@@ -15,14 +15,14 @@
  */
 package com.github.jinahya.verbose.hex;
 
-import com.google.inject.Inject;
 import java.nio.ByteBuffer;
-import static java.nio.charset.StandardCharsets.US_ASCII;
+import java.nio.charset.Charset;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.ThreadLocalRandom.current;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.slf4j.Logger;
-import static org.slf4j.LoggerFactory.getLogger;
+import static org.apache.commons.lang3.RandomStringUtils.random;
+import static org.mockito.Mockito.mock;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertThrows;
 import org.testng.annotations.Test;
 
 /**
@@ -35,12 +35,18 @@ public class HexEncoderTest extends AbstractHexEncoderTest {
     @Test
     public void encodeBuffer() {
         {
+            assertThrows(NullPointerException.class,
+                         () -> encoder().encode((ByteBuffer) null));
             final int capacity = current().nextInt(128);
             final ByteBuffer decoded = ByteBuffer.allocate(capacity);
             final ByteBuffer encoded = encoder().encode(decoded);
             assertEquals(encoded.remaining(), decoded.capacity() << 1);
         }
         {
+            assertThrows(NullPointerException.class,
+                         () -> encoder().encode(ByteBuffer.allocate(0), null));
+            assertThrows(NullPointerException.class,
+                         () -> encoder().encode(null, ByteBuffer.allocate(0)));
             final int capacity = current().nextInt(128);
             final ByteBuffer decoded = ByteBuffer.allocate(capacity);
             final ByteBuffer encoded = ByteBuffer.allocate(capacity << 1);
@@ -52,20 +58,20 @@ public class HexEncoderTest extends AbstractHexEncoderTest {
     @Test
     public void encodeString() {
         {
+            assertThrows(NullPointerException.class,
+                         () -> encoder().encode(null, mock(Charset.class)));
+            assertThrows(NullPointerException.class,
+                         () -> encoder().encode("", null));
             final int count = current().nextInt(128);
-            final String decoded = RandomStringUtils.random(count);
-            final String encoded = encoder().encode(decoded);
+            final String decoded = random(count);
+            final String encoded = encoder().encode(decoded, UTF_8);
         }
         {
+            assertThrows(NullPointerException.class,
+                         () -> encoder().encode((String) null));
             final int count = current().nextInt(128);
-            final String decoded = RandomStringUtils.randomAscii(count);
-            final String encoded = encoder().encode(decoded, US_ASCII);
-            assertEquals(encoded.length(), decoded.length() << 1);
+            final String decoded = random(count);
+            final String encoded = encoder().encode(decoded);
         }
     }
-
-    private transient final Logger logger = getLogger(getClass());
-
-    @Inject
-    private HexEncoder encoder;
 }

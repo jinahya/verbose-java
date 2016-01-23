@@ -77,7 +77,7 @@ public class HelloWorldImplTest {
         final byte[] array = new byte[HelloWorld.BYTES];
         final int offset = 0;
         new HelloWorldImpl().set(array, offset);
-        assertEquals(array[offset + 0x0], 'h'); // <1>
+        assertEquals(array[offset + 0x0], 'h'); // NOSONAR <1>
         assertEquals(array[offset + 0x1], 'e');
         assertEquals(array[offset + 0x2], 'l');
         assertEquals(array[offset + 0x3], 'l');

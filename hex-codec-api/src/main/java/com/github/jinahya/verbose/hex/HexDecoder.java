@@ -2,6 +2,8 @@ package com.github.jinahya.verbose.hex;
 
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
+import static java.nio.ByteBuffer.allocate;
+import static java.nio.ByteBuffer.wrap;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import static java.nio.charset.StandardCharsets.US_ASCII;
@@ -38,6 +40,12 @@ public interface HexDecoder {
      * @return number of decoded bytes produced to {@code decoded}
      */
     default int decode(final ByteBuffer encoded, final ByteBuffer decoded) {
+        if (encoded == null) {
+            throw new NullPointerException("null decoded");
+        }
+        if (decoded == null) {
+            throw new NullPointerException("null decoded");
+        }
         int count = 0;
         while ((encoded.remaining() >= 2) && decoded.hasRemaining()) { // <1>
             decoded.put((byte) decodeOctet(encoded)); // <2>
@@ -54,8 +62,10 @@ public interface HexDecoder {
      * @return a byte buffer containing result
      */
     default ByteBuffer decode(final ByteBuffer encoded) {
-        final ByteBuffer decoded // <1>
-                = ByteBuffer.allocate(encoded.remaining() >> 1);
+        if (encoded == null) {
+            throw new NullPointerException("null encoded");
+        }
+        final ByteBuffer decoded = allocate(encoded.remaining() >> 1); // <1>
         decode(encoded, decoded); // <2>
         decoded.flip(); // <3>
         return decoded;
@@ -70,10 +80,15 @@ public interface HexDecoder {
      * @return a decoded string
      */
     default String decode(final String encoded, final Charset charset) {
+        if (encoded == null) {
+            throw new NullPointerException("null encoded");
+        }
+        if (charset == null) {
+            throw new NullPointerException("null charset");
+        }
         final byte[] encodedBytes = encoded.getBytes(US_ASCII); // <1>
         final byte[] decodedBytes = new byte[encodedBytes.length / 2]; // <2>
-        decode(ByteBuffer.wrap(encodedBytes), // <3>
-               ByteBuffer.wrap(decodedBytes));
+        decode(wrap(encodedBytes), wrap(decodedBytes)); // <3>
         return new String(decodedBytes, charset); // <4>
     }
 
@@ -88,6 +103,9 @@ public interface HexDecoder {
      * @see #decode(java.lang.String, java.nio.charset.Charset)
      */
     default String decode(final String encoded) {
+        if (encoded == null) {
+            throw new NullPointerException("null encoded");
+        }
         return decode(encoded, UTF_8);
     }
 }
