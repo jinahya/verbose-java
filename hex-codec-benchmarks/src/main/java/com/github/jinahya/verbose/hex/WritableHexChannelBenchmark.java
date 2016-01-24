@@ -48,7 +48,7 @@ public class WritableHexChannelBenchmark {
         buffer.clear();
     }
 
-    private static final int count = 1024;
+    private static final int count = 16;
 
     @Benchmark
     public void mark1(final Paths paths) throws IOException {
@@ -168,5 +168,4 @@ public class WritableHexChannelBenchmark {
             }
         }
     }
-
 }
