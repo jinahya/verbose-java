@@ -21,8 +21,6 @@ import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import java.nio.channels.Channels;
 import static java.nio.charset.StandardCharsets.US_ASCII;
-import org.slf4j.Logger;
-import static org.slf4j.LoggerFactory.getLogger;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertThrows;
 import org.testng.annotations.Test;
@@ -150,6 +148,4 @@ public class HelloWorldImplTest {
         final byte[] expected = "hello, world".getBytes(US_ASCII);
         assertEquals(actual, expected);
     }
-
-    private transient final Logger logger = getLogger(getClass());
 }

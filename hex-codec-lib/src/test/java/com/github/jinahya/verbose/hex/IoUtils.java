@@ -26,13 +26,11 @@ import java.nio.channels.FileChannel;
 import static java.nio.channels.FileChannel.open;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
-import static java.nio.file.Files.isSameFile;
 import java.nio.file.Path;
 import static java.nio.file.StandardOpenOption.CREATE;
 import static java.nio.file.StandardOpenOption.READ;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 import static java.nio.file.StandardOpenOption.WRITE;
-import static java.util.Objects.requireNonNull;
 import static java.util.concurrent.ThreadLocalRandom.current;
 
 /**
@@ -42,14 +40,6 @@ import static java.util.concurrent.ThreadLocalRandom.current;
  */
 final class IoUtils {
 
-    /**
-     * Copies bytes from given input stream to specified output stream.
-     *
-     * @param input the input stream
-     * @param output the output stream
-     * @return the number of bytes copied
-     * @throws IOException if an I/O error occurs.
-     */
     static long copy(final InputStream input, final OutputStream output)
             throws IOException {
         long count = 0L;
@@ -60,17 +50,7 @@ final class IoUtils {
         return count;
     }
 
-    /**
-     * Copies given source file to specified target file.
-     *
-     * @param source the source file
-     * @param target the target file
-     * @throws IOException if an I/O error occurs.
-     */
     static void copy(final File source, final File target) throws IOException {
-        if (requireNonNull(source).equals(target)) {
-            return;
-        }
         try (InputStream input = new FileInputStream(source)) {
             try (OutputStream output = new FileOutputStream(target)) {
                 copy(input, output);
@@ -100,24 +80,16 @@ final class IoUtils {
             throws IOException {
         long count = 0L;
         final ByteBuffer buffer = ByteBuffer.allocate(4096);
-        while (readable.read(buffer) != -1) { // <1>
-            buffer.flip(); // <2>
-            while (buffer.hasRemaining()) { // <3>
+        while (readable.read(buffer) != -1) {
+            buffer.flip();
+            while (buffer.hasRemaining()) { // <1>
                 count += writable.write(buffer);
             }
-            buffer.compact(); // <4>
+            buffer.compact(); // <2>
         }
         return count;
     }
 
-    /**
-     * Copies bytes from given input channel to specified output channel.
-     *
-     * @param readable the input channel
-     * @param writable the output channel
-     * @return the number of bytes copied
-     * @throws IOException if an I/O error occurs.
-     */
     static long copy(final ReadableByteChannel readable,
                      final WritableByteChannel writable)
             throws IOException {
@@ -172,21 +144,7 @@ final class IoUtils {
         }
     }
 
-    /**
-     * Copies given source path to specified target path. This method delegates
-     * the whole operation to either
-     * {@link #copy1(java.nio.file.Path, java.nio.file.Path)} or
-     * {@link #copy2(java.nio.file.Path, java.nio.file.Path)}, or
-     * {@link #copy3(java.nio.file.Path, java.nio.file.Path)}.
-     *
-     * @param source the source path
-     * @param target the target path
-     * @throws IOException if an I/O error occurs.
-     */
     static void copy(final Path source, final Path target) throws IOException {
-        if (isSameFile(requireNonNull(source), requireNonNull(target))) {
-            return;
-        }
         switch (current().nextInt(3)) {
             case 0:
                 copy1(source, target);

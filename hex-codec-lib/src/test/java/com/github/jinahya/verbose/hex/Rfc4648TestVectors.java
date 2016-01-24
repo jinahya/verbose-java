@@ -21,10 +21,43 @@ import java.util.List;
 import java.util.function.BiConsumer;
 
 /**
+ * Test Vectors defined in RFC 4648.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
+ * @see <a href="http://tools.ietf.org/html/rfc4648#section-10">10. Test Vectors
+ * (RFC 4648)</a>
  */
 final class Rfc4648TestVectors {
+
+    private static final List<String> BASE64 = Arrays.asList(
+            "", "",
+            "f", "Zg==",
+            "fo", "Zm8=",
+            "foo", "Zm9v",
+            "foob", "Zm9vYg==",
+            "fooba", "Zm9vYmE=",
+            "foobar", "Zm9vYmFy"
+    );
+
+    private static final List<String> BASE32 = Arrays.asList(
+            "", "",
+            "f", "MY======",
+            "fo", "MZXQ====",
+            "foo", "MZXW6===",
+            "foob", "MZXW6YQ=",
+            "fooba", "MZXW6YTB",
+            "foobar", "MZXW6YTBOI======"
+    );
+
+    private static final List<String> BASE32HEX = Arrays.asList(
+            "", "",
+            "f", "CO======",
+            "fo", "CPNG====",
+            "foo", "CPNMU===",
+            "foob", "CPNMUOG=",
+            "fooba", "CPNMUOJ1",
+            "foobar", "CPNMUOJ1E8======"
+    );
 
     private static final List<String> BASE16 = Arrays.asList(
             "", "",
@@ -36,8 +69,27 @@ final class Rfc4648TestVectors {
             "foobar", "666F6F626172"
     );
 
+    private static void accept(final List<String> list,
+                               final BiConsumer<String, String> consumer) {
+        for (final Iterator<String> i = list.iterator(); i.hasNext();) {
+            consumer.accept(i.next(), i.next());
+        }
+    }
+
+    static void base64(final BiConsumer<String, String> consumer) {
+        accept(BASE64, consumer);
+    }
+
+    static void base32(final BiConsumer<String, String> consumer) {
+        accept(BASE32, consumer);
+    }
+
+    static void base32hex(final BiConsumer<String, String> consumer) {
+        accept(BASE32HEX, consumer);
+    }
+
     /**
-     * Accepts pairs of base 16 test vectors to given consumer.
+     * Accepts pairs of base16 test vectors to given consumer.
      *
      * @param consumer the consumer accepts a pair of a decoded value and an
      * encoded value.

@@ -10,18 +10,15 @@ include::cover.asciidoc[]
 
 :project-commons-codec: https://commons.apache.org/proper/commons-codec/
 :version-commons-codec: 1.10
-:apidocs-commons-codec: http://static.javadoc.io/commons-codec/commons-codec/{version-commons-codec}/index.html
-:javadoc-commons-codec: http://static.javadoc.io/commons-codec/commons-codec/{version-commons-codec}
+:apidocs-commons-codec: http://static.javadoc.io/commons-codec/commons-codec/{version-commons-codec}
 
 :project-commons-lang3: https://commons.apache.org/proper/commons-lang/
 :version-commons-lang3: 3.4
-:apidocs-commons-lang3: http://static.javadoc.io/org.apache.commons/commons-lang3/{version-commons-lang3}/index.html
-:javadoc-commons-lang3: http://static.javadoc.io/org.apache.commons/commons-lang3/{version-commons-lang3}
+:apidocs-commons-lang3: http://static.javadoc.io/org.apache.commons/commons-lang3/{version-commons-lang3}
 
 :project-guava: https://github.com/google/guava
 :version-guava: 19.0
-:apidocs-guava: http://static.javadoc.io/com.google.guava/guava/{version-guava}/index.html
-:javadoc-guava: http://static.javadoc.io/com.google.guava/guava/{version-guava}
+:apidocs-guava: http://static.javadoc.io/com.google.guava/guava/{version-guava}
 
 include::introduction.asciidoc[]
 

@@ -50,25 +50,12 @@ final class MdUtils {
 
     private static byte[] digest2(InputStream input, final String algorithm)
             throws NoSuchAlgorithmException, IOException {
-        final MessageDigest digest = MessageDigest.getInstance(algorithm);
-        input = new DigestInputStream(input, digest); // <1>
-        final byte[] buffer = new byte[4096];
-        while (input.read(buffer) != -1); // <2>
-        return digest.digest(); // <3>
+        input = new DigestInputStream( // <1>
+                input, MessageDigest.getInstance(algorithm)); // <1>
+        for (final byte[] b = new byte[4096]; input.read(b) != -1;); // <2>
+        return ((DigestInputStream) input).getMessageDigest().digest();
     }
 
-    /**
-     * Computes a hash from given input stream using specified algorithm name.
-     * This method delegates the whole operation to either
-     * {@link #digest1(java.io.InputStream, java.lang.String)} or
-     * {@link #digest2(java.io.InputStream, java.lang.String)}.
-     *
-     * @param input the input stream
-     * @param algorithm the algorithm name
-     * @return the computed hash value.
-     * @throws NoSuchAlgorithmException if {@code algorithm} is unknown.
-     * @throws IOException if an I/O error occurs.
-     */
     static byte[] digest(final InputStream input, final String algorithm)
             throws NoSuchAlgorithmException, IOException {
         switch (current().nextInt(2)) {
@@ -79,15 +66,6 @@ final class MdUtils {
         }
     }
 
-    /**
-     * Computes a hash of given file using specified algorithm name.
-     *
-     * @param file the file
-     * @param algorithm the algorithm name
-     * @return the computed hash value
-     * @throws IOException if an I/O error occurs
-     * @throws NoSuchAlgorithmException if {@code algorithm} is unknown.
-     */
     static byte[] digest(final File file, final String algorithm)
             throws IOException, NoSuchAlgorithmException {
         try (InputStream stream = new FileInputStream(file)) {
@@ -95,16 +73,6 @@ final class MdUtils {
         }
     }
 
-    /**
-     * Computes a hash from all bytes read from given channel using specified
-     * algorithm name.
-     *
-     * @param channel the channel
-     * @param algorithm the algorithm name
-     * @return a computed hash value
-     * @throws NoSuchAlgorithmException if {@code algorithm} is unknown
-     * @throws IOException if an I/O error occurs.
-     */
     static byte[] digest(final ReadableByteChannel channel,
                          final String algorithm)
             throws NoSuchAlgorithmException, IOException {
@@ -113,20 +81,11 @@ final class MdUtils {
         while (channel.read(buffer) != -1) { // <1>
             buffer.flip();
             digest.update(buffer); // <2>
-            buffer.compact();
+            buffer.clear();
         }
         return digest.digest();
     }
 
-    /**
-     * Computes a hash from given path using specified algorithm name.
-     *
-     * @param path the path
-     * @param algorithm the algorithm name
-     * @return a computed hash value
-     * @throws IOException if an I/O error occurs.
-     * @throws NoSuchAlgorithmException if {@code algorithm} is unknown
-     */
     static byte[] digest(final Path path, final String algorithm)
             throws IOException, NoSuchAlgorithmException {
         try (ReadableByteChannel channel = open(path, READ)) {

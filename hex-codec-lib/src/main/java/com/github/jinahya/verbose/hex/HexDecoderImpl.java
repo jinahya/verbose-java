@@ -1,5 +1,6 @@
 package com.github.jinahya.verbose.hex;
 
+import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 
 /**
@@ -35,13 +36,19 @@ public class HexDecoderImpl implements HexDecoder {
             case 'E': // 69, 0x45
             case 'F': // 70, 0x46
                 return encoded - 55; // to 10 ~ 15
-            default: // assume 'a to 'f'
+            default: // assume 'a' ~ 'f'
                 return encoded - 87; // to 10 ~ 15
         }
     }
 
     @Override
     public int decodeOctet(final ByteBuffer decoded) {
+        if (decoded == null) {
+            throw new NullPointerException("null decoded");
+        }
+        if (decoded.remaining() < 2) {
+            throw new BufferUnderflowException();
+        }
         final int upper = decodeNibble(decoded.get());
         final int lower = decodeNibble(decoded.get());
         return ((upper & 0xF) << 4) | (lower & 0xF); // <1>
