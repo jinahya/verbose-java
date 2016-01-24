@@ -16,9 +16,15 @@
 package com.github.jinahya.verbose.hex;
 
 import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.nio.ByteBuffer;
+import static java.nio.ByteBuffer.allocate;
+import java.nio.channels.FileChannel;
+import static java.nio.channels.FileChannel.open;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import static java.nio.file.StandardOpenOption.APPEND;
+import static java.nio.file.StandardOpenOption.WRITE;
+import static java.util.concurrent.ThreadLocalRandom.current;
 import org.openjdk.jmh.annotations.Scope;
 import org.openjdk.jmh.annotations.State;
 
@@ -30,10 +36,13 @@ import org.openjdk.jmh.annotations.State;
 public class Paths {
 
     private static Path mega(final Path path) throws IOException {
-        try (RandomAccessFile raw
-                = new RandomAccessFile(path.toFile(), "rwd")) {
-            raw.setLength(raw.length() + 1048576);
-            raw.getFD().sync();
+        try (FileChannel channel = open(path, WRITE, APPEND)) {
+            final ByteBuffer buffer = allocate(1048576);
+            current().nextBytes(buffer.array());
+            while (buffer.hasRemaining()) {
+                channel.write(buffer);
+            }
+            channel.force(false);
         }
         return path;
     }

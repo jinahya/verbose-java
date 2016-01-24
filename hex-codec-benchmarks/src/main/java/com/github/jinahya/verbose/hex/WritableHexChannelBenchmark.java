@@ -17,6 +17,7 @@ package com.github.jinahya.verbose.hex;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import static java.nio.ByteBuffer.allocateDirect;
 import java.nio.channels.FileChannel;
 import static java.nio.channels.FileChannel.open;
 import java.nio.channels.ReadableByteChannel;
@@ -31,12 +32,12 @@ import org.openjdk.jmh.annotations.Benchmark;
  */
 public class WritableHexChannelBenchmark {
 
-    private static final ByteBuffer buffer = ByteBuffer.allocateDirect(128);
+    private static final ByteBuffer buffer = allocateDirect(128);
 
     private void copy(final ReadableByteChannel readable,
                       final WritableByteChannel writable)
             throws IOException {
-        for (int read; (read = readable.read(buffer)) != -1;) {
+        while (readable.read(buffer) != -1) {
             buffer.flip();
             writable.write(buffer);
             buffer.compact();
@@ -47,93 +48,123 @@ public class WritableHexChannelBenchmark {
         buffer.clear();
     }
 
+    private static final int count = 1024;
+
     @Benchmark
     public void mark1(final Paths paths) throws IOException {
-        try (ReadableByteChannel readable = open(paths.created, READ)) {
+        try (FileChannel readable = open(paths.created, READ)) {
             final FileChannel channel = open(paths.encoded, WRITE);
             final HexEncoder encoder = new HexEncoderImpl();
             try (WritableByteChannel writable
                     = new WritableHexChannel_O(channel, encoder)) {
-                copy(readable, writable);
-                channel.force(false);
+                for (int i = 0; i < count; i++) {
+                    readable.position(0L);
+                    channel.position(0L);
+                    copy(readable, writable);
+                    channel.force(false);
+                }
             }
         }
     }
 
     @Benchmark
     public void buffer0x40(final Paths paths) throws IOException {
-        try (ReadableByteChannel readable = open(paths.created, READ)) {
+        try (FileChannel readable = open(paths.created, READ)) {
             final FileChannel channel = open(paths.encoded, WRITE);
             final HexEncoder encoder = new HexEncoderImpl();
             try (WritableByteChannel writable
                     = new WritableHexChannel(channel, encoder, 0x40, false)) {
-                copy(readable, writable);
-                channel.force(false);
+                for (int i = 0; i < count; i++) {
+                    readable.position(0L);
+                    channel.position(0L);
+                    copy(readable, writable);
+                    channel.force(false);
+                }
             }
         }
     }
 
     @Benchmark
     public void buffer0x80(final Paths paths) throws IOException {
-        try (ReadableByteChannel readable = open(paths.created, READ)) {
+        try (FileChannel readable = open(paths.created, READ)) {
             final FileChannel channel = open(paths.encoded, WRITE);
             final HexEncoder encoder = new HexEncoderImpl();
             try (WritableByteChannel writable
                     = new WritableHexChannel(channel, encoder, 0x80, false)) {
-                copy(readable, writable);
-                channel.force(false);
+                for (int i = 0; i < count; i++) {
+                    readable.position(0L);
+                    channel.position(0L);
+                    copy(readable, writable);
+                    channel.force(false);
+                }
             }
         }
     }
 
     @Benchmark
     public void buffer0xC0(final Paths paths) throws IOException {
-        try (ReadableByteChannel readable = open(paths.created, READ)) {
+        try (FileChannel readable = open(paths.created, READ)) {
             final FileChannel channel = open(paths.encoded, WRITE);
             final HexEncoder encoder = new HexEncoderImpl();
             try (WritableByteChannel writable
                     = new WritableHexChannel(channel, encoder, 0xC0, false)) {
-                copy(readable, writable);
-                channel.force(false);
+                for (int i = 0; i < count; i++) {
+                    readable.position(0L);
+                    channel.position(0L);
+                    copy(readable, writable);
+                    channel.force(false);
+                }
             }
         }
     }
 
-    @Benchmark
+    //@Benchmark
     public void buffer0x40d(final Paths paths) throws IOException {
-        try (ReadableByteChannel readable = open(paths.created, READ)) {
+        try (FileChannel readable = open(paths.created, READ)) {
             final FileChannel channel = open(paths.encoded, WRITE);
             final HexEncoder encoder = new HexEncoderImpl();
             try (WritableByteChannel writable
                     = new WritableHexChannel(channel, encoder, 0x40, true)) {
-                copy(readable, writable);
-                channel.force(false);
+                for (int i = 0; i < count; i++) {
+                    readable.position(0L);
+                    channel.position(0L);
+                    copy(readable, writable);
+                    channel.force(false);
+                }
             }
         }
     }
 
-    @Benchmark
+    //@Benchmark
     public void buffer0x80d(final Paths paths) throws IOException {
-        try (ReadableByteChannel readable = open(paths.created, READ)) {
+        try (FileChannel readable = open(paths.created, READ)) {
             final FileChannel channel = open(paths.encoded, WRITE);
             final HexEncoder encoder = new HexEncoderImpl();
             try (WritableByteChannel writable
                     = new WritableHexChannel(channel, encoder, 0x80, true)) {
-                copy(readable, writable);
-                channel.force(false);
+                for (int i = 0; i < count; i++) {
+                    readable.position(0L);
+                    channel.position(0L);
+                    copy(readable, writable);
+                    channel.force(false);
+                }
             }
         }
     }
 
-    @Benchmark
+    //@Benchmark
     public void buffer0xC0d(final Paths paths) throws IOException {
-        try (ReadableByteChannel readable = open(paths.created, READ)) {
+        try (FileChannel readable = open(paths.created, READ)) {
             final FileChannel channel = open(paths.encoded, WRITE);
             final HexEncoder encoder = new HexEncoderImpl();
             try (WritableByteChannel writable
                     = new WritableHexChannel(channel, encoder, 0xC0, true)) {
-                copy(readable, writable);
-                channel.force(false);
+                for (int i = 0; i < count; i++) {
+                    readable.position(0L);
+                    channel.position(0L);
+                    copy(readable, writable);
+                    channel.force(false);
+                }
             }
         }
     }
