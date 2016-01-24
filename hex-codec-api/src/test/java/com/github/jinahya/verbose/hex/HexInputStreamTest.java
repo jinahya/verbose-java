@@ -25,8 +25,6 @@ import static org.mockito.Matchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
-import org.slf4j.Logger;
-import static org.slf4j.LoggerFactory.getLogger;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.Test;
 
@@ -216,6 +214,4 @@ public class HexInputStreamTest extends AbstractHexDecoderTest {
             assertTrue(skipped <= n, "skppped more than requested");
         }
     }
-
-    private transient final Logger logger = getLogger(getClass());
 }

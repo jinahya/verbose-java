@@ -18,6 +18,8 @@ package com.github.jinahya.verbose.hex;
 import java.io.EOFException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import static java.nio.ByteBuffer.allocate;
+import static java.nio.ByteBuffer.allocateDirect;
 import java.nio.channels.ReadableByteChannel;
 
 /**
@@ -25,9 +27,7 @@ import java.nio.channels.ReadableByteChannel;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class ReadableHexChannel
-        extends HexChannel<ReadableByteChannel, HexDecoder>
-        implements ReadableByteChannel {
+public class ReadableHexChannel extends ReadableHexChannel_O {
 
     /**
      * Creates a new instance on top of given channel.
@@ -40,11 +40,13 @@ public class ReadableHexChannel
     public ReadableHexChannel(final ReadableByteChannel channel,
                               final HexDecoder decoder, final int capacity,
                               final boolean direct) {
-        super(channel, decoder, capacity, direct);
+        super(channel, decoder);
         if (capacity < 2) { // <1>
             throw new IllegalArgumentException(
                     "capacity(" + capacity + ") < 2");
         }
+        this.capacity = capacity;
+        this.direct = direct;
     }
 
     /**
@@ -57,36 +59,44 @@ public class ReadableHexChannel
      */
     @Override
     public int read(final ByteBuffer dst) throws IOException {
+        if (buffer == null) {
+            buffer = direct ? allocateDirect(capacity) : allocate(capacity);
+        }
         int count = 0;
         while (dst.hasRemaining()) {
-            buffer().limit(Math.min(buffer().limit(), dst.remaining() * 2)); // <1>
-            final int remaining = buffer().remaining(); // can read
-            final int read = channel.read(buffer()); // actaully read
+            buffer.limit(Math.min(buffer.limit(), dst.remaining() * 2)); // <1>
+            final int remaining = buffer.remaining(); // can read
+            final int read = channel.read(buffer); // actaully read
             if (read == -1) { // <2>
-                if (count == 0 && buffer().position() == 0) {
+                if (count == 0 && buffer.position() == 0) {
                     return -1;
                 }
                 break;
             }
-            buffer().flip(); // <3>
-            count += filter.decode(buffer(), dst);
-            buffer().compact();
+            buffer.flip(); // <3>
+            count += decoder.decode(buffer, dst);
+            buffer.compact();
             if (read < remaining) { // <4>
                 break;
             }
         }
-        if ((buffer().position() & 1) == 1) { // <5>
-            buffer().limit(buffer().position() + 1);
-            while (buffer().hasRemaining()) {
-                if (channel.read(buffer()) == -1) {
+        if ((buffer.position() & 1) == 1) { // <5>
+            buffer.limit(buffer.position() + 1);
+            while (buffer.hasRemaining()) {
+                if (channel.read(buffer) == -1) {
                     throw new EOFException(); // unexpected end-of-stream
                 }
             }
         }
-        buffer().flip(); // <6>
-        count += filter.decode(buffer(), dst);
-        buffer().compact();
+        buffer.flip(); // <6>
+        count += decoder.decode(buffer, dst);
+        buffer.compact();
         return count;
     }
 
+    private final int capacity;
+
+    private final boolean direct;
+
+    private ByteBuffer buffer;
 }

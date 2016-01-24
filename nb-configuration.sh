@@ -1,2 +1,2 @@
 #!/bin/sh
-find . -type d -name verbose\* -maxdepth 1 -exec cp -v ./nb-configuration.xml {} \;
+find . -mindepth 2 -name pom.xml -execdir pwd \; -execdir cp -v ../nb-configuration.xml . \;

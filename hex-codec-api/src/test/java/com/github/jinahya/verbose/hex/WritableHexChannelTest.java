@@ -18,15 +18,15 @@ package com.github.jinahya.verbose.hex;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import static java.nio.ByteBuffer.allocate;
 import java.nio.channels.Channels;
+import static java.nio.channels.Channels.newChannel;
 import java.nio.channels.WritableByteChannel;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
-import org.slf4j.Logger;
-import static org.slf4j.LoggerFactory.getLogger;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertThrows;
 import static org.testng.Assert.assertTrue;
@@ -59,16 +59,29 @@ public class WritableHexChannelTest extends AbstractHexEncoderTest {
      */
     @Test
     public void testIsOpen() throws IOException {
-        assertThrows(
-                NullPointerException.class,
-                () -> new WritableHexChannel(
-                        null, encoder(), 2, current().nextBoolean()).isOpen());
-        final WritableHexChannel whc = new WritableHexChannel(
-                Channels.newChannel(new ByteArrayOutputStream()), encoder(), 2,
-                current().nextBoolean());
-        assertTrue(whc.isOpen());
-        whc.close();
-        assertFalse(whc.isOpen());
+        {
+            final WritableByteChannel channel = null;
+            final HexEncoder encoder = encoder();
+            final int capacity = current().nextInt(2, 128);
+            final boolean direct = current().nextBoolean();
+            assertThrows(
+                    NullPointerException.class,
+                    () -> new WritableHexChannel(
+                            channel, encoder, capacity, direct)
+                    .isOpen());
+        }
+        {
+            final WritableByteChannel channel
+                    = newChannel(new ByteArrayOutputStream());
+            final HexEncoder encoder = encoder();
+            final int capacity = current().nextInt(2, 128);
+            final boolean direct = current().nextBoolean();
+            final WritableHexChannel whc = new WritableHexChannel(
+                    channel, encoder, capacity, direct);
+            assertTrue(whc.isOpen());
+            whc.close();
+            assertFalse(whc.isOpen());
+        }
     }
 
     /**
@@ -105,7 +118,7 @@ public class WritableHexChannelTest extends AbstractHexEncoderTest {
         final WritableByteChannel channel
                 = Channels.newChannel(new ByteArrayOutputStream());
         final HexEncoder encoder = encoder();
-        final int capacity = current().nextInt(2, 129);
+        final int capacity = current().nextInt(2, 128);
         final boolean direct = current().nextBoolean();
         try (WritableHexChannel whc
                 = new WritableHexChannel(channel, encoder, capacity, direct)) {
@@ -126,26 +139,22 @@ public class WritableHexChannelTest extends AbstractHexEncoderTest {
     @Test(invocationCount = 128)
     public void testWriteWithNonBlockingChannel() throws IOException {
         final WritableByteChannel channel = mock(WritableByteChannel.class);
-        doNothing().when(channel).close();
-        doAnswer(invocation -> {
-            final ByteBuffer b = invocation.getArgumentAt(0, ByteBuffer.class);
+        doAnswer(i -> {
+            final ByteBuffer b = i.getArgumentAt(0, ByteBuffer.class);
             final int w = current().nextInt(b.remaining() + 1);
             b.position(b.position() + w);
             return w;
         }).when(channel).write(any(ByteBuffer.class));
+        doNothing().when(channel).close();
         final HexEncoder encoder = encoder();
-        final int capacity = current().nextInt(2, 129);
+        final int capacity = current().nextInt(2, 128);
         final boolean direct = current().nextBoolean();
         try (WritableHexChannel whc
                 = new WritableHexChannel(channel, encoder, capacity, direct)) {
             for (int i = 0; i < 128; i++) {
-                final ByteBuffer src
-                        = ByteBuffer.allocate(current().nextInt(128));
+                final ByteBuffer src = allocate(current().nextInt(128));
                 final int written = whc.write(src);
             }
         }
     }
-
-    private transient final Logger logger = getLogger(getClass());
-
 }

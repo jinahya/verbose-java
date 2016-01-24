@@ -17,6 +17,8 @@ package com.github.jinahya.verbose.hex;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import static java.nio.ByteBuffer.allocate;
+import static java.nio.ByteBuffer.allocateDirect;
 import java.nio.channels.WritableByteChannel;
 
 /**
@@ -24,9 +26,7 @@ import java.nio.channels.WritableByteChannel;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class WritableHexChannel
-        extends HexChannel<WritableByteChannel, HexEncoder>
-        implements WritableByteChannel {
+public class WritableHexChannel extends WritableHexChannel_O {
 
     /**
      * Creates a new instance on top of given channel.
@@ -39,11 +39,13 @@ public class WritableHexChannel
     public WritableHexChannel(final WritableByteChannel channel,
                               final HexEncoder encoder, final int capacity,
                               final boolean direct) {
-        super(channel, encoder, capacity, direct);
+        super(channel, encoder);
         if (capacity < 2) { // <1>
             throw new IllegalArgumentException(
                     "capacity(" + capacity + ") < 2");
         }
+        this.capacity = capacity;
+        this.direct = direct;
     }
 
     /**
@@ -58,21 +60,30 @@ public class WritableHexChannel
      */
     @Override
     public int write(final ByteBuffer src) throws IOException {
+        if (buffer == null) {
+            buffer = direct ? allocateDirect(capacity) : allocate(capacity);
+        }
         int count = 0;
         while (src.hasRemaining()) {
-            count += filter.encode(src, buffer()); // <1>
-            buffer().flip(); // <2>
-            final int remaining = buffer().remaining(); // can write
-            final int written = channel.write(buffer()); // actaully written
-            buffer().compact();
+            count += encoder.encode(src, buffer); // <1>
+            buffer.flip(); // <2>
+            final int remaining = buffer.remaining(); // can write
+            final int written = channel.write(buffer); // actaully written
+            buffer.compact();
             if (written < remaining) { // <3>
                 break;
             }
         }
-        for (buffer().flip(); buffer().hasRemaining();) { // <4>
-            channel.write(buffer());
+        for (buffer.flip(); buffer.hasRemaining();) { // <4>
+            channel.write(buffer);
         }
-        buffer().compact();
+        buffer.clear();
         return count;
     }
+
+    private final int capacity;
+
+    private final boolean direct;
+
+    private ByteBuffer buffer;
 }

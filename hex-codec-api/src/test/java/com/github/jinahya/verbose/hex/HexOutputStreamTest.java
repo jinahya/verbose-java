@@ -21,8 +21,6 @@ import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.mockito.Matchers.anyInt;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
-import org.slf4j.Logger;
-import static org.slf4j.LoggerFactory.getLogger;
 import org.testng.annotations.Test;
 
 /**
@@ -59,7 +57,4 @@ public class HexOutputStreamTest extends AbstractHexEncoderTest {
             hos.write(current().nextInt());
         }
     }
-
-    private transient final Logger logger = getLogger(getClass());
-
 }

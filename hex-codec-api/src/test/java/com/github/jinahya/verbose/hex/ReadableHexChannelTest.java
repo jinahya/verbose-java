@@ -18,15 +18,14 @@ package com.github.jinahya.verbose.hex;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import java.nio.channels.Channels;
+import static java.nio.ByteBuffer.allocate;
+import static java.nio.channels.Channels.newChannel;
 import java.nio.channels.ReadableByteChannel;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
-import org.slf4j.Logger;
-import static org.slf4j.LoggerFactory.getLogger;
 import static org.testng.Assert.assertFalse;
 import static org.testng.Assert.assertThrows;
 import static org.testng.Assert.assertTrue;
@@ -59,14 +58,29 @@ public class ReadableHexChannelTest extends AbstractHexDecoderTest {
      */
     @Test
     public void testIsOpen() throws IOException {
-        assertThrows(
-                NullPointerException.class,
-                () -> new ReadableHexChannel(null, null, 2, false).isOpen());
-        final ReadableByteChannel rhc = new ReadableHexChannel(
-                Channels.newChannel(new ByteArrayInputStream(new byte[0])), null, 2, true);
-        assertTrue(rhc.isOpen());
-        rhc.close();
-        assertFalse(rhc.isOpen());
+        {
+            final ReadableByteChannel channel = null;
+            final HexDecoder decoder = decoder();
+            final int capacity = current().nextInt(2, 128);
+            final boolean direct = current().nextBoolean();
+            assertThrows(
+                    NullPointerException.class,
+                    () -> new ReadableHexChannel(
+                            channel, decoder, capacity, direct)
+                    .isOpen());
+        }
+        {
+            final ReadableByteChannel channel
+                    = newChannel(new ByteArrayInputStream(new byte[0]));
+            final HexDecoder decoder = null;
+            final int capacity = 2;
+            final boolean direct = true;
+            final ReadableByteChannel rhc = new ReadableHexChannel(
+                    channel, decoder, capacity, direct);
+            assertTrue(rhc.isOpen());
+            rhc.close();
+            assertFalse(rhc.isOpen());
+        }
     }
 
     /**
@@ -77,16 +91,24 @@ public class ReadableHexChannelTest extends AbstractHexDecoderTest {
     @Test
     public void testClose() throws IOException {
         {
+            final ReadableByteChannel channel = null;
+            final HexDecoder decoder = null;
+            final int capacity = current().nextInt(2, 128);
+            final boolean direct = current().nextBoolean();
             final ReadableByteChannel rhc = new ReadableHexChannel(
-                    null, decoder(), 2, current().nextBoolean());
+                    channel, decoder, capacity, direct);
             rhc.close();
             rhc.close();
             rhc.close();
         }
         {
+            final ReadableByteChannel channel
+                    = newChannel(new ByteArrayInputStream(new byte[0]));
+            final HexDecoder decoder = null;
+            final int capacity = current().nextInt(2, 128);
+            final boolean direct = current().nextBoolean();
             final ReadableByteChannel rhc = new ReadableHexChannel(
-                    Channels.newChannel(new ByteArrayInputStream(new byte[0])),
-                    decoder(), 2, current().nextBoolean());
+                    channel, decoder, capacity, direct);
             rhc.close();
             rhc.close();
             rhc.close();
@@ -94,33 +116,21 @@ public class ReadableHexChannelTest extends AbstractHexDecoderTest {
     }
 
     /**
-     * Test {@link ReadableHexChannel#read(java.nio.ByteBuffer)}.
+     * Tests {@link ReadableHexChannel#read(java.nio.ByteBuffer)}.
      *
      * @throws IOException if an I/O error occurs.
      */
     @Test(invocationCount = 128)
     public void testRead() throws IOException {
-        final ReadableByteChannel channel = null;
-        final HexDecoder decoder = null;
-        final int capacity = current().nextInt(2, 129);
+        final ReadableByteChannel channel = newChannel(
+                new ByteArrayInputStream(new byte[1024]));
+        final HexDecoder decoder = decoder();
+        final int capacity = current().nextInt(2, 128);
         final boolean direct = current().nextBoolean();
         try (ReadableHexChannel whc = new ReadableHexChannel(
-                channel, decoder, capacity, direct) {
-            @Override
-            public int read(final ByteBuffer dst) throws IOException {
-                if (channel == null) {
-                    channel = Channels.newChannel(
-                            new ByteArrayInputStream(new byte[1024]));
-                }
-                if (filter == null) {
-                    filter = decoder();
-                }
-                return super.read(dst);
-            }
-        }) {
+                channel, decoder, capacity, direct)) {
             for (int i = 0; i < 128; i++) {
-                final ByteBuffer dst
-                        = ByteBuffer.allocate(current().nextInt(128));
+                final ByteBuffer dst = allocate(current().nextInt(128));
                 final int read = whc.read(dst);
             }
         }
@@ -135,26 +145,23 @@ public class ReadableHexChannelTest extends AbstractHexDecoderTest {
     @Test(invocationCount = 128)
     public void testReadWithNonBlockingChannel() throws IOException {
         final ReadableByteChannel channel = mock(ReadableByteChannel.class);
-        doAnswer(invocation -> {
-            final ByteBuffer b = invocation.getArgumentAt(0, ByteBuffer.class);
+        doAnswer(i -> {
+            final ByteBuffer b = i.getArgumentAt(0, ByteBuffer.class);
             final int r = current().nextInt(b.remaining() + 1);
             b.position(b.position() + r);
             return r;
         }).when(channel).read(any(ByteBuffer.class));
         doNothing().when(channel).close();
         final HexDecoder decoder = decoder();
-        final int capacity = current().nextInt(2, 129);
+        final int capacity = current().nextInt(2, 128);
         final boolean direct = current().nextBoolean();
         try (ReadableHexChannel whc = new ReadableHexChannel(
                 channel, decoder, capacity, direct)) {
             for (int i = 0; i < 128; i++) {
-                final ByteBuffer dst
-                        = ByteBuffer.allocate(current().nextInt(128));
+                final ByteBuffer dst = allocate(current().nextInt(128));
                 final int read = whc.read(dst);
             }
         }
     }
-
-    private transient final Logger logger = getLogger(getClass());
 
 }
