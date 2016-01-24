@@ -99,4 +99,43 @@ public class WritableHexChannelBenchmark {
         }
     }
 
+    @Benchmark
+    public void buffer0x40d(final Paths paths) throws IOException {
+        try (ReadableByteChannel readable = open(paths.created, READ)) {
+            final FileChannel channel = open(paths.encoded, WRITE);
+            final HexEncoder encoder = new HexEncoderImpl();
+            try (WritableByteChannel writable
+                    = new WritableHexChannel(channel, encoder, 0x40, true)) {
+                copy(readable, writable);
+                channel.force(false);
+            }
+        }
+    }
+
+    @Benchmark
+    public void buffer0x80d(final Paths paths) throws IOException {
+        try (ReadableByteChannel readable = open(paths.created, READ)) {
+            final FileChannel channel = open(paths.encoded, WRITE);
+            final HexEncoder encoder = new HexEncoderImpl();
+            try (WritableByteChannel writable
+                    = new WritableHexChannel(channel, encoder, 0x80, true)) {
+                copy(readable, writable);
+                channel.force(false);
+            }
+        }
+    }
+
+    @Benchmark
+    public void buffer0xC0d(final Paths paths) throws IOException {
+        try (ReadableByteChannel readable = open(paths.created, READ)) {
+            final FileChannel channel = open(paths.encoded, WRITE);
+            final HexEncoder encoder = new HexEncoderImpl();
+            try (WritableByteChannel writable
+                    = new WritableHexChannel(channel, encoder, 0xC0, true)) {
+                copy(readable, writable);
+                channel.force(false);
+            }
+        }
+    }
+
 }

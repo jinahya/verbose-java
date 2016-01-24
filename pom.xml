@@ -73,6 +73,7 @@
     <org.glassfish.jersey.core.version>2.22.1</org.glassfish.jersey.core.version>
     <org.openjdk.jmh.version>1.11.3</org.openjdk.jmh.version>
     <org.springframework.version>4.2.4.RELEASE</org.springframework.version>
+    <sonar.exclusions>file:**/generated-sources/**</sonar.exclusions>
   </properties>
 
   <dependencyManagement>
@@ -440,8 +441,7 @@
       </plugin>
     </plugins>
   </reporting>
-
-  <!--  <profiles>
+<!--  <profiles>
     <profile>
       <id>benchmark</id>
       <build>
