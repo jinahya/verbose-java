@@ -46,7 +46,9 @@
             <sectnums>true</sectnums>
           </attributes>
           <doctype>book</doctype>
-          <imagesoutdir>${project.build.directory}/generated-docs/images</imagesoutdir>
+          <!--<imagesoutdir>${project.build.directory}/generated-docs/images</imagesoutdir>-->
+          <!--<imagesdir>${project.build.directory}/generated-docs/images</imagesdir>-->
+          <!--<imagesDir>../../../target/generated-docs/images</imagesDir>-->
           <relativeBaseDir>true</relativeBaseDir>
           <requires>
             <require>asciidoctor-diagram</require>

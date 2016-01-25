@@ -52,7 +52,7 @@ public class WritableHexChannelEx<T extends WritableByteChannel>
     /**
      * Writes a sequence of bytes to this channel from the given buffer. The
      * {@code write(ByteBuffer)} method of {@code WritableHexChannel} class
-     * encodes given buffer using {@link #filter} and writes the result to
+     * encodes given buffer using {@link #encoder} and writes the result to
      * {@link #channel}.
      *
      * @param src The buffer from which bytes are to be retrieved
