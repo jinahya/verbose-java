@@ -1007,7 +1007,6 @@ include::../../../../hex-codec-lib/src/test/java/com/github/jinahya/verbose/hex/
 include::../../../../hex-codec-lib/src/test/java/com/github/jinahya/verbose/hex/IoUtils.java[lines=79..92]
 ----
 <1> 버퍼에 읽혀진 모든 데이터를 기록한다.
-<2> 버퍼에 남은 데이터가 없으므로 `buffer.clear()` 를 호출한 것과 같은 결과이다.
 
 ****
 `copy2(ReadableByteChannel,WritableByteChannel)` 메서드는 데이터를 앞쪽으로 모으는 작업을 하지 않는 대신 버퍼에 데이터가 남아 있을 동안 `write(ByteBuffer)` 메서드를 계속 호출한다. [참조: http://shop.oreilly.com/product/9780596002886.do[Java NIO, O'Reilly Media]]

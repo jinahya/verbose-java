@@ -86,7 +86,7 @@ final class IoUtils {
             while (buffer.hasRemaining()) { // <1>
                 count += writable.write(buffer);
             }
-            buffer.compact(); // <2>
+            buffer.clear();
         }
         return count;
     }
@@ -106,7 +106,7 @@ final class IoUtils {
             throws IOException {
         try (FileChannel readable = open(source, READ)) {
             try (FileChannel writable
-                    = open(target, CREATE, WRITE, TRUNCATE_EXISTING)) {
+                    = open(target, CREATE, TRUNCATE_EXISTING, WRITE)) {
                 copy(readable, writable);
                 writable.force(false); // <1>
             }
@@ -117,7 +117,7 @@ final class IoUtils {
             throws IOException {
         try (FileChannel readable = open(source, READ)) {
             try (FileChannel writable
-                    = open(target, CREATE, WRITE, TRUNCATE_EXISTING)) {
+                    = open(target, CREATE, TRUNCATE_EXISTING, WRITE)) {
                 for (long count = readable.size(); count > 0L;) {
                     final long transferred = readable.transferTo(
                             readable.position(), count, writable);
@@ -133,7 +133,7 @@ final class IoUtils {
             throws IOException {
         try (FileChannel readable = open(source, READ)) {
             try (FileChannel writable
-                    = open(target, CREATE, WRITE, TRUNCATE_EXISTING)) {
+                    = open(target, CREATE, TRUNCATE_EXISTING, WRITE)) {
                 for (long count = readable.size(); count > 0L;) {
                     final long transferred = writable.transferFrom(
                             readable, writable.position(), count);
