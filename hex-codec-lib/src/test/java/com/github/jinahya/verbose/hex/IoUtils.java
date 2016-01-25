@@ -22,6 +22,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import static java.nio.ByteBuffer.allocate;
 import java.nio.channels.FileChannel;
 import static java.nio.channels.FileChannel.open;
 import java.nio.channels.ReadableByteChannel;
@@ -63,7 +64,7 @@ final class IoUtils {
                               final WritableByteChannel writable)
             throws IOException {
         long count = 0L;
-        final ByteBuffer buffer = ByteBuffer.allocate(4096);
+        final ByteBuffer buffer = allocate(4096);
         while (readable.read(buffer) != -1) { // <1>
             buffer.flip(); // <2>
             count += writable.write(buffer); // <3>
@@ -79,7 +80,7 @@ final class IoUtils {
                               final WritableByteChannel writable)
             throws IOException {
         long count = 0L;
-        final ByteBuffer buffer = ByteBuffer.allocate(4096);
+        final ByteBuffer buffer = allocate(4096);
         while (readable.read(buffer) != -1) {
             buffer.flip();
             while (buffer.hasRemaining()) { // <1>

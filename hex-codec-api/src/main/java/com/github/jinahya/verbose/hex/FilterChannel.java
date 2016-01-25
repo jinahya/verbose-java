@@ -38,8 +38,7 @@ public class FilterChannel<T extends Channel> implements Channel {
 
     /**
      * Tells whether or not this channel is open. The {@code isOpen()} method of
-     * {@code FilterChannel} class invokes {@link Channel#isOpen()} on
-     * {@link #channel} and returns the result.
+     * {@code FilterChannel} class return the value of {@code channel.isOpen()}.
      *
      * @return {@code true} if, and only if, the {@link #channel} is open
      */

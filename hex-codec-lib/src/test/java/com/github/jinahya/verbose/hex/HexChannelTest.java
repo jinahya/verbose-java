@@ -50,7 +50,7 @@ public class HexChannelTest {
             final HexEncoder encoder = new HexEncoderImpl();
             final int capacity = current().nextInt(2, 128);
             final boolean direct = current().nextBoolean();
-            try (WritableByteChannel writable = new WritableHexChannel(
+            try (WritableByteChannel writable = new WritableHexChannelEx(
                     channel, encoder, capacity, direct)) {
                 copy(readable, writable);
             }
@@ -62,7 +62,7 @@ public class HexChannelTest {
             final HexDecoder decoder = new HexDecoderImpl();
             final int capacity = current().nextInt(2, 128);
             final boolean direct = current().nextBoolean();
-            try (ReadableByteChannel readable = new ReadableHexChannel(
+            try (ReadableByteChannel readable = new ReadableHexChannelEx(
                     channel, decoder, capacity, direct)) {
                 copy(readable, writable);
             }

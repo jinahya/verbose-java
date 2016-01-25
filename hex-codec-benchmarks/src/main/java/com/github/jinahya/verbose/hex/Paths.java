@@ -21,12 +21,15 @@ import static java.nio.ByteBuffer.allocate;
 import java.nio.channels.FileChannel;
 import static java.nio.channels.FileChannel.open;
 import java.nio.file.Files;
+import static java.nio.file.Files.delete;
 import java.nio.file.Path;
 import static java.nio.file.StandardOpenOption.APPEND;
 import static java.nio.file.StandardOpenOption.WRITE;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import org.openjdk.jmh.annotations.Scope;
+import org.openjdk.jmh.annotations.Setup;
 import org.openjdk.jmh.annotations.State;
+import org.openjdk.jmh.annotations.TearDown;
 
 /**
  *
@@ -53,21 +56,24 @@ public class Paths {
         return path;
     }
 
-    public Paths() {
-        super();
-        try {
-            created = mega(temp());
-            encoded = mega(mega(temp()));
-            decoded = mega(temp());
-        } catch (final IOException ieo) {
-            throw new RuntimeException(ieo);
-        }
+    @Setup
+    public void setup() throws IOException {
+        created = mega(temp());
+        encoded = mega(mega(temp()));
+        decoded = mega(temp());
     }
 
-    final Path created;
+    @TearDown
+    public void tearDown() throws IOException {
+        delete(created);
+        delete(encoded);
+        delete(decoded);
+    }
 
-    final Path encoded;
+    Path created;
 
-    final Path decoded;
+    Path encoded;
+
+    Path decoded;
 
 }

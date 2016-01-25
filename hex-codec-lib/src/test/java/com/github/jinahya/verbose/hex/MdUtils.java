@@ -51,7 +51,7 @@ final class MdUtils {
     private static byte[] digest2(InputStream input, final String algorithm)
             throws NoSuchAlgorithmException, IOException {
         input = new DigestInputStream( // <1>
-                input, MessageDigest.getInstance(algorithm)); // <1>
+                input, MessageDigest.getInstance(algorithm));
         for (final byte[] b = new byte[4096]; input.read(b) != -1;); // <2>
         return ((DigestInputStream) input).getMessageDigest().digest();
     }

@@ -56,7 +56,7 @@ public class WritableHexChannelBenchmark {
             final FileChannel channel = open(paths.encoded, WRITE);
             final HexEncoder encoder = new HexEncoderImpl();
             try (WritableByteChannel writable
-                    = new WritableHexChannel_O(channel, encoder)) {
+                    = new WritableHexChannel(channel, encoder)) {
                 for (int i = 0; i < count; i++) {
                     readable.position(0L);
                     channel.position(0L);
@@ -73,7 +73,7 @@ public class WritableHexChannelBenchmark {
             final FileChannel channel = open(paths.encoded, WRITE);
             final HexEncoder encoder = new HexEncoderImpl();
             try (WritableByteChannel writable
-                    = new WritableHexChannel(channel, encoder, 0x40, false)) {
+                    = new WritableHexChannelEx(channel, encoder, 0x40, false)) {
                 for (int i = 0; i < count; i++) {
                     readable.position(0L);
                     channel.position(0L);
@@ -90,7 +90,7 @@ public class WritableHexChannelBenchmark {
             final FileChannel channel = open(paths.encoded, WRITE);
             final HexEncoder encoder = new HexEncoderImpl();
             try (WritableByteChannel writable
-                    = new WritableHexChannel(channel, encoder, 0x80, false)) {
+                    = new WritableHexChannelEx(channel, encoder, 0x80, false)) {
                 for (int i = 0; i < count; i++) {
                     readable.position(0L);
                     channel.position(0L);
@@ -107,7 +107,7 @@ public class WritableHexChannelBenchmark {
             final FileChannel channel = open(paths.encoded, WRITE);
             final HexEncoder encoder = new HexEncoderImpl();
             try (WritableByteChannel writable
-                    = new WritableHexChannel(channel, encoder, 0xC0, false)) {
+                    = new WritableHexChannelEx(channel, encoder, 0xC0, false)) {
                 for (int i = 0; i < count; i++) {
                     readable.position(0L);
                     channel.position(0L);
@@ -124,7 +124,7 @@ public class WritableHexChannelBenchmark {
             final FileChannel channel = open(paths.encoded, WRITE);
             final HexEncoder encoder = new HexEncoderImpl();
             try (WritableByteChannel writable
-                    = new WritableHexChannel(channel, encoder, 0x40, true)) {
+                    = new WritableHexChannelEx(channel, encoder, 0x40, true)) {
                 for (int i = 0; i < count; i++) {
                     readable.position(0L);
                     channel.position(0L);
@@ -141,7 +141,7 @@ public class WritableHexChannelBenchmark {
             final FileChannel channel = open(paths.encoded, WRITE);
             final HexEncoder encoder = new HexEncoderImpl();
             try (WritableByteChannel writable
-                    = new WritableHexChannel(channel, encoder, 0x80, true)) {
+                    = new WritableHexChannelEx(channel, encoder, 0x80, true)) {
                 for (int i = 0; i < count; i++) {
                     readable.position(0L);
                     channel.position(0L);
@@ -158,7 +158,7 @@ public class WritableHexChannelBenchmark {
             final FileChannel channel = open(paths.encoded, WRITE);
             final HexEncoder encoder = new HexEncoderImpl();
             try (WritableByteChannel writable
-                    = new WritableHexChannel(channel, encoder, 0xC0, true)) {
+                    = new WritableHexChannelEx(channel, encoder, 0xC0, true)) {
                 for (int i = 0; i < count; i++) {
                     readable.position(0L);
                     channel.position(0L);

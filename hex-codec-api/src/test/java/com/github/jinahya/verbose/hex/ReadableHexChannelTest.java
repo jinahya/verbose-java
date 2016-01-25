@@ -48,11 +48,11 @@ public class ReadableHexChannelTest extends AbstractHexDecoderTest {
         final HexDecoder decoder = null;
         final int capacity = 1 - (current().nextInt() >>> 1);
         final boolean direct = current().nextBoolean();
-        new ReadableHexChannel(channel, decoder, capacity, direct);
+        new ReadableHexChannelEx(channel, decoder, capacity, direct);
     }
 
     /**
-     * Tests {@link ReadableHexChannel#isOpen()}.
+     * Tests {@link ReadableHexChannelEx#isOpen()}.
      *
      * @throws IOException if an I/O error occurs.
      */
@@ -63,9 +63,8 @@ public class ReadableHexChannelTest extends AbstractHexDecoderTest {
             final HexDecoder decoder = decoder();
             final int capacity = current().nextInt(2, 128);
             final boolean direct = current().nextBoolean();
-            assertThrows(
-                    NullPointerException.class,
-                    () -> new ReadableHexChannel(
+            assertThrows(NullPointerException.class,
+                    () -> new ReadableHexChannelEx(
                             channel, decoder, capacity, direct)
                     .isOpen());
         }
@@ -75,7 +74,7 @@ public class ReadableHexChannelTest extends AbstractHexDecoderTest {
             final HexDecoder decoder = null;
             final int capacity = 2;
             final boolean direct = true;
-            final ReadableByteChannel rhc = new ReadableHexChannel(
+            final ReadableByteChannel rhc = new ReadableHexChannelEx(
                     channel, decoder, capacity, direct);
             assertTrue(rhc.isOpen());
             rhc.close();
@@ -84,7 +83,7 @@ public class ReadableHexChannelTest extends AbstractHexDecoderTest {
     }
 
     /**
-     * Tests {@link ReadableHexChannel#close()}.
+     * Tests {@link ReadableHexChannelEx#close()}.
      *
      * @throws IOException if an I/O error occurs
      */
@@ -95,7 +94,7 @@ public class ReadableHexChannelTest extends AbstractHexDecoderTest {
             final HexDecoder decoder = null;
             final int capacity = current().nextInt(2, 128);
             final boolean direct = current().nextBoolean();
-            final ReadableByteChannel rhc = new ReadableHexChannel(
+            final ReadableByteChannel rhc = new ReadableHexChannelEx(
                     channel, decoder, capacity, direct);
             rhc.close();
             rhc.close();
@@ -107,7 +106,7 @@ public class ReadableHexChannelTest extends AbstractHexDecoderTest {
             final HexDecoder decoder = null;
             final int capacity = current().nextInt(2, 128);
             final boolean direct = current().nextBoolean();
-            final ReadableByteChannel rhc = new ReadableHexChannel(
+            final ReadableByteChannel rhc = new ReadableHexChannelEx(
                     channel, decoder, capacity, direct);
             rhc.close();
             rhc.close();
@@ -116,7 +115,7 @@ public class ReadableHexChannelTest extends AbstractHexDecoderTest {
     }
 
     /**
-     * Tests {@link ReadableHexChannel#read(java.nio.ByteBuffer)}.
+     * Tests {@link ReadableHexChannelEx#read(java.nio.ByteBuffer)}.
      *
      * @throws IOException if an I/O error occurs.
      */
@@ -127,7 +126,7 @@ public class ReadableHexChannelTest extends AbstractHexDecoderTest {
         final HexDecoder decoder = decoder();
         final int capacity = current().nextInt(2, 128);
         final boolean direct = current().nextBoolean();
-        try (ReadableHexChannel whc = new ReadableHexChannel(
+        try (ReadableHexChannelEx whc = new ReadableHexChannelEx(
                 channel, decoder, capacity, direct)) {
             for (int i = 0; i < 128; i++) {
                 final ByteBuffer dst = allocate(current().nextInt(128));
@@ -137,7 +136,7 @@ public class ReadableHexChannelTest extends AbstractHexDecoderTest {
     }
 
     /**
-     * Tests {@link ReadableHexChannel#read(java.nio.ByteBuffer)} with a
+     * Tests {@link ReadableHexChannelEx#read(java.nio.ByteBuffer)} with a
      * non-blocking channel.
      *
      * @throws IOException if an I/O error occurs.
@@ -155,7 +154,7 @@ public class ReadableHexChannelTest extends AbstractHexDecoderTest {
         final HexDecoder decoder = decoder();
         final int capacity = current().nextInt(2, 128);
         final boolean direct = current().nextBoolean();
-        try (ReadableHexChannel whc = new ReadableHexChannel(
+        try (ReadableHexChannelEx whc = new ReadableHexChannelEx(
                 channel, decoder, capacity, direct)) {
             for (int i = 0; i < 128; i++) {
                 final ByteBuffer dst = allocate(current().nextInt(128));

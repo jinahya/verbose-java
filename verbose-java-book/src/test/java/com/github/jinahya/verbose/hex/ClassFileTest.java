@@ -26,7 +26,7 @@ import org.testng.annotations.Test;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class ClasFileTest {
+public class ClassFileTest {
 
     @Test
     public void cafebabe() throws IOException {

@@ -55,7 +55,7 @@ public class HexOutputStream extends FilterOutputStream {
         buf.flip(); // <3>
         super.write(buf.get());
         super.write(buf.get());
-        buf.compact();
+        buf.clear();
     }
 
     /**

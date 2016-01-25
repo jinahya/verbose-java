@@ -2,6 +2,7 @@ package com.github.jinahya.verbose.hex;
 
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A class implementing {@code HexEncoder}.
@@ -36,10 +37,7 @@ public class HexEncoderImpl implements HexEncoder {
 
     @Override
     public void encodeOctet(final int decoded, final ByteBuffer encoded) {
-        if (encoded == null) {
-            throw new NullPointerException("null encoded");
-        }
-        if (encoded.remaining() < 2) {
+        if (requireNonNull(encoded).remaining() < 2) {
             throw new BufferOverflowException();
         }
         final int upper = (decoded >> 0b100) & 017; // <1>

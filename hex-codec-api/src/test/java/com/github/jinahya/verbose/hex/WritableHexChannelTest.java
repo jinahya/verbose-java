@@ -33,7 +33,7 @@ import static org.testng.Assert.assertTrue;
 import org.testng.annotations.Test;
 
 /**
- * A class testing {@link WritableHexChannel}.
+ * A class testing {@link WritableHexChannelEx}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
@@ -49,11 +49,11 @@ public class WritableHexChannelTest extends AbstractHexEncoderTest {
         final HexEncoder encoder = null;
         final int capacity = 1 - (current().nextInt() >>> 1);
         final boolean direct = current().nextBoolean();
-        new WritableHexChannel(channel, encoder, capacity, direct);
+        new WritableHexChannelEx(channel, encoder, capacity, direct);
     }
 
     /**
-     * Tests {@link WritableHexChannel#isOpen()}.
+     * Tests {@link WritableHexChannelEx#isOpen()}.
      *
      * @throws IOException if an I/O error occurs.
      */
@@ -64,9 +64,8 @@ public class WritableHexChannelTest extends AbstractHexEncoderTest {
             final HexEncoder encoder = encoder();
             final int capacity = current().nextInt(2, 128);
             final boolean direct = current().nextBoolean();
-            assertThrows(
-                    NullPointerException.class,
-                    () -> new WritableHexChannel(
+            assertThrows(NullPointerException.class,
+                    () -> new WritableHexChannelEx(
                             channel, encoder, capacity, direct)
                     .isOpen());
         }
@@ -76,7 +75,7 @@ public class WritableHexChannelTest extends AbstractHexEncoderTest {
             final HexEncoder encoder = encoder();
             final int capacity = current().nextInt(2, 128);
             final boolean direct = current().nextBoolean();
-            final WritableHexChannel whc = new WritableHexChannel(
+            final WritableHexChannelEx whc = new WritableHexChannelEx(
                     channel, encoder, capacity, direct);
             assertTrue(whc.isOpen());
             whc.close();
@@ -85,21 +84,21 @@ public class WritableHexChannelTest extends AbstractHexEncoderTest {
     }
 
     /**
-     * Tests {@link WritableHexChannel#close()}.
+     * Tests {@link WritableHexChannelEx#close()}.
      *
      * @throws IOException if an I/O error occurs
      */
     @Test
     public void testClose() throws IOException {
         {
-            final WritableHexChannel whc = new WritableHexChannel(
+            final WritableHexChannelEx whc = new WritableHexChannelEx(
                     null, encoder(), 2, current().nextBoolean());
             whc.close();
             whc.close();
             whc.close();
         }
         {
-            final WritableHexChannel whc = new WritableHexChannel(
+            final WritableHexChannelEx whc = new WritableHexChannelEx(
                     Channels.newChannel(new ByteArrayOutputStream()), encoder(),
                     2, current().nextBoolean());
             whc.close();
@@ -109,7 +108,7 @@ public class WritableHexChannelTest extends AbstractHexEncoderTest {
     }
 
     /**
-     * Tests {@link WritableHexChannel#write(java.nio.ByteBuffer)}.
+     * Tests {@link WritableHexChannelEx#write(java.nio.ByteBuffer)}.
      *
      * @throws IOException if an I/O error occurs.
      */
@@ -120,8 +119,8 @@ public class WritableHexChannelTest extends AbstractHexEncoderTest {
         final HexEncoder encoder = encoder();
         final int capacity = current().nextInt(2, 128);
         final boolean direct = current().nextBoolean();
-        try (WritableHexChannel whc
-                = new WritableHexChannel(channel, encoder, capacity, direct)) {
+        try (WritableHexChannelEx whc
+                = new WritableHexChannelEx(channel, encoder, capacity, direct)) {
             for (int i = 0; i < 128; i++) {
                 final ByteBuffer src
                         = ByteBuffer.allocate(current().nextInt(128));
@@ -131,7 +130,7 @@ public class WritableHexChannelTest extends AbstractHexEncoderTest {
     }
 
     /**
-     * Tests {@link WritableHexChannel#write(java.nio.ByteBuffer)} with a
+     * Tests {@link WritableHexChannelEx#write(java.nio.ByteBuffer)} with a
      * non-blocking channel.
      *
      * @throws IOException if an I/O error occurs.
@@ -149,8 +148,8 @@ public class WritableHexChannelTest extends AbstractHexEncoderTest {
         final HexEncoder encoder = encoder();
         final int capacity = current().nextInt(2, 128);
         final boolean direct = current().nextBoolean();
-        try (WritableHexChannel whc
-                = new WritableHexChannel(channel, encoder, capacity, direct)) {
+        try (WritableHexChannelEx whc
+                = new WritableHexChannelEx(channel, encoder, capacity, direct)) {
             for (int i = 0; i < 128; i++) {
                 final ByteBuffer src = allocate(current().nextInt(128));
                 final int written = whc.write(src);

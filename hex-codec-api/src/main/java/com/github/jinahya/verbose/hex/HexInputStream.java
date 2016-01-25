@@ -40,6 +40,38 @@ public class HexInputStream extends FilterInputStream {
     }
 
     /**
+     * Returns an estimate of the number of bytes that can be read (or skipped
+     * over) from this input stream without blocking by the next invocation of a
+     * method for this input stream. The {@code available()} method of
+     * {@code HexInputStream} class invokes {@code super.avilable() / 2}.
+     *
+     * @return an estimate of the number of bytes that can be read (or skipped
+     * over) from this input stream without blocking or {@code 0} when it
+     * reaches the end of the input stream.
+     * @throws IOException if an I/O error occurs.
+     * @see FilterInputStream#available()
+     */
+    @Override
+    public int available() throws IOException {
+        return super.available() / 2;
+    }
+
+    /**
+     * Marks the current position in this input stream. The {@code mark(int)}
+     * method of {@code HexInputStream} class invokes
+     * {@code super.mark(readlimit * 2)}. Note that specifying a value greater
+     * than {@code Integer.MAX_VALUE / 2} may yield an unexpected result.
+     *
+     * @param readlimit the maximum limit of bytes that can be read before the
+     * mark position becomes invalid.
+     * @see FilterInputStream#mark(int)
+     */
+    @Override
+    public synchronized void mark(final int readlimit) {
+        super.mark(readlimit * 2);
+    }
+
+    /**
      * Reads the next byte of data from the input stream. The {@code read()}
      * method of {@code HexInputStream} class reads two hex characters from
      * {@link #in} and decodes them into a single byte using {@link #dec} and
@@ -55,7 +87,7 @@ public class HexInputStream extends FilterInputStream {
         }
         final int b1 = super.read(); // <2>
         if (b1 == -1) {
-            return b1;
+            return -1;
         }
         buf.put((byte) b1);
         final int b2 = super.read(); // <3>
@@ -65,7 +97,7 @@ public class HexInputStream extends FilterInputStream {
         buf.put((byte) b2);
         buf.flip(); // <4>
         final int b = dec.decodeOctet(buf);
-        buf.compact();
+        buf.clear();
         return b;
     }
 
@@ -106,43 +138,10 @@ public class HexInputStream extends FilterInputStream {
     }
 
     /**
-     * Marks the current position in this input stream. The {@code mark(int)}
-     * method of {@code HexInputStream} class invokes
-     * {@link FilterInputStream#mark(int)} with a doubled value of given
-     * {@code readlimit}. Note that specifying a value greater than
-     * {@code Integer.MAX_VALUE / 2} may yield an unexpected result.
-     *
-     * @param readlimit the maximum limit of bytes that can be read before the
-     * mark position becomes invalid.
-     */
-    @Override
-    public synchronized void mark(final int readlimit) {
-        super.mark(readlimit * 2);
-    }
-
-    /**
-     * Returns an estimate of the number of bytes that can be read (or skipped
-     * over) from this input stream without blocking by the next invocation of a
-     * method for this input stream. The {@code available()} method of
-     * {@code HexInputStream} class invokes {@link InputStream#available()} on
-     * {@link #in} and returns the value divided by {@code 2}.
-     *
-     * @return an estimate of the number of bytes that can be read (or skipped
-     * over) from this input stream without blocking or {@code 0} when it
-     * reaches the end of the input stream.
-     * @throws IOException if an I/O error occurs.
-     */
-    @Override
-    public int available() throws IOException {
-        return super.available() / 2;
-    }
-
-    /**
      * Skips over and discards n bytes of data from this input stream. The
      * {@code skip(long)} method of {@code HexInputStream} class tries to skip
-     * up to most {@code (n >> 1) << 1} bytes using
-     * {@link FilterInputStream#skip(long)} and, if skipped by an odd number of
-     * bytes, tries to skip one more byte.
+     * up to most {@code n / 2} bytes using {@link FilterInputStream#skip(long)}
+     * and, if skipped by an odd number of bytes, tries to skip one more byte.
      *
      * @param n the number of bytes to be skipped.
      * @return the actual number of bytes skipped.

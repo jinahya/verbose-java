@@ -19,38 +19,32 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
-import static java.nio.ByteBuffer.allocateDirect;
 import java.nio.channels.ReadableByteChannel;
 
 /**
- * A readable byte channel decodes hex characters to bytes.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
+ * @param <T> channel type parameter
  */
-public class ReadableHexChannel extends ReadableHexChannel_O {
+public class ReadableHexChannel<T extends ReadableByteChannel>
+        extends ReadableFilterChannel<T> {
 
     /**
      * Creates a new instance on top of given channel.
      *
-     * @param channel the underlying channel provides encoded hex characters.
-     * @param decoder a decoder to decode hex characters to bytes
-     * @param capacity capacity for decoding buffer
-     * @param direct a flag for direct allocation of decoding buffer.
+     * @param channel the channel from which encoded characters are read
+     * @param decoder the decoder for decoding characters into bytes.
      */
-    public ReadableHexChannel(final ReadableByteChannel channel,
-                              final HexDecoder decoder, final int capacity,
-                              final boolean direct) {
-        super(channel, decoder);
-        if (capacity < 2) { // <1>
-            throw new IllegalArgumentException(
-                    "capacity(" + capacity + ") < 2");
-        }
-        this.capacity = capacity;
-        this.direct = direct;
+    public ReadableHexChannel(final T channel, final HexDecoder decoder) {
+        super(channel);
+        this.decoder = decoder;
     }
 
     /**
-     * Reads a sequence of bytes from this channel into the given buffer.
+     * Reads a sequence of bytes from this channel into the given buffer. The
+     * {@code read(ByteBuffer)} method of {@code ReadableHexChannel} class read
+     * maximum by double number of bytes of {@code dst.remaining()} and decodes
+     * them using {@link #decoder}.
      *
      * @param dst The buffer into which bytes are to be transferred
      * @return The number of bytes read, possibly zero, or -1 if the channel has
@@ -59,44 +53,24 @@ public class ReadableHexChannel extends ReadableHexChannel_O {
      */
     @Override
     public int read(final ByteBuffer dst) throws IOException {
-        if (buffer == null) {
-            buffer = direct ? allocateDirect(capacity) : allocate(capacity);
+        final ByteBuffer aux = allocate(dst.remaining() >> 1 << 2); // <1>
+        if (channel.read(aux) == -1) {
+            return -1;
         }
-        int count = 0;
-        while (dst.hasRemaining()) {
-            buffer.limit(Math.min(buffer.limit(), dst.remaining() * 2)); // <1>
-            final int remaining = buffer.remaining(); // can read
-            final int read = channel.read(buffer); // actaully read
-            if (read == -1) { // <2>
-                if (count == 0 && buffer.position() == 0) {
-                    return -1;
-                }
-                break;
-            }
-            buffer.flip(); // <3>
-            count += decoder.decode(buffer, dst);
-            buffer.compact();
-            if (read < remaining) { // <4>
-                break;
-            }
-        }
-        if ((buffer.position() & 1) == 1) { // <5>
-            buffer.limit(buffer.position() + 1);
-            while (buffer.hasRemaining()) {
-                if (channel.read(buffer) == -1) {
-                    throw new EOFException(); // unexpected end-of-stream
+        if ((aux.position() & 1) == 1) { // <2>
+            aux.position(aux.position() + 1);
+            while (aux.hasRemaining()) {
+                if (channel.read(aux) == -1) {
+                    throw new EOFException();
                 }
             }
         }
-        buffer.flip(); // <6>
-        count += decoder.decode(buffer, dst);
-        buffer.compact();
-        return count;
+        aux.flip();
+        return decoder.decode(aux, dst); // <3>
     }
 
-    private final int capacity;
-
-    private final boolean direct;
-
-    private ByteBuffer buffer;
+    /**
+     * The decoder for decoding characters into bytes.
+     */
+    protected HexDecoder decoder;
 }
