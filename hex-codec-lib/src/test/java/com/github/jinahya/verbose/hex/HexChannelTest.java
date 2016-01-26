@@ -10,13 +10,18 @@ import static java.nio.channels.FileChannel.open;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import static java.nio.file.Files.createTempFile;
+import static java.nio.file.Files.delete;
+import static java.nio.file.Files.exists;
 import java.nio.file.Path;
+import static java.nio.file.StandardOpenOption.DELETE_ON_CLOSE;
 import static java.nio.file.StandardOpenOption.DSYNC;
 import static java.nio.file.StandardOpenOption.READ;
 import static java.nio.file.StandardOpenOption.WRITE;
 import java.security.NoSuchAlgorithmException;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertFalse;
+import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
@@ -26,51 +31,45 @@ import org.testng.annotations.Test;
  */
 public class HexChannelTest {
 
-    /**
-     * Encodes/decodes a randomly generated path.
-     *
-     * @throws IOException if an I/O error occurs.
-     * @throws NoSuchAlgorithmException if failed to digest paths.
-     */
-    @Test
-    public void encodeDecodePath()
+    @DataProvider
+    private Object[][] algorithms() {
+        return new Object[][]{{"MD5"}, {"SHA-1"}, {"SHA-256"}};
+    }
+
+    @Test(dataProvider = "algorithms")
+    public void encodeDecodePath(final String algorithm)
             throws IOException, NoSuchAlgorithmException {
         final Path created = createTempFile(null, null);
-        created.toFile().deleteOnExit();
-        try (FileChannel c = open(created, WRITE)) {
+        try (FileChannel c = open(created, WRITE, DSYNC)) { // <2>
             final ByteBuffer b = allocate(current().nextInt(1048576));
             current().nextBytes(b.array());
-            c.write(b);
-            c.force(false);
+            for (; b.hasRemaining(); c.write(b));
         }
+        final byte[] createdDigest = digest(created, algorithm);
         final Path encoded = createTempFile(null, null);
-        encoded.toFile().deleteOnExit();
-        try (ReadableByteChannel readable = open(created, READ)) {
+        try (ReadableByteChannel readable
+                = open(created, READ, DELETE_ON_CLOSE)) { // <2>
             final WritableByteChannel channel = open(encoded, WRITE, DSYNC);
             final HexEncoder encoder = new HexEncoderImpl();
-            final int capacity = current().nextInt(2, 128);
-            final boolean direct = current().nextBoolean();
-            try (WritableByteChannel writable = new WritableHexChannelEx(
-                    channel, encoder, capacity, direct)) {
+            try (WritableByteChannel writable
+                    = new WritableHexChannel<>(channel, encoder)) {
                 copy(readable, writable);
             }
         }
         final Path decoded = createTempFile(null, null);
-        decoded.toFile().deleteOnExit();
-        try (FileChannel writable = open(decoded, WRITE, DSYNC)) {
-            final ReadableByteChannel channel = open(encoded, READ);
+        try (WritableByteChannel writable = open(decoded, WRITE, DSYNC)) {
+            final ReadableByteChannel channel
+                    = open(encoded, READ, DELETE_ON_CLOSE);
             final HexDecoder decoder = new HexDecoderImpl();
-            final int capacity = current().nextInt(2, 128);
-            final boolean direct = current().nextBoolean();
-            try (ReadableByteChannel readable = new ReadableHexChannelEx(
-                    channel, decoder, capacity, direct)) {
+            try (ReadableByteChannel readable = new ReadableHexChannel<>(
+                    channel, decoder)) {
                 copy(readable, writable);
             }
         }
-        for (final String algorithm : new String[]{"MD5", "SHA-1", "SHA-256"}) {
-            final byte[] createdDigest = digest(created, algorithm);
-            final byte[] decodedDigest = digest(decoded, algorithm);
-            assertEquals(decodedDigest, createdDigest);
-        }
+        final byte[] decodedDigest = digest(decoded, algorithm);
+        assertEquals(decodedDigest, createdDigest);
+        assertFalse(exists(created)); // <1>
+        assertFalse(exists(encoded)); // <2>
+        delete(decoded); // <3>
     }
 }

@@ -20,6 +20,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import static java.nio.ByteBuffer.allocate;
 import static java.nio.channels.FileChannel.open;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Path;
@@ -42,8 +43,8 @@ final class MdUtils {
         final MessageDigest digest // <1>
                 = MessageDigest.getInstance(algorithm);
         final byte[] buffer = new byte[4096];
-        for (int read; (read = input.read(buffer)) != -1;) {
-            digest.update(buffer, 0, read); // <2>
+        for (int length; (length = input.read(buffer)) != -1;) {
+            digest.update(buffer, 0, length); // <2>
         }
         return digest.digest(); // <3>
     }
@@ -77,11 +78,10 @@ final class MdUtils {
                          final String algorithm)
             throws NoSuchAlgorithmException, IOException {
         final MessageDigest digest = MessageDigest.getInstance(algorithm);
-        final ByteBuffer buffer = ByteBuffer.allocate(4096);
-        while (channel.read(buffer) != -1) { // <1>
-            buffer.flip();
-            digest.update(buffer); // <2>
-            buffer.clear();
+        for (final ByteBuffer b = allocate(4096); channel.read(b) != -1;) {
+            b.flip();
+            digest.update(b); // <1>
+            b.clear();
         }
         return digest.digest();
     }

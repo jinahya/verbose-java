@@ -3,12 +3,14 @@ package com.github.jinahya.verbose.hex;
 import static com.github.jinahya.verbose.hex.IoUtils.copy;
 import static com.github.jinahya.verbose.hex.MdUtils.digest;
 import java.io.File;
+import static java.io.File.createTempFile;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.security.NoSuchAlgorithmException;
+import static java.util.Arrays.asList;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
@@ -20,43 +22,39 @@ import org.testng.annotations.Test;
  */
 public class HexStreamTest {
 
-    /**
-     * Encodes/decodes a randomly generated file.
-     *
-     * @throws IOException if an I/O error occurs.
-     * @throws NoSuchAlgorithmException if failed to digest files
-     */
     @Test
     public void encodeDecodeFile()
             throws IOException, NoSuchAlgorithmException {
-        final File created = File.createTempFile("tmp", null); // <1>
-        created.deleteOnExit();
-        try (OutputStream o = new FileOutputStream(created)) { // <2>
+        final File created = createTempFile("tmp", null);
+        created.deleteOnExit(); // <1>
+        try (OutputStream o = new FileOutputStream(created)) {
             final byte[] b = new byte[current().nextInt(1048576)];
             current().nextBytes(b);
             o.write(b);
         }
-        final File encoded = File.createTempFile("tmp", null); // <3>
+        final File encoded = createTempFile("tmp", null);
         encoded.deleteOnExit();
-        try (InputStream input = new FileInputStream(created)) { // <4>
-            final OutputStream stream = new FileOutputStream(encoded);
-            final HexEncoder encoder = new HexEncoderImpl();
-            try (OutputStream output = new HexOutputStream(stream, encoder)) {
+        try (InputStream input = new FileInputStream(created)) {
+            final OutputStream out = new FileOutputStream(encoded);
+            final HexEncoder enc = new HexEncoderImpl();
+            try (OutputStream output = new HexOutputStream(out, enc)) {
                 copy(input, output);
                 output.flush();
             }
         }
-        final File decoded = File.createTempFile("tmp", null); // <5>
+        final File decoded = createTempFile("tmp", null);
         decoded.deleteOnExit();
-        try (OutputStream output = new FileOutputStream(decoded)) { // <6>
-            final InputStream stream = new FileInputStream(encoded);
-            final HexDecoder decoder = new HexDecoderImpl();
-            try (InputStream input = new HexInputStream(stream, decoder)) {
+        try (OutputStream output = new FileOutputStream(decoded)) {
+            final InputStream in = new FileInputStream(encoded);
+            final HexDecoder dec = new HexDecoderImpl();
+            try (InputStream input = new HexInputStream(in, dec)) {
                 copy(input, output);
                 output.flush();
             }
         }
-        for (final String algorithm : new String[]{"MD5", "SHA-1", "SHA-256"}) { // <7>
+        assertEquals(encoded.length(), created.length() << 1);
+        assertEquals(decoded.length(), encoded.length() >> 1);
+        for (final String algorithm : asList("MD5", "SHA-1", "SHA-256")) { // <7>
             final byte[] createdDigest = digest(created, algorithm);
             final byte[] decodedDigest = digest(decoded, algorithm);
             assertEquals(decodedDigest, createdDigest);

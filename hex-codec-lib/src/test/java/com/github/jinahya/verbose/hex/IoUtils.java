@@ -45,8 +45,8 @@ final class IoUtils {
             throws IOException {
         long count = 0L;
         final byte[] buffer = new byte[4096]; // <1>
-        for (int read; (read = input.read(buffer)) != -1; count += read) { // <2>
-            output.write(buffer, 0, read); // <3>
+        for (int length; (length = input.read(buffer)) != -1; count += length) { // <2>
+            output.write(buffer, 0, length); // <3>
         }
         return count;
     }

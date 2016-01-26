@@ -29,7 +29,7 @@ import org.testng.annotations.Test;
 public class ClassFileTest {
 
     @Test
-    public void cafebabe() throws IOException {
+    public void magic() throws IOException {
         final Class<?> type = getClass();
         final String name = type.getSimpleName() + ".class";
         try (InputStream input = type.getResourceAsStream(name)) {
