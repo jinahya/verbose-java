@@ -15,15 +15,14 @@
  */
 package com.github.jinahya.verbose.percent;
 
+import static com.github.jinahya.verbose.percent.UrlCodec.toPercentEncoded;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import javax.inject.Inject;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.slf4j.Logger;
-import static org.slf4j.LoggerFactory.getLogger;
+import static org.apache.commons.lang3.RandomStringUtils.random;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
@@ -32,32 +31,27 @@ import org.testng.annotations.Test;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-@Guice(modules = PercentEncoderModule.class)
+@Guice(modules = PercentEncoderImplModule.class)
 public class PercentEncoderImplTest {
 
     @Test
-    public void testExampleFromURLEncoderDocumentation()
-            throws UnsupportedEncodingException {
-        final Charset charset = StandardCharsets.UTF_8;
+    public void testExample() throws UnsupportedEncodingException {
         final String decoded = "The string ü@foo-bar";
-        final String expected = PercentCodecTests.toPercentEncodedFromUrlEncoded(
-                URLEncoder.encode(decoded, charset.name()));
-        final String actual = new PercentEncoderImpl().encode(decoded, charset);
+        final String expected = toPercentEncoded("The+string+%C3%BC%40foo-bar");
+        final String actual = encoder.encode(decoded);
         assertEquals(actual, expected);
     }
 
     @Test(invocationCount = 128)
     public void testEncodingAgainstURLEncoder()
             throws UnsupportedEncodingException {
-        final Charset charset = StandardCharsets.UTF_8;
-        final String decoded = RandomStringUtils.random(current().nextInt(128));
-        String expected = PercentCodecTests.toPercentEncodedFromUrlEncoded(
+        final Charset charset = UTF_8;
+        final String decoded = random(current().nextInt(128));
+        final String expected = toPercentEncoded(
                 URLEncoder.encode(decoded, charset.name()));
-        final String actual = new PercentEncoderImpl().encode(decoded, charset);
+        final String actual = encoder.encode(decoded, charset);
         assertEquals(actual, expected);
     }
-
-    private transient final Logger logger = getLogger(getClass());
 
     @Inject
     private PercentEncoder encoder;

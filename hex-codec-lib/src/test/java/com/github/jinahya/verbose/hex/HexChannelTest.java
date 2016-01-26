@@ -1,7 +1,6 @@
 package com.github.jinahya.verbose.hex;
 
 import static com.github.jinahya.verbose.hex.IoUtils.copy;
-import static com.github.jinahya.verbose.hex.MdUtils.digest;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
@@ -45,7 +44,7 @@ public class HexChannelTest {
             current().nextBytes(b.array());
             for (; b.hasRemaining(); c.write(b));
         }
-        final byte[] createdDigest = digest(created, algorithm);
+        final byte[] createdDigest = MdUtils2.digest(created, algorithm);
         final Path encoded = createTempFile(null, null);
         try (ReadableByteChannel readable
                 = open(created, READ, DELETE_ON_CLOSE)) { // <2>
@@ -66,10 +65,11 @@ public class HexChannelTest {
                 copy(readable, writable);
             }
         }
-        final byte[] decodedDigest = digest(decoded, algorithm);
+        final byte[] decodedDigest = MdUtils2.digest(decoded, algorithm);
         assertEquals(decodedDigest, createdDigest);
         assertFalse(exists(created)); // <1>
         assertFalse(exists(encoded)); // <2>
         delete(decoded); // <3>
     }
+
 }

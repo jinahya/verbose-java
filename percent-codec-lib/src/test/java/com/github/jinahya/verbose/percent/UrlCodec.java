@@ -19,23 +19,23 @@ package com.github.jinahya.verbose.percent;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-final class PercentCodecTests {
+final class UrlCodec {
 
-    static String toPercentEncodedFromUrlEncoded(final String urlEncoded) {
+    static String toPercentEncoded(final String urlEncoded) {
         return urlEncoded
                 .replaceAll("\\*", "%2A")
                 .replaceAll("%7E", "~")
                 .replaceAll("\\+", "%20");
     }
 
-    static String toUrlEncodedFromPercentEncoded(final String percentEncoded) {
+    static String toUrlEncoded(final String percentEncoded) {
         return percentEncoded
                 .replaceAll("%2A", "\\*")
                 .replaceAll("~", "%7E")
                 .replaceAll("%20", "\\+");
     }
 
-    private PercentCodecTests() {
+    private UrlCodec() {
         super();
     }
 }

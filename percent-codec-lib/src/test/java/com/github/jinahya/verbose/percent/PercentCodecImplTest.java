@@ -16,9 +16,11 @@
 package com.github.jinahya.verbose.percent;
 
 import java.io.UnsupportedEncodingException;
+import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import javax.inject.Inject;
-import org.apache.commons.lang3.RandomStringUtils;
+import static org.apache.commons.lang3.RandomStringUtils.random;
+import static org.apache.commons.lang3.RandomStringUtils.randomAscii;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
@@ -27,12 +29,13 @@ import org.testng.annotations.Test;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-@Guice(modules = {PercentEncoderModule.class, PercentDecoderModule.class})
+@Guice(modules = {PercentEncoderImplModule.class,
+                  PercentDecoderImplModule.class})
 public class PercentCodecImplTest {
 
     @Test(invocationCount = 128)
     public void encodeDecodeString() throws UnsupportedEncodingException {
-        final String created = RandomStringUtils.random(current().nextInt(128));
+        final String created = random(current().nextInt(128));
         final String encoded = encoder.encode(created);
         final String decoded = decoder.decode(encoded);
         assertEquals(decoded, created);
@@ -40,10 +43,9 @@ public class PercentCodecImplTest {
 
     @Test(invocationCount = 128)
     public void encodeDecodeAscii() throws UnsupportedEncodingException {
-        final String created
-                = RandomStringUtils.randomAscii(current().nextInt(128));
-        final String encoded = encoder.encode(created);
-        final String decoded = decoder.decode(encoded);
+        final String created = randomAscii(current().nextInt(128));
+        final String encoded = encoder.encode(created, US_ASCII);
+        final String decoded = decoder.decode(encoded, US_ASCII);
         assertEquals(decoded, created);
     }
 

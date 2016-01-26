@@ -25,7 +25,7 @@ import org.testng.annotations.Test;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class URLCodecTest {
+public class URLEncoderTest {
 
     @Test(enabled = false)
     public void encode() throws UnsupportedEncodingException {

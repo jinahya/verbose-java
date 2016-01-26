@@ -19,23 +19,12 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
-import java.nio.ByteBuffer;
-import static java.nio.ByteBuffer.allocate;
-import static java.nio.channels.FileChannel.open;
-import java.nio.channels.ReadableByteChannel;
-import java.nio.file.Path;
-import static java.nio.file.StandardOpenOption.READ;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import static java.util.concurrent.ThreadLocalRandom.current;
 
-/**
- * Utilities for testing hex codec.
- *
- * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
- */
-final class MdUtils {
+final class MdUtils1 {
 
     private static byte[] digest1(final InputStream input,
                                   final String algorithm)
@@ -74,26 +63,7 @@ final class MdUtils {
         }
     }
 
-    static byte[] digest(final ReadableByteChannel channel,
-                         final String algorithm)
-            throws NoSuchAlgorithmException, IOException {
-        final MessageDigest digest = MessageDigest.getInstance(algorithm);
-        for (final ByteBuffer b = allocate(4096); channel.read(b) != -1;) {
-            b.flip();
-            digest.update(b); // <1>
-            b.clear();
-        }
-        return digest.digest();
-    }
-
-    static byte[] digest(final Path path, final String algorithm)
-            throws IOException, NoSuchAlgorithmException {
-        try (ReadableByteChannel channel = open(path, READ)) {
-            return digest(channel, algorithm);
-        }
-    }
-
-    private MdUtils() {
+    private MdUtils1() {
         super();
     }
 

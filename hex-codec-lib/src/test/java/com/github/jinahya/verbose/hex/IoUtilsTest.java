@@ -15,12 +15,17 @@
  */
 package com.github.jinahya.verbose.hex;
 
-import static com.github.jinahya.verbose.hex.MdUtils.digest;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.RandomAccessFile;
+import java.io.OutputStream;
+import java.nio.ByteBuffer;
+import static java.nio.ByteBuffer.allocate;
+import java.nio.channels.FileChannel;
+import static java.nio.channels.FileChannel.open;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import static java.nio.file.StandardOpenOption.WRITE;
 import java.security.NoSuchAlgorithmException;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.testng.Assert.assertEquals;
@@ -37,24 +42,26 @@ public class IoUtilsTest {
     public void copyFile() throws IOException, NoSuchAlgorithmException {
         final File source = File.createTempFile("tmp", null);
         source.deleteOnExit();
-        try (RandomAccessFile raf = new RandomAccessFile(source, "rwd")) {
+        try (OutputStream o = new FileOutputStream(source)) {
             final byte[] bytes = new byte[current().nextInt(1048576)];
             current().nextBytes(bytes);
-            raf.write(bytes);
+            o.write(bytes);
+            o.flush();
         }
         final File target = File.createTempFile("tmp", null);
         target.deleteOnExit();
         if (current().nextBoolean()) {
-            try (RandomAccessFile raf = new RandomAccessFile(target, "rwd")) {
+            try (OutputStream o = new FileOutputStream(target)) {
                 final byte[] bytes = new byte[current().nextInt(1048576)];
                 current().nextBytes(bytes);
-                raf.write(bytes);
+                o.write(bytes);
+                o.flush();
             }
         }
         IoUtils.copy(source, target);
         for (final String algorithm : new String[]{"MD5", "SHA-1", "SHA-256"}) {
-            final byte[] createdDigest = digest(source, algorithm);
-            final byte[] decodedDigest = digest(target, algorithm);
+            final byte[] createdDigest = MdUtils1.digest(source, algorithm);
+            final byte[] decodedDigest = MdUtils1.digest(target, algorithm);
             assertEquals(decodedDigest, createdDigest);
         }
     }
@@ -63,26 +70,28 @@ public class IoUtilsTest {
     public void copyPath() throws IOException, NoSuchAlgorithmException {
         final Path source = Files.createTempFile(null, null);
         source.toFile().deleteOnExit();
-        try (RandomAccessFile raf
-                = new RandomAccessFile(source.toFile(), "rwd")) {
-            final byte[] bytes = new byte[current().nextInt(1048576)];
-            current().nextBytes(bytes);
-            raf.write(bytes);
+        try (FileChannel c = open(source, WRITE)) {
+            final ByteBuffer b = allocate(1048576);
+            current().nextBytes(b.array());
+            while (b.hasRemaining()) {
+                c.write(b);
+            }
         }
         final Path target = Files.createTempFile(null, null);
         target.toFile().deleteOnExit();
         if (current().nextBoolean()) {
-            try (RandomAccessFile raf
-                    = new RandomAccessFile(target.toFile(), "rwd")) {
-                final byte[] bytes = new byte[current().nextInt(1048576)];
-                current().nextBytes(bytes);
-                raf.write(bytes);
+            try (FileChannel c = open(target, WRITE)) {
+                final ByteBuffer b = allocate(1048576);
+                current().nextBytes(b.array());
+                while (b.hasRemaining()) {
+                    c.write(b);
+                }
             }
         }
         IoUtils.copy(source, target);
         for (final String algorithm : new String[]{"MD5", "SHA-1", "SHA-256"}) {
-            final byte[] createdDigest = digest(source, algorithm);
-            final byte[] decodedDigest = digest(target, algorithm);
+            final byte[] createdDigest = MdUtils2.digest(source, algorithm);
+            final byte[] decodedDigest = MdUtils2.digest(target, algorithm);
             assertEquals(decodedDigest, createdDigest);
         }
     }

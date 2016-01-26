@@ -16,23 +16,15 @@
 package com.github.jinahya.verbose.hex;
 
 import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.nio.ByteBuffer;
-import static java.nio.ByteBuffer.allocate;
-import java.nio.channels.FileChannel;
-import static java.nio.channels.FileChannel.open;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.nio.file.Path;
-import static java.nio.file.StandardOpenOption.CREATE;
-import static java.nio.file.StandardOpenOption.READ;
-import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
-import static java.nio.file.StandardOpenOption.WRITE;
+import java.util.concurrent.ExecutionException;
 import static java.util.concurrent.ThreadLocalRandom.current;
+import static org.testng.Assert.fail;
 
 /**
  * Utilities for testing hex codec.
@@ -43,118 +35,39 @@ final class IoUtils {
 
     static long copy(final InputStream input, final OutputStream output)
             throws IOException {
-        long count = 0L;
-        final byte[] buffer = new byte[4096]; // <1>
-        for (int length; (length = input.read(buffer)) != -1; count += length) { // <2>
-            output.write(buffer, 0, length); // <3>
+        switch (current().nextInt(1)) {
+            default:
+                return IoUtils1.copy(input, output);
         }
-        return count;
     }
 
     static void copy(final File source, final File target) throws IOException {
-        try (InputStream input = new FileInputStream(source)) {
-            try (OutputStream output = new FileOutputStream(target)) {
-                copy(input, output);
-                output.flush(); // <1>
-            }
+        switch (current().nextInt(1)) {
+            default:
+                IoUtils1.copy(source, target);
         }
-    }
-
-    private static long copy1(final ReadableByteChannel readable,
-                              final WritableByteChannel writable)
-            throws IOException {
-        long count = 0L;
-        final ByteBuffer buffer = allocate(4096);
-        while (readable.read(buffer) != -1) { // <1>
-            buffer.flip(); // <2>
-            count += writable.write(buffer); // <3>
-            buffer.compact(); // <4>
-        }
-        for (buffer.flip(); buffer.hasRemaining();) { // <5>
-            count += writable.write(buffer);
-        }
-        return count;
-    }
-
-    private static long copy2(final ReadableByteChannel readable,
-                              final WritableByteChannel writable)
-            throws IOException {
-        long count = 0L;
-        final ByteBuffer buffer = allocate(4096);
-        while (readable.read(buffer) != -1) {
-            buffer.flip();
-            while (buffer.hasRemaining()) { // <1>
-                count += writable.write(buffer);
-            }
-            buffer.clear();
-        }
-        return count;
     }
 
     static long copy(final ReadableByteChannel readable,
                      final WritableByteChannel writable)
             throws IOException {
-        switch (current().nextInt(2)) {
-            case 0:
-                return copy1(readable, writable);
+        switch (current().nextInt(1)) {
             default:
-                return copy2(readable, writable);
-        }
-    }
-
-    private static void copy1(final Path source, final Path target)
-            throws IOException {
-        try (FileChannel readable = open(source, READ)) {
-            try (FileChannel writable
-                    = open(target, CREATE, TRUNCATE_EXISTING, WRITE)) {
-                copy(readable, writable);
-                writable.force(false); // <1>
-            }
-        }
-    }
-
-    private static void copy2(final Path source, final Path target)
-            throws IOException {
-        try (FileChannel readable = open(source, READ)) {
-            try (FileChannel writable
-                    = open(target, CREATE, TRUNCATE_EXISTING, WRITE)) {
-                for (long count = readable.size(); count > 0L;) {
-                    final long transferred = readable.transferTo(
-                            readable.position(), count, writable);
-                    readable.position(readable.position() + transferred);
-                    count -= transferred;
-                }
-                writable.force(false);
-            }
-        }
-    }
-
-    private static void copy3(final Path source, final Path target)
-            throws IOException {
-        try (FileChannel readable = open(source, READ)) {
-            try (FileChannel writable
-                    = open(target, CREATE, TRUNCATE_EXISTING, WRITE)) {
-                for (long count = readable.size(); count > 0L;) {
-                    final long transferred = writable.transferFrom(
-                            readable, writable.position(), count);
-                    writable.position(writable.position() + transferred);
-                    count -= transferred;
-                }
-                writable.force(false);
-            }
+                return IoUtils2.copy(readable, writable);
         }
     }
 
     static void copy(final Path source, final Path target) throws IOException {
-        switch (current().nextInt(3)) {
+        switch (current().nextInt(2)) {
             case 0:
-                copy1(source, target);
-                break;
-            case 1:
-                copy2(source, target);
+                IoUtils2.copy(source, target);
                 break;
             default:
-                copy3(source, target);
+                try {
+                    IoUtils3.copy(source, target);
+                } catch (InterruptedException | ExecutionException e) {
+                    fail(e.getMessage(), e);
+                }
                 break;
         }
     }

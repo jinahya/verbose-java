@@ -1,7 +1,7 @@
 package com.github.jinahya.verbose.hex;
 
 import static com.github.jinahya.verbose.hex.IoUtils.copy;
-import static com.github.jinahya.verbose.hex.MdUtils.digest;
+import static com.github.jinahya.verbose.hex.MdUtils1.digest;
 import java.io.File;
 import static java.io.File.createTempFile;
 import java.io.FileInputStream;

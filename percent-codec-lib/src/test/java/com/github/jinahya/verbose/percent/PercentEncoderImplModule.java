@@ -21,7 +21,7 @@ import com.google.inject.AbstractModule;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-class PercentEncoderModule extends AbstractModule {
+class PercentEncoderImplModule extends AbstractModule {
 
     @Override
     protected void configure() {
