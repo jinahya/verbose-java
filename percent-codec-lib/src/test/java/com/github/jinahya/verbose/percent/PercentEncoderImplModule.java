@@ -18,6 +18,8 @@ package com.github.jinahya.verbose.percent;
 import com.google.inject.AbstractModule;
 
 /**
+ * A module binds {@link PercentEncoder} class to {@link PercentEncoderImpl}
+ * class.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */

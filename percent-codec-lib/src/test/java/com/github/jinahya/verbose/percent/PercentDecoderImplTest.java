@@ -15,6 +15,8 @@
  */
 package com.github.jinahya.verbose.percent;
 
+import static com.github.jinahya.verbose.percent.UrlCodec.EXAMPLE_DECODED;
+import static com.github.jinahya.verbose.percent.UrlCodec.EXAMPLE_ENCODED;
 import static com.github.jinahya.verbose.percent.UrlCodec.toPercentEncoded;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
@@ -36,9 +38,8 @@ public class PercentDecoderImplTest {
 
     @Test
     public void testExample() throws UnsupportedEncodingException {
-        final String encoded = toPercentEncoded("The+string+%C3%BC%40foo-bar");
-        final String expected = "The string ü@foo-bar";
-        final String actual = decoder.decode(encoded);
+        final String expected = EXAMPLE_DECODED;
+        final String actual = decoder.decode(toPercentEncoded(EXAMPLE_ENCODED));
         assertEquals(actual, expected);
     }
 

@@ -15,14 +15,15 @@
  */
 package com.github.jinahya.verbose.percent;
 
-import java.nio.BufferUnderflowException;
+import com.google.inject.Inject;
 import java.nio.ByteBuffer;
+import static java.nio.ByteBuffer.allocate;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.util.concurrent.ThreadLocalRandom.current;
-import org.apache.commons.lang3.RandomStringUtils;
-import org.slf4j.Logger;
-import static org.slf4j.LoggerFactory.getLogger;
+import static org.apache.commons.lang3.RandomStringUtils.randomAscii;
+import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
+import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 
 /**
@@ -30,53 +31,41 @@ import org.testng.annotations.Test;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
+@Guice(modules = PercentDecoderMockModule.class)
 public class PercentDecoderTest {
-
-    private static PercentDecoder decoder() {
-        return e -> {
-            if (!e.hasRemaining()) {
-                throw new BufferUnderflowException();
-            }
-            if (e.remaining() >= 3 && current().nextBoolean()) {
-                e.position(e.position() + 3);
-                return 0;
-            }
-            e.position(e.position() + 1);
-            return 0;
-        };
-    }
 
     @Test(invocationCount = 128)
     public void decodeWithABuffer() {
-        final ByteBuffer encoded = ByteBuffer.allocate(current().nextInt(128));
-        final ByteBuffer decoded = decoder().decode(encoded);
-        assertTrue(decoded.remaining() <= encoded.capacity());
-    }
-
-    @Test(invocationCount = 128)
-    public void decodeWithDecodedBuffer() {
-        final ByteBuffer encoded = ByteBuffer.allocate(current().nextInt(128));
-        final ByteBuffer decoded = ByteBuffer.allocate(encoded.remaining());
-        decoder().decode(encoded, decoded);
-        assertTrue(decoded.position() <= encoded.position());
+        {
+            final ByteBuffer encoded = allocate(current().nextInt(128));
+            final ByteBuffer decoded = decoder.decode(encoded);
+            assertTrue(decoded.remaining() <= encoded.capacity());
+            assertTrue(decoded.remaining() >= encoded.capacity() / 3);
+        }
+        {
+            final ByteBuffer encoded = allocate(current().nextInt(128));
+            final ByteBuffer decoded = allocate(encoded.remaining());
+            final int count = decoder.decode(encoded, decoded);
+            assertTrue(count >= 0);
+            assertEquals(count, decoded.position());
+            assertTrue(decoded.position() <= encoded.position());
+        }
     }
 
     @Test(invocationCount = 128)
     public void decodeString() {
-        final String encoded
-                = RandomStringUtils.randomAscii(current().nextInt(128));
-        final String decoded = decoder().decode(encoded);
+        final String encoded = randomAscii(current().nextInt(128));
+        final String decoded = decoder.decode(encoded);
         assertTrue(decoded.length() <= encoded.length());
     }
 
     @Test(invocationCount = 128)
     public void decodeAscii() {
-        final String encoded
-                = RandomStringUtils.randomAscii(current().nextInt(1024));
-        final String decoded = decoder().decode(encoded, US_ASCII);
+        final String encoded = randomAscii(current().nextInt(128));
+        final String decoded = decoder.decode(encoded, US_ASCII);
         assertTrue(decoded.length() <= encoded.length());
     }
 
-    private transient final Logger logger = getLogger(getClass());
-
+    @Inject
+    private PercentDecoder decoder;
 }

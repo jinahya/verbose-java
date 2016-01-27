@@ -42,8 +42,13 @@ public class PercentEncoderImpl implements PercentEncoder {
         this.hexEncoderSupplier = requireNonNull(hexEncoderSupplier);
     }
 
+    /**
+     * Creates a new instance. This constructor calls the constructor takes one
+     * argument with a supplier supplying a {@link HexEncoder} loaded via
+     * service provider interface.
+     */
     public PercentEncoderImpl() {
-        this(() -> load(HexEncoder.class).iterator().next());
+        this(() -> load(HexEncoder.class).iterator().next()); // <1>
     }
 
     @Override
@@ -70,7 +75,7 @@ public class PercentEncoderImpl implements PercentEncoder {
                 .encodeOctet(decoded, encoded);
     }
 
-    private final Supplier<HexEncoder> hexEncoderSupplier;
+    private final Supplier<HexEncoder> hexEncoderSupplier; // <1>
 
-    private HexEncoder hexEncoder;
+    private HexEncoder hexEncoder; // <1>
 }

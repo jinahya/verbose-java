@@ -21,6 +21,10 @@ package com.github.jinahya.verbose.percent;
  */
 final class UrlCodec {
 
+    static final String EXAMPLE_DECODED = "The string ü@foo-bar";
+
+    static final String EXAMPLE_ENCODED = "The+string+%C3%BC%40foo-bar";
+
     static String toPercentEncoded(final String urlEncoded) {
         return urlEncoded
                 .replaceAll("\\*", "%2A")

@@ -15,7 +15,8 @@
  */
 package com.github.jinahya.verbose.percent;
 
-import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import static java.nio.ByteBuffer.allocate;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import javax.inject.Inject;
@@ -26,6 +27,8 @@ import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 
 /**
+ * A class testing both {@link PercentEncoderImpl} and
+ * {@link PercentDecoderImpl}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
@@ -34,7 +37,17 @@ import org.testng.annotations.Test;
 public class PercentCodecImplTest {
 
     @Test(invocationCount = 128)
-    public void encodeDecodeString() throws UnsupportedEncodingException {
+    public void encodeDecodeBuffer() {
+        final ByteBuffer created = allocate(current().nextInt(128));
+        current().nextBytes(created.array());
+        final ByteBuffer encoded = encoder.encode(created);
+        final ByteBuffer decoded = decoder.decode(encoded);
+        created.flip();
+        assertEquals(decoded, created);
+    }
+
+    @Test(invocationCount = 128)
+    public void encodeDecodeString() {
         final String created = random(current().nextInt(128));
         final String encoded = encoder.encode(created);
         final String decoded = decoder.decode(encoded);
@@ -42,7 +55,7 @@ public class PercentCodecImplTest {
     }
 
     @Test(invocationCount = 128)
-    public void encodeDecodeAscii() throws UnsupportedEncodingException {
+    public void encodeDecodeAscii() {
         final String created = randomAscii(current().nextInt(128));
         final String encoded = encoder.encode(created, US_ASCII);
         final String decoded = decoder.decode(encoded, US_ASCII);

@@ -2,6 +2,8 @@ package com.github.jinahya.verbose.percent;
 
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
+import static java.nio.ByteBuffer.allocate;
+import static java.nio.ByteBuffer.wrap;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import static java.nio.charset.StandardCharsets.US_ASCII;
@@ -17,12 +19,11 @@ public interface PercentEncoder {
 
     /**
      * Encodes given byte into the specified buffer. A
-     * {@code BufferOverflowException} will be thrown if the buffer has
-     * remaining less than required.
+     * {@code BufferOverflowException} will be thrown if the buffer's remaining
+     * is less than required.
      *
      * @param decoded the byte to encode
-     * @param encoded the buffer into which encoded characters are to be
-     * transfered.
+     * @param encoded the buffer into which encoded characters are transfered.
      */
     void encodeOctet(int decoded, ByteBuffer encoded);
 
@@ -36,17 +37,16 @@ public interface PercentEncoder {
      * from {@code decoded}
      */
     default int encode(final ByteBuffer decoded, final ByteBuffer encoded) {
-        int count = 0;
-        while (decoded.hasRemaining()) { // <1>
+        final int previous = decoded.position(); // <1>
+        while (decoded.hasRemaining()) { // <2>
             try {
-                encodeOctet(decoded.get(), encoded);
-                count++;
-            } catch (final BufferOverflowException boe) { // NOSONAR
-                decoded.position(decoded.position() - 1); // <2>
+                encodeOctet(decoded.get(), encoded); // <3>
+            } catch (final BufferOverflowException boe) { // NOSONAR <4>
+                decoded.position(decoded.position() - 1);
                 break;
             }
         }
-        return count;
+        return decoded.position() - previous; // <5>
     }
 
     /**
@@ -57,35 +57,34 @@ public interface PercentEncoder {
      * @return a new byte buffer containing encoded characters.
      */
     default ByteBuffer encode(final ByteBuffer decoded) {
-        final ByteBuffer encoded // <1>
-                = ByteBuffer.allocate(decoded.remaining() * 3);
-        encode(decoded, encoded);
-        encoded.flip();
+        final ByteBuffer encoded = allocate(decoded.remaining() * 3); // <1>
+        encode(decoded, encoded); // <2>
+        encoded.flip(); // <3>
         return encoded;
     }
 
     /**
-     * Encodes given string using specified character set to obtain a byte
-     * array.
+     * Encodes given string using specified {@code charset} to obtain a byte
+     * array from the string.
      *
      * @param decoded the string to encode
-     * @param charset the character set to obtain a byte array from given
-     * string.
+     * @param charset the character set to obtain a byte array from the string.
      *
      * @return an encoded String
      */
     default String encode(final String decoded, final Charset charset) {
         final byte[] decodedBytes = decoded.getBytes(charset); // <1>
         final byte[] encodedBytes = new byte[decodedBytes.length * 3]; // <2>
-        final ByteBuffer decodedBuffer = ByteBuffer.wrap(decodedBytes);
-        final ByteBuffer encodedBuffer = ByteBuffer.wrap(encodedBytes);
+        final ByteBuffer decodedBuffer = wrap(decodedBytes);
+        final ByteBuffer encodedBuffer = wrap(encodedBytes);
         encode(decodedBuffer, encodedBuffer); // <3>
         return new String(encodedBytes, 0, encodedBuffer.position(), US_ASCII);
     }
 
     /**
-     * Encodes given string using {@link StandardCharsets#UTF_8} to obtain a
-     * byte array.
+     * Encodes given string. This method invokes
+     * {@link #encode(java.lang.String, java.nio.charset.Charset)} with given
+     * string and {@link StandardCharsets#UTF_8} and returns the result.
      *
      * @param decoded the string to encode
      * @return an encoded string.

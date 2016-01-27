@@ -1355,9 +1355,48 @@ public interface PercentEncoder {
 }
 ----
 
+hex-codec-api 모듈의 인터페이스들과 유사한 default 메서드들이 정의되어 있다.
+
+===== encode(ByteBuffer, ByteBuffer)
+
+두 개의 버퍼를 전달받아 첫 번째 버퍼의 바이트들을 변환한 후 두 번째 버퍼에 담는다. `HexEncoder` 인터페이스와는 다르게 변환할 바이트가 몇 개의 문자로 변환될 지 알 수 없다. (알 수는 있지만 미리 알 필요가 없다고 상정한다.) 때문에 `encodeOcetet(int,ByteBuffer)` 메서드가 `BufferOverflowException` 을 던지는지 확인한다.
+
+[source,java]
+.PercentEncoder.java#encode(ByteBuffer,ByteBuffer)
+----
+    // decoded 버퍼의 바이트들을 인코드한 후 encoded 버퍼에 담는다.
+    // decoded 버퍼에서 소비된 바이트 개수를 반환한다.
+include::../../../../percent-codec-api/src/main/java/com/github/jinahya/verbose/percent/PercentEncoder.java[lines=39..50]
+----
+<1> `decoded` 버퍼에 인코드할 바이트가 남아있은 동안 반복한다. `encoded` 버퍼에 저장할 공간이 없는 경우에도 `BufferOverflowException` 이 발생하므로 확인하지 않는다.
+<2> `encodeOctet(int,ByteBuffer)` 메서드가 `BufferOverflowException` 을 던지면 `decoded` 버퍼의 위치를 복귀시킨 후 반복 구문을 빠져나간다.
+
+===== encode(ByteBuffer)
+
+[source,java]
+.PercentEncoder.java#encode(ByteBuffer,ByteBuffer)
+----
+    // decoded 버퍼의 바이트들을 인코드한 후 결과를 반환한다.
+include::../../../../percent-codec-api/src/main/java/com/github/jinahya/verbose/percent/PercentEncoder.java[lines=59..64]
+----
+<1> `decoded` 버퍼에 가용한 바이트 개수의 세 배에 해당하는 버퍼를 생성한다. (모든 바이트들이 `%XX` 형태로 변환된다고 가정한다.)
+<2> `encode(ByteBuffer,ByteBuffer)` 메서드를 호출해 변한한다.
+<3> `encoded` 버퍼를 뒤집어(flip) 읽을 수 있는 상태로 만든다.
+
+===== encode(String, Charset)
+
+[source,java]
+.PercentEncoder.java#encode(String,Charset)
+----
+include::../../../../percent-codec-api/src/main/java/com/github/jinahya/verbose/percent/PercentEncoder.java[lines=75..82]
+----
+<1> 문자열(`decoded`)에서 문자셋(`charset`)을 이용해 입력 배열을 구한다.
+<2> 입력 배열 길이의 세 배에 해당하는 출력 배열을 생성한다. (`encode(ByteBuffer)` 메서드와 마찬가지로 모든 바이트들이 `%XX` 형태로 변환된다고 가정한다.)
+<3> 두 배열을 감싸는(wrap) 버퍼들을 생성한 후 `encode(ByteBuffer,ByteBuffer)` 메서드를 호출하여 변한한다.
+
 ==== PercentDecoder.java
 
-Percent Decoding을 위한 인터페이스이다.
+인코드된 문자들을 숫자로 디코드하기 위한 인터페이스이다.
 
 [source,java]
 .PercentDecoder.java
@@ -1365,18 +1404,61 @@ Percent Decoding을 위한 인터페이스이다.
 @FunctionalInterface
 public interface PercentDecoder {
 
-    // 버퍼(encoded)에서 필요한 만큼(1개 혹은 3개)의 문자를 디코딩하고 그 결과를 반환한다.
+    // 버퍼(encoded)에서 필요한 만큼(1개 혹은 3개)의 문자를 디코드하고 그 결과를 반환한다.
     // 버퍼(encoded)에 필요한 만큼의 문자가 없으면 BufferUnderflowException 을 던진다.
     int decodeOctet(final ByteBuffer encoded);
 }
 ----
+
+===== decode(ByteBuffer, ByteBuffer)
+
+두 개의 버퍼를 전달받아 첫 번째 버퍼의 문자들을 디코드한 숫자들을 두 번째 버퍼에 담는다. `HexDecoder` 인터페이스와는 다르게 몆 개의 문자가 필요한 지 알 수 없다. (알 수는 있지만 미리 알 필요가 없다고 상정한다.) 때문에 `decodeOcetet(ByteBuffer)` 메서드가 `BufferUnderflowException` 을 던지는지 확인한다.
+
+[source,java]
+.PercentDecoder.java#decode(ByteBuffer,ByteBuffer)
+----
+    // encoded 버퍼의 문자들을 디코드한 숫자들을 decoded 버프에 담는다.
+    // decoded 버퍼에 추가된 숫자들의 개수를 반환한다.
+include::../../../../percent-codec-api/src/main/java/com/github/jinahya/verbose/percent/PercentDecoder.java[lines=37..48]
+----
+<1> `decoded` 버퍼의 현재 위치(`position`) 값을 기록한다.
+<2> `decoded` 버퍼에 디코드된 바이트들를 담을 수 있는 공간이 있는 동안 반복한다.
+<3> `decode(ByteBuffer)` 에 `encoded` 버퍼를 전달하여 한 개 혹은 세 개의 문자를 한 개의 숫자로 디코드한 후 `decoded` 버퍼에 담는다.
+<4> `BufferUnderflowException` 이 발생하면 순환 문을 빠져나간다.
+<5> `decoded` 버퍼의 증가된 위치(`position`)와 이미 기록한 값(`previous`) 만큼의 차이를 반환한다.
+
+===== decode(ByteBuffer)
+
+[source,java]
+.PercentDecoder.java#decode(ByteBuffer)
+----
+    // 주어진 버퍼(encoded)의 문자들을 디코드한 후 인코드된 숫자들을 새 버퍼에 담아 반환한다.
+include::../../../../percent-codec-api/src/main/java/com/github/jinahya/verbose/percent/PercentDecoder.java[lines=57..62]
+----
+<1> `encoded` 버퍼와 같은 용량의 버퍼를 생성한다. (모든 바이트들이 `%XX` 형태로 변환되었다고 가정한다.)
+<2> `decode(ByteBuffer, ByteBuffer)` 메서드를 이용해 디코드한다.
+<3> 반환할 버퍼(`decoded`)를 뒤집어(`flip()`) 읽을 수 있는 상태로 만든다.
+
+===== decode(String, Charset)
+
+[source,java]
+.PercentDecoder.java#decode(ByteBuffer)
+----
+include::../../../../percent-codec-api/src/main/java/com/github/jinahya/verbose/percent/PercentDecoder.java[lines=74..81]
+----
+<1> 문자열로부터 입력 배열을 생성한다.
+<2> 입력 배열과 같은 크기를 가지는 출력 배열을 생성한다. (모든 숫자들이 `%XX` 형태로 변환되었다고 가정한다.)
+<3> 두 배열을 감싸는(wrap) 버퍼들을 생성한 후 `decode(ByteBuffer, ByteBuffer)` 메서드을 이용해 변환한다.
+<4> 변환된 출력 배열로부터 `charset` 을 이용해 출력 문자열을 생성한다.
+
+==== Exercises
 
 === percent-codec-lib
 
 pecent-codec-api 에 정의된 인터페이스들을 구현한 모듈이다. hex-codec-api 와 hex-codec-lib 을 통해 octet을 두개의 hex 문자로 변환하는 방법을 이미 구현했으므로 그 모듈들을 사용한다. 다음과 같이 의존성을 확인해 보자.
 
 [source,text]
-.percent-codec-lib/dependency:tree
+.dependency:tree
 ----
 $ pwd
 /.../path/to/.../verbose-java/percent-codec-lib
@@ -1395,36 +1477,37 @@ hex-codec-api 를 compile scope 로 정의하여 구현작업에 사용되었고
 ==== PercentEncoderImpl.java
 
 [source,java]
-public class PercentEncoderImpl implements PercentEncoder {
-    // @todo: implement
+.HexEncoderImpl.java
+----
+public class HexEncoderImpl implements HexEncoder {
+
+include::../../../../percent-codec-lib/src/main/java/com/github/jinahya/verbose/percent/PercentEncoderImpl.java[lines=40..43]
+
+include::../../../../percent-codec-lib/src/main/java/com/github/jinahya/verbose/percent/PercentEncoderImpl.java[lines=78..80]
 }
+----
+<1> `HexEncoder` 객체를 제공한다.
+<2> `hexEncoderSupplier` 로부터 게으르게(lazily) 제공될 객체이다.
 
-우선 다음과 같이 `HexEncoder` 개체를 적재하는 코드를 작성하자.
 [source,java]
-.PercentEncoderImpl.java#hexEncoder()
+.HexEncoderImpl.java#PercentEncoderImpl()
 ----
-    protected HexEncoder hexEncoder() {
-        if (hexEncoder == null) {
-            try {
-                hexEncoder = load(HexEncoder.class).iterator().next();
-            } catch (final NoSuchElementException nsee) {
-                throw new RuntimeException("no hex encoder loaded", nsee);
-            }
-        }
-        return hexEncoder;
-    }
+include::../../../../percent-codec-lib/src/main/java/com/github/jinahya/verbose/percent/PercentEncoderImpl.java[lines=50..52]
+----
+<1> SPI(Service Provider Interface) 를 통해 객체를 적재하고 제공한다.
 
-    private HexEncoder hexEncoder;
-----
-그리고 다음과 같이 `encodeOctet(int, ByteBuffer)` 를 구현한다.
+===== encodeOctet(int, ByteBuffer)
+
+다음과 같이 `encodeOctet(int, ByteBuffer)` 를 구현한다.
+
 [source,java]
 .PercentEncoderImpl.java#encodeOctet(int, ByteBuffer)
 ----
-include::../../../../percent-codec-lib/src/main/java/com/github/jinahya/verbose/percent/PercentEncoderImpl.java[lines=34..48]
+include::../../../../percent-codec-lib/src/main/java/com/github/jinahya/verbose/percent/PercentEncoderImpl.java[lines=54..76]
 ----
-<1> 인코딩할 필요가 없는 octet 이면 그대로 버퍼에 담는다.
+<1> 인코딩할 필요가 없는 술자는 그대로 버퍼에 담는다.
 <2> 인코딩이 필요한 문자는 한 개의 `"%"` 를 버퍼에 담고
-<3> `HexEncoder` 에 정의된 `encodeOctet(int, ByteBuffer)` 를 이용해 두개의 hex 문자를 버퍼이 담는다.
+<3> 게으르게(lazily) 적재된 `HexEncoder` 객체의 `encodeOctet(int, ByteBuffer)` 를 이용해 두개의 hex 문자를 버퍼이 담는다.
 
 ==== PercentDecoderImpl.java
 

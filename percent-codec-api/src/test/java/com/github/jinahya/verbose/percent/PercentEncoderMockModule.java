@@ -18,16 +18,14 @@ package com.github.jinahya.verbose.percent;
 import com.google.inject.AbstractModule;
 
 /**
- * A module binds {@link PercentDecoder} class to {@link PercentDecoderImpl}
- * class.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-class PercentDecoderImplModule extends AbstractModule {
+public class PercentEncoderMockModule extends AbstractModule {
 
     @Override
     protected void configure() {
-        bind(PercentDecoder.class).to(PercentDecoderImpl.class);
+        bind(PercentEncoder.class).to(PercentEncoderMock.class);
     }
 
 }

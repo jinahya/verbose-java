@@ -15,19 +15,25 @@
  */
 package com.github.jinahya.verbose.percent;
 
-import com.google.inject.AbstractModule;
+import java.nio.BufferOverflowException;
+import java.nio.ByteBuffer;
+import static java.util.concurrent.ThreadLocalRandom.current;
 
 /**
- * A module binds {@link PercentDecoder} class to {@link PercentDecoderImpl}
- * class.
+ * A class testing {@link PercentEncoder}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-class PercentDecoderImplModule extends AbstractModule {
+public class PercentEncoderMock implements PercentEncoder {
 
     @Override
-    protected void configure() {
-        bind(PercentDecoder.class).to(PercentDecoderImpl.class);
+    public void encodeOctet(final int decoded, final ByteBuffer encoded) {
+        try {
+            encoded.position(
+                    encoded.position() + (current().nextBoolean() ? 1 : 3));
+        } catch (final IllegalArgumentException iae) {
+            throw new BufferOverflowException();
+        }
     }
 
 }

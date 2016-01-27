@@ -2,6 +2,8 @@ package com.github.jinahya.verbose.percent;
 
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
+import static java.nio.ByteBuffer.allocate;
+import static java.nio.ByteBuffer.wrap;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
 import static java.nio.charset.StandardCharsets.US_ASCII;
@@ -14,12 +16,12 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 public interface PercentDecoder {
 
     /**
-     * Decodes a sequence of characters from the given buffer. A
-     * {@code BufferUnderflowException} will be thrown if the buffer has
-     * remaining less than required.
+     * Decodes a single byte from a sequence of characters in given buffer. A
+     * {@code BufferUnderflowException} will be thrown if the buffer's remaining
+     * is less than required
      *
-     * @param encoded the byte buffer
-     * @return the decoded byte
+     * @param encoded the buffer from which encoded characters are read
+     * @return a decoded byte
      */
     int decodeOctet(ByteBuffer encoded);
 
@@ -29,20 +31,20 @@ public interface PercentDecoder {
      *
      * @param encoded the input buffer
      * @param decoded the output buffer
-     * @return number of bytes encoded
+     * @return number of bytes encoded that is the number of byte provided to
+     * {@code decoded}
      */
     default int decode(final ByteBuffer encoded, final ByteBuffer decoded) {
-        int count = 0;
-        while (decoded.hasRemaining()) { // <1>
+        final int previous = decoded.position(); // <1>
+        while (decoded.hasRemaining()) { // <2>
             try {
-                final int octet = decodeOctet(encoded);
+                final int octet = decodeOctet(encoded); // <3>
                 decoded.put((byte) octet);
-                count++;
-            } catch (final BufferUnderflowException bue) { // NOSONAR
+            } catch (final BufferUnderflowException bue) { // NOSONAR <4>
                 break;
             }
         }
-        return count;
+        return decoded.position() - previous; // <5>
     }
 
     /**
@@ -53,37 +55,39 @@ public interface PercentDecoder {
      * @return a byte buffer containing decoded bytes.
      */
     default ByteBuffer decode(final ByteBuffer encoded) {
-        final ByteBuffer decoded = ByteBuffer.allocate(encoded.remaining());
-        decode(encoded, decoded);
-        decoded.flip();
+        final ByteBuffer decoded = allocate(encoded.remaining()); // <1>
+        decode(encoded, decoded); // <2>
+        decoded.flip(); // <3>
         return decoded;
     }
 
     /**
-     * Decodes given string and returns the result as a {@code String} encoded
-     * with specified character set.
+     * Decodes given string using specified character set to translate a byte
+     * array into the result string.
      *
      * @param encoded the string to decode
-     * @param charset the character set to decode translated byte array into a
-     * String.
+     * @param charset the character set to decode translated byte array into the
+     * result string
      *
      * @return a decoded String
      */
     default String decode(final String encoded, final Charset charset) {
         final byte[] encodedBytes = encoded.getBytes(US_ASCII); // <1>
         final byte[] decodedBytes = new byte[encodedBytes.length]; // <2>
-        final ByteBuffer encodedBuffer = ByteBuffer.wrap(encodedBytes);
-        final ByteBuffer decodedBuffer = ByteBuffer.wrap(decodedBytes);
+        final ByteBuffer encodedBuffer = wrap(encodedBytes);
+        final ByteBuffer decodedBuffer = wrap(decodedBytes);
         decode(encodedBuffer, decodedBuffer); // <3>
-        return new String(decodedBytes, 0, decodedBuffer.position(), charset);
+        return new String(decodedBytes, 0, decodedBuffer.position(), charset); // <4>
     }
 
     /**
-     * Decodes given string and returns the result as a {@code String} encoded
-     * with {@link StandardCharsets#UTF_8}.
+     * Decodes given string. This method invokes
+     * {@link #decode(java.lang.String, java.nio.charset.Charset)} with given
+     * string and {@link StandardCharsets#UTF_8} and returns the result.
      *
      * @param encoded the string to decode
      * @return a decoded string.
+     * @see #decode(java.lang.String, java.nio.charset.Charset)
      */
     default String decode(final String encoded) {
         return decode(encoded, UTF_8);
