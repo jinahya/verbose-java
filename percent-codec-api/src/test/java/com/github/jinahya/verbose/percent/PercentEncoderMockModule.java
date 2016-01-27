@@ -21,7 +21,7 @@ import com.google.inject.AbstractModule;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class PercentEncoderMockModule extends AbstractModule {
+class PercentEncoderMockModule extends AbstractModule {
 
     @Override
     protected void configure() {

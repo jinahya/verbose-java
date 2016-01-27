@@ -24,7 +24,7 @@ import static java.util.concurrent.ThreadLocalRandom.current;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class PercentEncoderMock implements PercentEncoder {
+class PercentEncoderMock implements PercentEncoder {
 
     @Override
     public void encodeOctet(final int decoded, final ByteBuffer encoded) {

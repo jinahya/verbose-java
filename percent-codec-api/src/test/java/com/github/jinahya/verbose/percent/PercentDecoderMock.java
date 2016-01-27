@@ -19,7 +19,7 @@ import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import static java.util.concurrent.ThreadLocalRandom.current;
 
-public class PercentDecoderMock implements PercentDecoder {
+class PercentDecoderMock implements PercentDecoder {
 
     @Override
     public int decodeOctet(final ByteBuffer encoded) {

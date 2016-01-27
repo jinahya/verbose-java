@@ -17,7 +17,7 @@ package com.github.jinahya.verbose.percent;
 
 import com.google.inject.AbstractModule;
 
-public class PercentDecoderMockModule extends AbstractModule {
+class PercentDecoderMockModule extends AbstractModule {
 
     @Override
     protected void configure() {
