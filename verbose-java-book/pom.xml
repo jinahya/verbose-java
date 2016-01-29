@@ -19,7 +19,7 @@
   <url>https://github.com/jinahya/${project.parent.artifactId}</url>
 
   <properties>
-    <maven.main.skip>true</maven.main.skip>
+    <!--<maven.main.skip>true</maven.main.skip>-->
     <!--<maven.test.skip>true</maven.test.skip>-->
     <jar.skipIfEmpty>true</jar.skipIfEmpty>
     <maven.install.skip>true</maven.install.skip>

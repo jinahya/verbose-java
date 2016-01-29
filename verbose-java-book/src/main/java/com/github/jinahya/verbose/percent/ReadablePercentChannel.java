@@ -21,10 +21,6 @@ import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
 import java.nio.channels.ReadableByteChannel;
 
-/**
- *
- * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
- */
 public class ReadablePercentChannel implements ReadableByteChannel {
 
     public ReadablePercentChannel(final ReadableByteChannel channel,
@@ -49,7 +45,9 @@ public class ReadablePercentChannel implements ReadableByteChannel {
     @Override
     public int read(final ByteBuffer dst) throws IOException {
         final ByteBuffer aux = allocate(dst.remaining());
-        channel.read(aux);
+        if (channel.read(aux) == -1) {
+            return -1;
+        }
         aux.flip();
         int decoded = decoder.decode(aux, dst);
         assert aux.remaining() < 3;
@@ -62,6 +60,7 @@ public class ReadablePercentChannel implements ReadableByteChannel {
                     throw new EOFException("unexpected eof");
                 }
             }
+            aux.flip();
             assert decoder.decode(aux, dst) == 1;
             decoded += 1;
         }

@@ -20,10 +20,6 @@ import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
 import java.nio.channels.WritableByteChannel;
 
-/**
- *
- * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
- */
 public class WritablePercentChannel implements WritableByteChannel {
 
     public WritablePercentChannel(final WritableByteChannel channel,
