@@ -143,6 +143,12 @@
       <scope>test</scope>
     </dependency>
     <dependency>
+      <groupId>com.github.rbuck</groupId>
+      <artifactId>java-codecs</artifactId>
+      <version>1.0.1</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>com.google.guava</groupId>
       <artifactId>guava</artifactId>
       <version>19.0</version>
@@ -441,7 +447,7 @@
       </plugin>
     </plugins>
   </reporting>
-<!--  <profiles>
+  <!--  <profiles>
     <profile>
       <id>benchmark</id>
       <build>

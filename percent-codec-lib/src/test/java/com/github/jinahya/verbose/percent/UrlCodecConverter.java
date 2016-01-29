@@ -19,7 +19,7 @@ package com.github.jinahya.verbose.percent;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-final class UrlCodec {
+final class UrlCodecConverter {
 
     static final String EXAMPLE_DECODED = "The string ü@foo-bar";
 
@@ -39,7 +39,7 @@ final class UrlCodec {
                 .replaceAll("%20", "\\+");
     }
 
-    private UrlCodec() {
+    private UrlCodecConverter() {
         super();
     }
 }

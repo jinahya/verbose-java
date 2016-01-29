@@ -53,9 +53,6 @@ public class PercentEncoderImpl implements PercentEncoder {
 
     @Override
     public void encodeOctet(final int decoded, final ByteBuffer encoded) {
-        if (encoded.remaining() < 1) {
-            throw new BufferOverflowException();
-        }
         if ((decoded >= 0x30 && decoded <= 0x39) // digit
             || (decoded >= 0x41 && decoded <= 0x5A) // upper case alpha
             || (decoded >= 0x61 && decoded <= 0x7A) // lower case alpha

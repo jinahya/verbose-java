@@ -15,9 +15,9 @@
  */
 package com.github.jinahya.verbose.percent;
 
-import static com.github.jinahya.verbose.percent.UrlCodec.EXAMPLE_DECODED;
-import static com.github.jinahya.verbose.percent.UrlCodec.EXAMPLE_ENCODED;
-import static com.github.jinahya.verbose.percent.UrlCodec.toPercentEncoded;
+import static com.github.jinahya.verbose.percent.UrlCodecConverter.EXAMPLE_DECODED;
+import static com.github.jinahya.verbose.percent.UrlCodecConverter.EXAMPLE_ENCODED;
+import static com.github.jinahya.verbose.percent.UrlCodecConverter.toPercentEncoded;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
@@ -28,6 +28,8 @@ import static org.apache.commons.lang3.RandomStringUtils.random;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
+import static org.apache.commons.lang3.RandomStringUtils.random;
+import static org.testng.Assert.assertEquals;
 
 /**
  *

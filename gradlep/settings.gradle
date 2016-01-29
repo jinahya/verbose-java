@@ -12,4 +12,6 @@ include ':percent-codec-api'
 project(':percent-codec-api').projectDir = new File("../percent-codec-api")
 include ':percent-codec-lib'
 project(':percent-codec-lib').projectDir = new File("../percent-codec-lib")
+include ':verbose-java-book'
+project(':verbose-java-book').projectDir = new File("../verbose-java-book")
 

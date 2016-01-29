@@ -41,7 +41,10 @@ public class PercentDecoderImpl implements PercentDecoder {
     }
 
     /**
-     * Creates a new instance.
+     * Creates a new instance. This constructor calls
+     * {@link #PercentDecoderImpl(java.util.function.Supplier)} with a supplier
+     * which loads an instance of {@link HexDecoder} through
+     * {@link java.util.ServiceLoader}.
      */
     public PercentDecoderImpl() {
         this(() -> load(HexDecoder.class).iterator().next());
@@ -49,10 +52,10 @@ public class PercentDecoderImpl implements PercentDecoder {
 
     @Override
     public int decodeOctet(final ByteBuffer encoded) {
-        if (encoded.remaining() < 1) {
+        if (!encoded.hasRemaining()) {
             throw new BufferUnderflowException();
         }
-        final byte e = encoded.get(encoded.position()); // <2>
+        final byte e = encoded.get(encoded.position()); // <1>
         if (e == 0x25) { // <2>
             if (encoded.remaining() < 3) {
                 throw new BufferUnderflowException();
@@ -66,7 +69,7 @@ public class PercentDecoderImpl implements PercentDecoder {
         return e;
     }
 
-    private final Supplier<HexDecoder> hexDecoderSupplier;
+    private final Supplier<HexDecoder> hexDecoderSupplier; // <1>
 
-    private HexDecoder hexDecoder;
+    private HexDecoder hexDecoder; // <2>
 }

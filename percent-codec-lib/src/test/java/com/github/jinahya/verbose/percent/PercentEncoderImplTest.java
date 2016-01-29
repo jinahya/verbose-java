@@ -15,16 +15,24 @@
  */
 package com.github.jinahya.verbose.percent;
 
-import static com.github.jinahya.verbose.percent.UrlCodec.EXAMPLE_DECODED;
-import static com.github.jinahya.verbose.percent.UrlCodec.EXAMPLE_ENCODED;
-import static com.github.jinahya.verbose.percent.UrlCodec.toPercentEncoded;
+import com.buck.common.codec.Codec;
+import com.buck.common.codec.CodecDecoder;
+import static com.github.jinahya.verbose.percent.UrlCodecConverter.EXAMPLE_DECODED;
+import static com.github.jinahya.verbose.percent.UrlCodecConverter.EXAMPLE_ENCODED;
+import static com.github.jinahya.verbose.percent.UrlCodecConverter.toPercentEncoded;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
+import java.nio.ByteBuffer;
+import static java.nio.ByteBuffer.allocate;
+import static java.nio.ByteBuffer.wrap;
 import java.nio.charset.Charset;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import static java.util.Arrays.copyOf;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import javax.inject.Inject;
 import static org.apache.commons.lang3.RandomStringUtils.random;
+import org.slf4j.Logger;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
@@ -53,6 +61,21 @@ public class PercentEncoderImplTest {
         final String actual = encoder.encode(decoded, charset);
         assertEquals(actual, expected);
     }
+
+    @Test(invocationCount = 1)
+    public void encodeVerboseDecodeRbuck() {
+        final byte[] created = new byte[current().nextInt(128)];
+        current().nextBytes(created);
+        final ByteBuffer encoded = allocate(created.length * 3);
+        final int count = encoder.encode(wrap(created), encoded);
+        final Codec codec = Codec.forName("percent-encoded");
+        final CodecDecoder decoder = codec.newDecoder();
+        final byte[] decoded = decoder.decode(
+                copyOf(encoded.array(), encoded.position()));
+        assertEquals(decoded, created);
+    }
+
+    private transient final Logger logger = getLogger(getClass());
 
     @Inject
     private PercentEncoder encoder;
