@@ -15,11 +15,9 @@
  */
 package com.github.jinahya.verbose.hex;
 
+import static com.github.jinahya.verbose.hex.WritableHexChannelTest.nonBlocking;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import static java.lang.reflect.Proxy.newProxyInstance;
 import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
 import static java.nio.channels.Channels.newChannel;
@@ -35,45 +33,18 @@ import org.testng.annotations.Test;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class WritableHexChannelTest extends AbstractHexEncoderTest {
+public class WritableHexChannelExTest extends AbstractHexEncoderTest {
 
-    static <T extends WritableByteChannel> T nonBlocking(
-            final Class<T> type, final T channel) {
-        final Method write;
-        try {
-            write = WritableByteChannel.class.getMethod(
-                    "write", ByteBuffer.class);
-        } catch (final NoSuchMethodException nsme) {
-            throw new RuntimeException(nsme);
-        }
-        final InvocationHandler handler = (proxy, method, args) -> {
-            if (write.equals(method)) {
-                final ByteBuffer src = (ByteBuffer) args[0];
-                final int limit = src.limit();
-                if (src.hasRemaining()) {
-                    src.limit(limit - current().nextInt(src.remaining()));
-                }
-                final int written = channel.write(src);
-                src.limit(limit);
-                return written;
-            }
-            return method.invoke(channel, args);
-        };
-        final Object proxy = newProxyInstance(
-                type.getClassLoader(), new Class<?>[]{type}, handler);
-        return type.cast(proxy);
-    }
-
-    private static <T extends WritableByteChannel> T nonBlockingHelper(
-            final Class<T> type, final WritableByteChannel channel) {
-
-        return nonBlocking(type, type.cast(channel));
-    }
-
-    @SuppressWarnings("unchecked")
-    static <T extends WritableByteChannel> T nonBlocking(final T channel) {
-
-        return (T) nonBlockingHelper(channel.getClass(), channel);
+    /**
+     * Expects an {@code IllegalArgumentException} when capacity is less than
+     * {@code 2}.
+     */
+    @Test(expectedExceptions = IllegalArgumentException.class)
+    public void capacityIsLessThan2() {
+        final WritableByteChannel channel
+                = newChannel(new ByteArrayOutputStream());
+        final int capacity = 1 - (current().nextInt() >>> 1);
+        accept(e -> new WritableHexChannelEx<>(channel, e, capacity));
     }
 
     /**
@@ -83,12 +54,20 @@ public class WritableHexChannelTest extends AbstractHexEncoderTest {
      */
     @Test
     public void testIsOpen() throws IOException {
-        accept(e -> assertThrows(
-                NullPointerException.class,
-                () -> new WritableHexChannel<>(null, e).isOpen()));
         {
-            final WritableByteChannel whc = apply(e -> new WritableHexChannel<>(
-                    newChannel(new ByteArrayOutputStream()), e));
+            final WritableByteChannel channel = null;
+            final int capacity = current().nextInt(2, 128);
+            accept(e -> assertThrows(
+                    NullPointerException.class,
+                    () -> new WritableHexChannelEx<>(channel, e, capacity)
+                    .isOpen()));
+        }
+        {
+            final WritableByteChannel channel
+                    = newChannel(new ByteArrayOutputStream());
+            final int capacity = current().nextInt(2, 128);
+            final WritableByteChannel whc = apply(
+                    e -> new WritableHexChannelEx<>(channel, e, capacity));
             assertTrue(whc.isOpen());
             whc.close();
             assertFalse(whc.isOpen());
@@ -103,15 +82,17 @@ public class WritableHexChannelTest extends AbstractHexEncoderTest {
     @Test
     public void testClose() throws IOException {
         {
-            final WritableHexChannel<?> whc
-                    = apply(e -> new WritableHexChannel<>(null, e));
+            final WritableByteChannel whc = apply(
+                    e -> new WritableHexChannelEx<>(null, e, 2));
             whc.close();
             whc.close();
             whc.close();
         }
         {
-            final WritableByteChannel whc = apply(e -> new WritableHexChannel<>(
-                    newChannel(new ByteArrayOutputStream()), e));
+            WritableByteChannel channel
+                    = newChannel(new ByteArrayOutputStream());
+            final WritableByteChannel whc = apply(
+                    e -> new WritableHexChannelEx<>(channel, e, 2));
             whc.close();
             whc.close();
             whc.close();
@@ -125,8 +106,11 @@ public class WritableHexChannelTest extends AbstractHexEncoderTest {
      */
     @Test(invocationCount = 128)
     public void testWrite() throws IOException {
-        try (WritableByteChannel whc = apply(e -> new WritableHexChannel<>(
-                newChannel(new ByteArrayOutputStream()), e))) {
+        final WritableByteChannel channel
+                = newChannel(new ByteArrayOutputStream());
+        final int capacity = current().nextInt(2, 128);
+        try (WritableByteChannel whc = apply(
+                e -> new WritableHexChannelEx<>(channel, e, capacity))) {
             for (int i = 0; i < 128; i++) {
                 final ByteBuffer src = allocate(current().nextInt(128));
                 final int written = whc.write(src);
@@ -144,9 +128,10 @@ public class WritableHexChannelTest extends AbstractHexEncoderTest {
     public void testWriteWithNonBlockingChannel() throws IOException {
         final WritableByteChannel channel
                 = newChannel(new ByteArrayOutputStream());
+        final int capacity = current().nextInt(2, 128);
         try (WritableByteChannel whc = apply(e -> nonBlocking(
                 WritableByteChannel.class,
-                new WritableHexChannel<>(channel, e)))) {
+                new WritableHexChannelEx<>(channel, e, capacity)))) {
             for (int i = 0; i < 128; i++) {
                 final ByteBuffer src = allocate(current().nextInt(128));
                 final int written = whc.write(src);

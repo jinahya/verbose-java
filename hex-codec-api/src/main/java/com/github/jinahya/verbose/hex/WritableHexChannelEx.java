@@ -18,7 +18,6 @@ package com.github.jinahya.verbose.hex;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
-import static java.nio.ByteBuffer.allocateDirect;
 import java.nio.channels.WritableByteChannel;
 
 /**
@@ -36,17 +35,15 @@ public class WritableHexChannelEx<T extends WritableByteChannel>
      * @param channel the channel to which encoded characters are written.
      * @param encoder the encoder for encoding bytes
      * @param capacity the capacity of intermediate buffer.
-     * @param direct the flag for direct allocation of the intermediate buffer.
      */
     public WritableHexChannelEx(final T channel, final HexEncoder encoder,
-                                final int capacity, final boolean direct) {
+                                final int capacity) {
         super(channel, encoder);
         if (capacity < 2) { // <1>
             throw new IllegalArgumentException(
                     "capacity(" + capacity + ") < 2");
         }
         this.capacity = capacity;
-        this.direct = direct;
     }
 
     /**
@@ -62,7 +59,7 @@ public class WritableHexChannelEx<T extends WritableByteChannel>
     @Override
     public int write(final ByteBuffer src) throws IOException {
         if (buffer == null) {
-            buffer = direct ? allocateDirect(capacity) : allocate(capacity);
+            buffer = allocate(capacity);
         }
         int count = 0;
         while (src.hasRemaining()) {
@@ -83,8 +80,6 @@ public class WritableHexChannelEx<T extends WritableByteChannel>
     }
 
     private final int capacity;
-
-    private final boolean direct;
 
     private ByteBuffer buffer;
 }

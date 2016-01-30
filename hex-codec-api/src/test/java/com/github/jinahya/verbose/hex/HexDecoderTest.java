@@ -16,13 +16,12 @@
 package com.github.jinahya.verbose.hex;
 
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
+import static java.nio.ByteBuffer.allocate;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.ThreadLocalRandom.current;
-import static org.apache.commons.lang3.RandomStringUtils.random;
 import static org.apache.commons.lang3.RandomStringUtils.randomAscii;
-import static org.mockito.Mockito.mock;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertThrows;
 import org.testng.annotations.Test;
 
@@ -36,41 +35,34 @@ public class HexDecoderTest extends AbstractHexDecoderTest {
     @Test
     public void decodeBuffer() {
         {
-            assertThrows(NullPointerException.class,
-                         () -> decoder().decode((ByteBuffer) null));
+            accept(d -> assertThrows(NullPointerException.class,
+                                     () -> d.decode((ByteBuffer) null)));
             final int capacity = (current().nextInt(128) >> 1) << 1;
-            final ByteBuffer decoded
-                    = decoder().decode(ByteBuffer.allocate(capacity));
+            final ByteBuffer decoded = apply(d -> d.decode(allocate(capacity)));
             assertEquals(decoded.remaining(), capacity >> 1);
         }
         {
-            assertThrows(NullPointerException.class,
-                         () -> decoder().decode(null, (ByteBuffer) null));
-            assertThrows(NullPointerException.class,
-                         () -> decoder().decode(mock(ByteBuffer.class), null));
+            accept(d -> assertThrows(NullPointerException.class,
+                                     () -> d.decode(null, allocate(0))));
+            accept(d -> assertThrows(NullPointerException.class,
+                                     () -> d.decode(allocate(0), null)));
             final int capacity = (current().nextInt(128) >> 1) << 1;
-            decoder().decode(ByteBuffer.allocate(capacity),
-                             ByteBuffer.allocate(capacity >> 1));
+            final ByteBuffer encoded = allocate(capacity);
+            final ByteBuffer decoded = allocate(capacity >> 1);
+            final int count = apply(d -> d.decode(encoded, decoded));
+            assertEquals(count, decoded.position());
         }
     }
 
     @Test
     public void decodeString() {
-        {
-            assertThrows(NullPointerException.class,
-                         () -> decoder().decode(null, mock(Charset.class)));
-            assertThrows(NullPointerException.class,
-                         () -> decoder().decode("", null));
-            final int count = (current().nextInt(128) >> 1) << 1;
-            final String encoded = randomAscii(count);
-            final String decoded = decoder().decode(encoded, UTF_8);
-        }
-        {
-            assertThrows(NullPointerException.class,
-                         () -> decoder().decode((String) null));
-            final int count = (current().nextInt(128) >> 1) << 1;
-            final String encoded = random(count);
-            final String decoded = decoder().decode(encoded);
-        }
+        accept(d -> assertThrows(NullPointerException.class,
+                                 () -> d.decode(null, UTF_8)));
+        accept(d -> assertThrows(NullPointerException.class,
+                                 () -> d.decode("", null)));
+        final int count = (current().nextInt(128) >> 1) << 1;
+        final String encoded = randomAscii(count);
+        final String decoded = apply(d -> d.decode(encoded, UTF_8));
+        assertNotNull(decoded);
     }
 }

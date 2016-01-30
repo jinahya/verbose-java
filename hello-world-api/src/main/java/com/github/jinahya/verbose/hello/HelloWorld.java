@@ -37,10 +37,10 @@ public interface HelloWorld {
 
     /**
      * Sets {@value #BYTES} bytes representing {@code "hello, world"} in
-     * {@code US-ASCII} character set on given byte array starting at specified
+     * {@code US-ASCII} character set on given array starting at specified
      * offset.
      *
-     * @param array the byte array
+     * @param array the array
      * @param offset the start offset in {@code array}
      *
      * @throws NullPointerException if {@code array} is {@code null}.
@@ -52,8 +52,8 @@ public interface HelloWorld {
 
     /**
      * Puts {@value #BYTES} bytes representing {@code "hello, world"} in
-     * {@code US-ASCII} character set on given byte buffer. Upon return, the
-     * buffer's position will be incremented by {@value HelloWorld#BYTES}.
+     * {@code US-ASCII} character set on given buffer. Upon return, the buffer's
+     * position will be incremented by {@value HelloWorld#BYTES}.
      *
      * @param buffer the byte buffer
      * @return given byte buffer

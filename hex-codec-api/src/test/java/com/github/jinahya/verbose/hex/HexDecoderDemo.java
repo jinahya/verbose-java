@@ -17,6 +17,7 @@ package com.github.jinahya.verbose.hex;
 
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
+import static java.util.Objects.requireNonNull;
 
 /**
  * A demonstrative implementation of {@link HexDecoder}.
@@ -33,7 +34,7 @@ class HexDecoderDemo implements HexDecoder {
      */
     @Override
     public int decodeOctet(final ByteBuffer encoded) {
-        if (encoded.remaining() < 2) {
+        if (requireNonNull(encoded).remaining() < 2) {
             throw new BufferUnderflowException();
         }
         encoded.position(encoded.position() + 2);

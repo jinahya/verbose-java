@@ -18,6 +18,7 @@ package com.github.jinahya.verbose.hex;
 import com.google.inject.AbstractModule;
 
 /**
+ * A module binds {@code HexEncoder.class} to {@link HexEncoderDemo}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */

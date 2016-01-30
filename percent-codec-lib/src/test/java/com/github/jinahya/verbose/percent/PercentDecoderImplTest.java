@@ -28,8 +28,6 @@ import static org.apache.commons.lang3.RandomStringUtils.random;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
-import static org.apache.commons.lang3.RandomStringUtils.random;
-import static org.testng.Assert.assertEquals;
 
 /**
  *

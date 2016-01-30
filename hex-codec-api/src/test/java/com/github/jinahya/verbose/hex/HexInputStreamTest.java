@@ -20,12 +20,6 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import static java.util.concurrent.ThreadLocalRandom.current;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyLong;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.when;
-import static org.testng.Assert.assertTrue;
 import org.testng.annotations.Test;
 
 /**
@@ -42,23 +36,11 @@ public class HexInputStreamTest extends AbstractHexDecoderTest {
      */
     @Test
     public void read() throws IOException {
-        final InputStream in = null;
-        final HexDecoder dec = null;
-        final HexInputStream his = new HexInputStream(in, dec) {
-            @Override
-            public int read() throws IOException {
-                if (in == null) {
-                    in = mock(InputStream.class);
-                    when(in.read()).thenReturn(current().nextInt(256));
-                }
-                if (dec == null) {
-                    dec = decoder();
-                }
-                return super.read();
+        try (final HexInputStream his = apply(d -> new HexInputStream(
+                new ByteArrayInputStream(new byte[128]), d))) {
+            for (int i = 0; i < 128; i++) {
+                final int b = his.read();
             }
-        };
-        for (int i = 0; i < 128; i++) {
-            final int b = his.read();
         }
     }
 
@@ -69,29 +51,9 @@ public class HexInputStreamTest extends AbstractHexDecoderTest {
      */
     @Test
     public void readWithArray() throws IOException {
-        final InputStream in = null;
-        final HexDecoder dec = null;
-        final HexInputStream his = new HexInputStream(in, dec) {
-            @Override
-            public int read() throws IOException {
-                if (in == null) {
-                    in = mock(InputStream.class);
-                    when(in.read()).thenReturn(current().nextInt(256));
-                }
-                if (dec == null) {
-                    dec = decoder();
-                }
-                return super.read();
-            }
-        };
-        for (int i = 0; i < 128; i++) {
-            final byte[] b = new byte[current().nextInt(128)];
-            final int off = b.length == 0
-                            ? 0 : current().nextInt(0, b.length);
-            final int len = b.length == 0
-                            ? 0 : current().nextInt(0, b.length - off);
-            final int r = his.read(b, off, len);
-        }
+        final HexInputStream his = apply(d -> new HexInputStream(
+                new ByteArrayInputStream(new byte[128]), d));
+        final int read = his.read(new byte[current().nextInt(128)]);
     }
 
     /**
@@ -103,8 +65,7 @@ public class HexInputStreamTest extends AbstractHexDecoderTest {
     public void readFromEvenBytes() throws IOException {
         final InputStream in = new ByteArrayInputStream(
                 new byte[(current().nextInt(128) >> 1) << 1]);
-        final HexDecoder dec = decoder();
-        try (final InputStream his = new HexInputStream(in, dec)) {
+        try (final InputStream his = apply(d -> new HexInputStream(in, d))) {
             for (int read; (read = his.read()) != -1;) {
             }
         }
@@ -120,8 +81,7 @@ public class HexInputStreamTest extends AbstractHexDecoderTest {
     public void readFromOddBytes() throws IOException {
         final InputStream in = new ByteArrayInputStream(
                 new byte[current().nextInt(128) | 1]);
-        final HexDecoder dec = decoder();
-        try (final InputStream his = new HexInputStream(in, dec)) {
+        try (final InputStream his = apply(d -> new HexInputStream(in, d))) {
             for (int read; (read = his.read()) != -1;) {
             }
         }
@@ -137,8 +97,7 @@ public class HexInputStreamTest extends AbstractHexDecoderTest {
     public void readWithArrayFromEvenBytes() throws IOException {
         final int length = (current().nextInt(128) >> 1) << 1;
         final InputStream in = new ByteArrayInputStream(new byte[length]);
-        final HexDecoder dec = decoder();
-        try (final InputStream his = new HexInputStream(in, dec)) {
+        try (final InputStream his = apply(d -> new HexInputStream(in, d))) {
             final byte[] buf = new byte[current().nextInt(128)];
             for (int read; (read = his.read(buf)) != -1;) {
             }
@@ -155,8 +114,7 @@ public class HexInputStreamTest extends AbstractHexDecoderTest {
     public void readWithArrayFromOddBytes() throws IOException {
         final int length = current().nextInt(128) | 1;
         final InputStream in = new ByteArrayInputStream(new byte[length]);
-        final HexDecoder dec = decoder();
-        try (final InputStream his = new HexInputStream(in, dec)) {
+        try (final InputStream his = apply(d -> new HexInputStream(in, d))) {
             final byte[] buf = new byte[current().nextInt(128)];
             for (int read; (read = his.read(buf)) != -1;) {
             }
@@ -168,13 +126,9 @@ public class HexInputStreamTest extends AbstractHexDecoderTest {
      */
     @Test
     public void mark() {
-        final InputStream in = mock(InputStream.class);
-        doNothing().when(in).mark(anyInt());
-        final InputStream his = new HexInputStream(in, decoder());
-        for (int i = 0; i < 128; i++) {
-            final int readlimit = current().nextInt();
-            his.mark(readlimit);
-        }
+        final InputStream his = apply(d -> new HexInputStream(
+                new ByteArrayInputStream(new byte[current().nextInt(128)]), d));
+        his.mark(current().nextInt() >> 2);
     }
 
     /**
@@ -184,14 +138,9 @@ public class HexInputStreamTest extends AbstractHexDecoderTest {
      */
     @Test
     public void available() throws IOException {
-        final InputStream in = mock(InputStream.class);
-        when(in.read()).thenReturn(current().nextInt(256));
-        when(in.available()).thenReturn(current().nextInt() >>> 1);
-        final InputStream his = new HexInputStream(in, decoder());
-        for (int i = 0; i < 128; i++) {
-            final int available = his.available();
-            assertTrue(available >= 0, "negative available");
-        }
+        final InputStream his = apply(d -> new HexInputStream(
+                new ByteArrayInputStream(new byte[current().nextInt(128)]), d));
+        final int available = his.available();
     }
 
     /**
@@ -201,17 +150,8 @@ public class HexInputStreamTest extends AbstractHexDecoderTest {
      */
     @Test
     public void skip() throws IOException {
-        final InputStream in = mock(InputStream.class);
-        when(in.read()).thenReturn(current().nextInt(256));
-        when(in.skip(anyLong())).thenAnswer(i -> {
-            final long n = i.getArgumentAt(0, long.class);
-            return current().nextLong(n);
-        });
-        final InputStream his = new HexInputStream(in, decoder());
-        for (int i = 0; i < 128; i++) {
-            final long n = current().nextLong() >>> 1;
-            final long skipped = his.skip(n);
-            assertTrue(skipped <= n, "skppped more than requested");
-        }
+        final InputStream his = apply(d -> new HexInputStream(
+                new ByteArrayInputStream(new byte[current().nextInt(128)]), d));
+        his.skip(current().nextLong() >>> 1);
     }
 }

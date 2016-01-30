@@ -19,7 +19,6 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
-import static java.nio.ByteBuffer.allocateDirect;
 import java.nio.channels.ReadableByteChannel;
 
 /**
@@ -37,17 +36,15 @@ public class ReadableHexChannelEx<T extends ReadableByteChannel>
      * @param channel the underlying channel provides encoded hex characters.
      * @param decoder a decoder to decode hex characters to bytes
      * @param capacity capacity for decoding buffer
-     * @param direct a flag for direct allocation of decoding buffer.
      */
     public ReadableHexChannelEx(final T channel, final HexDecoder decoder,
-                                final int capacity, final boolean direct) {
+                                final int capacity) {
         super(channel, decoder);
         if (capacity < 2) { // <1>
             throw new IllegalArgumentException(
                     "capacity(" + capacity + ") < 2");
         }
         this.capacity = capacity;
-        this.direct = direct;
     }
 
     /**
@@ -61,7 +58,7 @@ public class ReadableHexChannelEx<T extends ReadableByteChannel>
     @Override
     public int read(final ByteBuffer dst) throws IOException {
         if (buffer == null) {
-            buffer = direct ? allocateDirect(capacity) : allocate(capacity);
+            buffer = allocate(capacity);
         }
         int count = 0;
         while (dst.hasRemaining()) {
@@ -96,8 +93,6 @@ public class ReadableHexChannelEx<T extends ReadableByteChannel>
     }
 
     private final int capacity;
-
-    private final boolean direct;
 
     private ByteBuffer buffer;
 }

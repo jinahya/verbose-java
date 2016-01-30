@@ -16,12 +16,12 @@
 package com.github.jinahya.verbose.hex;
 
 import java.nio.ByteBuffer;
-import java.nio.charset.Charset;
+import static java.nio.ByteBuffer.allocate;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.apache.commons.lang3.RandomStringUtils.random;
-import static org.mockito.Mockito.mock;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertThrows;
 import org.testng.annotations.Test;
 
@@ -34,44 +34,43 @@ public class HexEncoderTest extends AbstractHexEncoderTest {
 
     @Test
     public void encodeBuffer() {
+        accept(e -> assertThrows(NullPointerException.class,
+                                 () -> e.encode((ByteBuffer) null)));
         {
-            assertThrows(NullPointerException.class,
-                         () -> encoder().encode((ByteBuffer) null));
-            final int capacity = current().nextInt(128);
-            final ByteBuffer decoded = ByteBuffer.allocate(capacity);
-            final ByteBuffer encoded = encoder().encode(decoded);
+            final ByteBuffer decoded = allocate(current().nextInt(128));
+            final ByteBuffer encoded = apply(e -> e.encode(decoded));
             assertEquals(encoded.remaining(), decoded.capacity() << 1);
         }
+        accept(e -> assertThrows(NullPointerException.class,
+                                 () -> e.encode(allocate(0), null)));
+        accept(e -> assertThrows(NullPointerException.class,
+                                 () -> e.encode(null, allocate(0))));
         {
-            assertThrows(NullPointerException.class,
-                         () -> encoder().encode(ByteBuffer.allocate(0), null));
-            assertThrows(NullPointerException.class,
-                         () -> encoder().encode(null, ByteBuffer.allocate(0)));
-            final int capacity = current().nextInt(128);
-            final ByteBuffer decoded = ByteBuffer.allocate(capacity);
-            final ByteBuffer encoded = ByteBuffer.allocate(capacity << 1);
-            final int count = encoder().encode(decoded, encoded);
-            assertEquals(count, decoded.capacity());
+            final ByteBuffer decoded = allocate(current().nextInt(128));
+            final ByteBuffer encoded
+                    = allocate(current().nextInt(decoded.capacity() << 1));
+            final int count = apply(e -> e.encode(decoded, encoded));
+            assertEquals(count, decoded.position());
         }
     }
 
     @Test
     public void encodeString() {
+        accept(e -> assertThrows(NullPointerException.class,
+                                 () -> e.encode(null, UTF_8)));
+        accept(e -> assertThrows(NullPointerException.class,
+                                 () -> e.encode("", null)));
         {
-            assertThrows(NullPointerException.class,
-                         () -> encoder().encode(null, mock(Charset.class)));
-            assertThrows(NullPointerException.class,
-                         () -> encoder().encode("", null));
-            final int count = current().nextInt(128);
-            final String decoded = random(count);
-            final String encoded = encoder().encode(decoded, UTF_8);
+            final String decoded = random(current().nextInt(128));
+            final String encoded = apply(e -> e.encode(decoded, UTF_8));
+            assertNotNull(encoded);
         }
+        accept(e -> assertThrows(NullPointerException.class,
+                                 () -> e.encode((String) null)));
         {
-            assertThrows(NullPointerException.class,
-                         () -> encoder().encode((String) null));
-            final int count = current().nextInt(128);
-            final String decoded = random(count);
-            final String encoded = encoder().encode(decoded);
+            final String decoded = random(current().nextInt(128));
+            final String encoded = apply(e -> e.encode(decoded));
+            assertNotNull(encoded);
         }
     }
 }

@@ -15,12 +15,9 @@
  */
 package com.github.jinahya.verbose.hex;
 
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
 import static java.util.concurrent.ThreadLocalRandom.current;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.mock;
 import org.testng.annotations.Test;
 
 /**
@@ -30,31 +27,14 @@ import org.testng.annotations.Test;
  */
 public class HexOutputStreamTest extends AbstractHexEncoderTest {
 
-    /**
-     * Tests lazy initialization of {@link HexOutputStream#out} and
-     * {@link HexOutputStream#enc}.
-     *
-     * @throws IOException if an I/O error occurs.
-     */
     @Test
     public void testWrite() throws IOException {
-        final OutputStream out = null;
-        final HexEncoder enc = null;
-        final HexOutputStream hos = new HexOutputStream(out, enc) {
-            @Override
-            public void write(final int b) throws IOException {
-                if (out == null) {
-                    out = mock(OutputStream.class);
-                    doNothing().when(out).write(anyInt());
-                }
-                if (enc == null) {
-                    enc = encoder();
-                }
-                super.write(b);
+        try (final HexOutputStream hos = apply(
+                e -> new HexOutputStream(new ByteArrayOutputStream(), e))) {
+            for (int i = 0; i < 128; i++) {
+                hos.write(current().nextInt());
             }
-        };
-        for (int i = 0; i < 128; i++) {
-            hos.write(current().nextInt());
         }
     }
+
 }
