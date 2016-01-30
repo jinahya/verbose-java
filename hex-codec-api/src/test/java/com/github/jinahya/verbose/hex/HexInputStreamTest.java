@@ -152,6 +152,6 @@ public class HexInputStreamTest extends AbstractHexDecoderTest {
     public void skip() throws IOException {
         final InputStream his = apply(d -> new HexInputStream(
                 new ByteArrayInputStream(new byte[current().nextInt(128)]), d));
-        his.skip(current().nextLong() >>> 1);
+        his.skip(current().nextLong(128));
     }
 }

@@ -95,8 +95,8 @@ public class HexInputStream extends FilterInputStream {
             throw new EOFException();
         }
         buf.put((byte) b2);
-        buf.flip(); // <4>
-        final int b = dec.decodeOctet(buf);
+        buf.flip();
+        final int b = dec.decodeOctet(buf); // <4>
         buf.clear();
         return b;
     }

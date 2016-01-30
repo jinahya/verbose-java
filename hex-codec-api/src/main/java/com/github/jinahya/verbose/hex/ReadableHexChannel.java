@@ -54,19 +54,21 @@ public class ReadableHexChannel<T extends ReadableByteChannel>
     @Override
     public int read(final ByteBuffer dst) throws IOException {
         final ByteBuffer aux = allocate(dst.remaining() >> 1 << 2); // <1>
-        if (channel.read(aux) == -1) {
+        if (channel.read(aux) == -1) { // <2>
             return -1;
         }
-        if ((aux.position() & 1) == 1) { // <2>
+        if ((aux.position() & 1) == 1) { // <3>
             aux.position(aux.position() + 1);
             while (aux.hasRemaining()) {
-                if (channel.read(aux) == -1) {
+                if (channel.read(aux) == -1) { // unacceptable end-of-stream
                     throw new EOFException();
                 }
             }
         }
         aux.flip();
-        return decoder.decode(aux, dst); // <3>
+        final int count = decoder.decode(aux, dst); // <3>
+        aux.clear();
+        return count;
     }
 
     /**

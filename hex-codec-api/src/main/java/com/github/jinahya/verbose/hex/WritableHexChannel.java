@@ -17,6 +17,7 @@ package com.github.jinahya.verbose.hex;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
+import static java.nio.ByteBuffer.allocate;
 import java.nio.channels.WritableByteChannel;
 
 /**
@@ -47,7 +48,7 @@ public class WritableHexChannel<T extends WritableByteChannel>
      */
     @Override
     public int write(final ByteBuffer src) throws IOException {
-        final ByteBuffer aux = ByteBuffer.allocate(src.remaining() << 1); // <1>
+        final ByteBuffer aux = allocate(src.remaining() << 1); // <1>
         final int count = encoder.encode(src, aux); // <2>
         for (aux.flip(); aux.hasRemaining();) { // <3>
             channel.write(aux);

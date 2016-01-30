@@ -24,17 +24,30 @@ import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
 /**
- * Test class for testing encoding/decoding.
+ * Test class for testing encoding/decoding using channels.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 public class HexChannelTest {
 
+    /**
+     * Provides algorithm names.
+     *
+     * @return algorithm names
+     */
     @DataProvider
     private Object[][] algorithms() {
         return new Object[][]{{"MD5"}, {"SHA-1"}, {"SHA-256"}};
     }
 
+    /**
+     * Tests {@link WritableHexChannel} and {@link ReadableHexChannel} by coping
+     * files.
+     *
+     * @param algorithm the algorithm
+     * @throws IOException if an I/O error occurs.
+     * @throws NoSuchAlgorithmException if the provided algorithm is unknown.
+     */
     @Test(dataProvider = "algorithms")
     public void encodeDecodePath(final String algorithm)
             throws IOException, NoSuchAlgorithmException {

@@ -78,7 +78,7 @@ public interface PercentEncoder {
         final ByteBuffer decodedBuffer = wrap(decodedBytes);
         final ByteBuffer encodedBuffer = wrap(encodedBytes);
         encode(decodedBuffer, encodedBuffer); // <3>
-        return new String(encodedBytes, 0, encodedBuffer.position(), US_ASCII);
+        return new String(encodedBytes, 0, encodedBuffer.position(), US_ASCII); // <4>
     }
 
     /**

@@ -66,12 +66,14 @@ public interface HelloWorld {
 
 `HelloWorld` 인터페이스에는 위에 정의된 필드와 메서드 외에 몇 개의 `default` 메서드들이 정의되어 있다.
 
+===== put(ByteBuffer)
+
 [source,java]
 .HelloWorld.java#put(ByteBuffer)
 ----
     // 주어진 퍼버에 hello, world 바이트들을 담은 후 그 버퍼를 반환한다.
-    // 버퍼의 position 값이 BYTES 만큼 증가된다.
     // 버버의 remaining() 이 BYTES 보다 작으면 BufferOverflowException 을 던진다.
+    // 버퍼의 position 값이 BYTES 만큼 증가된다.
 include::../../../../hello-world-api/src/main/java/com/github/jinahya/verbose/hello/HelloWorld.java[lines=67..82]
 ----
 <1> `buffer` 인자가 `null` 이면 `NullPointerException` 을 던진다.
@@ -80,8 +82,10 @@ include::../../../../hello-world-api/src/main/java/com/github/jinahya/verbose/he
 <4> 배열을 생성하고 `set(byte[], int)` 메서드를 이용해 값을 채운다.
 <5> 채워진 배열을 버퍼에 담는다. (버퍼의 `position` 값이 배열 길이만큼 증가한다.)
 
+===== write(OutputStream)
+
 [source,java]
-.HelloWorld.java#write(InputStream)
+.HelloWorld.java#write(OutputStream)
 ----
     // 주어진 스트림에 hello, world 바이트들을 기록한 후 그 스트림을 반환한다.
 include::../../../../hello-world-api/src/main/java/com/github/jinahya/verbose/hello/HelloWorld.java[lines=94..104]
@@ -89,6 +93,8 @@ include::../../../../hello-world-api/src/main/java/com/github/jinahya/verbose/he
 <1> `stream` 인자가 `null` 이면 `NullPointerException` 을 던진다.
 <2> 배열을 생성하고 `set(byte[], int)` 메서드를 이용해 값을 채운다.
 <3> `OutputStream#write(byte[])` 메서드를 이용해 스트림에 기록한다.
+
+===== wirte(WritableByteChannel)
 
 [source,java]
 .HelloWorld.java#write(WritableByteChannel)
@@ -124,7 +130,7 @@ include::../../../../hello-world-api/src/test/java/com/github/jinahya/verbose/he
 
 [NOTE]
 ====
-`HelloworldTest#impl()` 메서드는 `HelloWorld` 객체를 반환하기 위해 lambda 표현식을 사용하였다. 여기이서 사용된 lambda 표현식을 이해하기 위해 동일한 기능을 수행하는 방식들을 따라가 보자.
+`HelloworldTest#impl()` 메서드는 `HelloWorld` 객체를 반환하기 위해 lambda 표현식을 사용하였다. 여기서 사용된 lambda 표현식을 이해하기 위해 동일한 기능을 수행하는 방식들을 따라가 보자.
 
 우선 다음과 같이 `HelloWorld` 인터페이스를 구현하는 클래스를 정의하고 그 객체를 반환할 수 있다.
 
@@ -166,7 +172,7 @@ include::../../../../hello-world-api/src/test/java/com/github/jinahya/verbose/he
     }
 ----
 
-lambda 표현식에서 `set(byte[], int)` 메서드의 인자들(`byte[]`, `int`)의 형(type)이 추론(infer)될 수 있으므로 다음과 같이 형이 생략될 수 있다.
+`set(byte[], int)` 메서드의 인자들(`byte[]`, `int`)의 형(type)이 추론(infer)될 수 있으므로 다음과 같이 형이 생략될 수 있다.
 
 [source,java]
 ----
@@ -295,18 +301,18 @@ public class HelloWorldImplTest {
 |모든 인자들이 유효하면|`hello, world` 가 `array` 의 `offset` 부터 기록된다.
 |====
 
-여기서 주의 할 점은 위에서 열거된 순서와 실제 코드에서 구현한 순서가 다를 수도 있다는 것이다. 세 번째 항목은 `array` 와 `offset` 이 모두 유효한 상황에서 검증해야 할 항목이지만 첫 번째 항목과 두번 째 항목은 서로 상관이 없다. 때문에 두 항목을 구현한 순서가 달라도 상관이 없다.
+여기서 주의 할 점은 위에서 열거된 순서와 실제 코드에서 구현한 순서가 다를 수도 있다는 것이다. 세 번째 항목은 `array` 와 `offset` 이 모두 유효한 상황에서 검증해야 할 항목이지만 첫 번째 항목과 두번 째 항목은 서로 상관이 없다. 두 항목을 구현한 순서 또한 달라도 상관이 없다.
 
 [source,java]
 ----
 @Override
 public void set(final byte[] array, final int offset) {
-    if (offset < 0) // throw IndexOutOfBoundsException
-    if (array == null) // throw NullPointerException
-    if (offset + HelloWorld.BYTES > array.length) // throw IndexOutOfBoundsException
+    if (offset < 0) // IndexOutOfBoundsException
+    if (array == null) // NullPointerException
+    if (offset + HelloWorld.BYTES > array.length) // IndexOutOfBoundsException
 }
 ----
-때문에 첫번째 항목(`array` 가 `null`)을 테스트할 경우에는 두번째 조건에 위배되지 않는 `offset` 값을 사용해야 하며 두번째 항목(`offset` 이 음수)을 검증할때는 `array` 의 값으로 `null` 을 사용하면 안된다. 다음 테스트는 `array` 가 `null` 일 경우와 `offset` 이 음수일 경우를 한꺼번에 시험한다.
+때문에 첫번째 경우(`array` 가 `null` 인 경우)을 테스트할 경우에는 두번째 조건에 위배되지 않는 `offset` 값을 사용해야 하며 두번째 경우(`offset` 이 음수인 경우)을 검증할때는 `array` 의 값으로 `null` 을 사용하면 안된다. 아래 코드는 `array` 가 `null` 인 경우와 `offset` 이 음수인 경우를 한꺼번에 시험한다.
 
 [source,java]
 ----
@@ -337,7 +343,7 @@ public void do_not_ever_test_like_this() {
 [source,java]
 .HelloWorldImplTest.java#expectNullPointerExceptionWhenArrayIsNull()
 ----
-include::../../../../hello-world-lib/src/test/java/com/github/jinahya/verbose/hello/HelloWorldImplTest.java[lines=41..46]
+include::../../../../hello-world-lib/src/test/java/com/github/jinahya/verbose/hello/HelloWorldImplTest.java[lines=39..44]
 ----
 <1> 유효한 `offset` 값을 사용한다.
 
@@ -389,7 +395,7 @@ $
 [source,java]
 .HelloWorldImplTest.java#expectIndexOutOfBoundsExceptionWhenOffsetIsNegative
 ----
-include::../../../../hello-world-lib/src/test/java/com/github/jinahya/verbose/hello/HelloWorldImplTest.java[lines=52..57]
+include::../../../../hello-world-lib/src/test/java/com/github/jinahya/verbose/hello/HelloWorldImplTest.java[lines=50..55]
 ----
 
 마찬가지로 (아직 해당사항이 구현조차 되어있지 않으므로) 테스트가 실패한다.
@@ -443,7 +449,7 @@ $
 [source,java]
 .HelloWorldImplTest.java#expectIndexOutOfBoundsExceptionWhenCapacityIsNotEnough
 ----
-include::../../../../hello-world-lib/src/test/java/com/github/jinahya/verbose/hello/HelloWorldImplTest.java[lines=64..69]
+include::../../../../hello-world-lib/src/test/java/com/github/jinahya/verbose/hello/HelloWorldImplTest.java[lines=62..67]
 ----
 
 실패하자.
@@ -504,7 +510,7 @@ $
 .HelloWorldImplTest#expectHelloWorldBytesSetOnArrayStartingAtOffset
 [source,java]
 ----
-include::../../../../hello-world-lib/src/test/java/com/github/jinahya/verbose/hello/HelloWorldImplTest.java[lines=75..92]
+include::../../../../hello-world-lib/src/test/java/com/github/jinahya/verbose/hello/HelloWorldImplTest.java[lines=73..90]
 ----
 <1> `offset + 0x0` 은 불필요한 작업이다.
 
@@ -561,7 +567,7 @@ $
 지금까지 우리는 `HelloWorldImplTest` 에서 `HelloWorldImpl` 의 기능을 시험하기 위해 (각각의 단위 시험 항목에서) 다음과 같은 작업을 수행했다.
 
 - 시험 항목의 목적에 해당하는 `array` 와 `offset` 을 준비한다.
-- `HelloWorldImpl` 객체를 생성하고 `set(array, offset)` 을 호출한다.
+- `HelloWorldImpl` 형의 객체를 하나 생성하고 `set(array, offset)` 메서드를 호출한다.
 
 지금부터는 위에 정리된 **단위 시험 항목에서 사용할 데이터를 제공**하는 방법과 **시험을 수행할 객체를 생성**하는 방법에 대해서 알아보려 한다.
 
@@ -576,27 +582,34 @@ class HelloWorldDataProvider {
     // @todo: implement
 }
 ----
+
+===== provideArrayNull()
+
 다음은 `array` 가 `null` 인 경우를 위한 데이터를 제공하는 메서드이다. (`0` 보다 작지 않은) 유효한 `offset` 값을 제공한다.
 
 [source,java]
-.HelloWorldDataProvider.java#provideArrayNull
+.HelloWorldDataProvider.java#provideArrayNull()
 ----
 include::../../../../hello-world-lib/src/test/java/com/github/jinahya/verbose/hello/HelloWorldDataProvider.java[lines=34..40]
 ----
 `@org.testng.annotations.DataProvider` 어노테이션을 달아서 데이터 제공자임을 명시하였다.
 
+===== provideOffsetNegative()
+
 다음은 `offset` 이 음수인 경우에 해당하는 데이터를 제공하는 메서드이다. `null` 이 아닌 `array` 값을 제공한다. 다만 `array` 의 크기를 세번째 항목(`offset + BYTES > array.length`)에 위배되지 않는 값으로 설정하였다.
 
 [source,java]
-.HelloWorldDataProvider.java#provideOffsetNegative
+.HelloWorldDataProvider.java#provideOffsetNegative()
 ----
 include::../../../../hello-world-lib/src/test/java/com/github/jinahya/verbose/hello/HelloWorldDataProvider.java[lines=47..54]
 ----
 
+===== provideCapacityNotEnough()
+
 다음은 공간이 충분하지 않은 경우에 대한 데이터를 제공하는 메서드이다. `null` 이 아닌 `array` 와 음수가 아닌 `offset` 을 제공한다.
 
 [source,java]
-.HelloWorldDataProvider.java#provideCapacityNotEnough
+.HelloWorldDataProvider.java#provideCapacityNotEnough()
 ----
 include::../../../../hello-world-lib/src/test/java/com/github/jinahya/verbose/hello/HelloWorldDataProvider.java[lines=61..69]
 ----
@@ -605,6 +618,7 @@ include::../../../../hello-world-lib/src/test/java/com/github/jinahya/verbose/he
 TIP: 데이터 제공자의 반환값은 `Object[][]` 혹은 `Iterator<Object[]>` 형으로 작성해야 한다. 두 경우 모두 실제 시험 항목의 인자들(`Object[]{array, offset}`)을 1개 이상 제공하기 위한 형태이다.
 
 ==== HelloWorldDataTest.java
+
 `HelloWorldDataProvider` 클래스가 제공하는 데이터를 사용하는 단위 시험 클래스를 작성해보자.
 
 [source,java]
@@ -615,7 +629,10 @@ abstract class HelloWorldDataTest {
     abstract HelloWorld implementation();
 }
 ----
+
 추상클래스로 작성되었으며 이 클래스를 확장하는 클래스에서 `implementation()` 메서드를 구현함으로써 `set(byte[], int)` 메서드를 호출할 객체를 제공하도록 하였다.
+
+===== testArrayNull(byte[], int)
 
 우선 `array` 가 `null` 인 경우에 대한 시험 항목을 작성해 보자.
 
@@ -627,6 +644,8 @@ include::../../../../hello-world-lib/src/test/java/com/github/jinahya/verbose/he
 
 `@Test` 어노테이션의 `dataProvider` 요소와 `dataProviderClass` 요소를 이용하여 데이터 제공자를 명시하였다. TestNG는 시험항목을 호출할 때 데이터 제공자가 반환하는 데이터를 시험 항목의 인자(`byte[], int`)로 전달한다.
 
+===== testOffsetNegative(byte[], int)
+
 다음은 `offset` 이 음수인 경우에 대한 시험 항목이다.
 
 [source,java]
@@ -634,6 +653,8 @@ include::../../../../hello-world-lib/src/test/java/com/github/jinahya/verbose/he
 ----
 include::../../../../hello-world-lib/src/test/java/com/github/jinahya/verbose/hello/HelloWorldDataTest.java[lines=65..70]
 ----
+
+===== testCapacityNotEnough(byte[], int)
 
 다음은 공간이 충분하지 않은 경우를 위한 데이터를 사용하는 시험 항목이다.
 
@@ -665,6 +686,7 @@ public class AwesomeHelloWorldDataTest extends HelloWorldDataTest {
 [NOTE]
 ====
 hello-world-lib 모듈에는 `HelloWorldImpl` 클래스와 더불어 `HelloWorld` 인터페이스를 구현한 `HelloWorldDemo` 라는 클래스가 있다. 보다 많은 의존성 주입 사례를 위해 우리가 이미 구현한 `HelloWorldImpl` 클래스와 같이 사용한다.
+
 [source,java]
 .HelloWorldDemo.java
 ----
@@ -677,7 +699,7 @@ public class HelloWorldDemo implements HelloWorld {
     }
 }
 ----
-<1> http://docs.oracle.com/javase/8/docs/api/java/lang/System.html#arraycopy-java.lang.Object-int-java.lang.Object-int-int-[System#arraycopy(Object, int, Object, int, int)] 메서드가 `HelloWorld#set(byte[], int)` 메서드의 요구사항에 부합하는지 확인해보자.
+<1> {apidocs-javase}/java/lang/System.html#arraycopy-java.lang.Object-int-java.lang.Object-int-int-[System#arraycopy(Object, int, Object, int, int)] 메서드가 `HelloWorld#set(byte[], int)` 메서드의 요구사항에 부합하는지 확인해보자.
 ====
 
 `HelloWorld` 객체들을 주입받는 클래스를 정의하자.
@@ -752,7 +774,7 @@ include::../../../../hello-world-lib/src/test/java/com/github/jinahya/verbose/he
 
 이제 실제로 주입작업을 실행하는 클래스를 만들어 보자. https://github.com/google/guice[Guice] 라는 프레임워크를 사용한다.
 
-Guice를 사용하여 주입작업을 수행하기 위해서는 실제로 주입을 필요로 하는 요소들(필드, 메서드 등)에 따른 주입작업을 설정하는 모듈 클래스가 필요하다. `com.google.inject.AbstractModule` 클래스를 구현하는 클래스를 하나 정의하자. 이 클래스는 Guice 프레임워크에 종속적인 API 를 사용한다.
+Guice를 사용하여 주입작업을 수행하기 위해서는 실제로 주입을 필요로 하는 요소들(필드, 메서드 등)에 따른 주입작업을 설정하는 클래스가 필요하다. `com.google.inject.AbstractModule` 클래스를 확장하는 클래스를 하나 정의하자. 이 클래스는 Guice 프레임워크에 종속적인 API 를 사용한다.
 
 [source,java]
 .HelloWorldGuilceModule.java
@@ -832,6 +854,7 @@ hello-world-lib 모듈에는 Guice 이외에 [https://jcp.org/en/jsr/detail?id=3
 |===============================================================================
 
 소스코드는 `src/test/java-<profile>` 위치에 있으며 다음과 같이 테스트해 볼 수 있다.
+
 [source,text]
 ----
 $ pwd
@@ -842,6 +865,7 @@ $
 ----
 
 ==== HelloWorldServiceTest.java
+
 이번에는 자바에서 지원하는 확장 메커니즘을 활용하여 `implementation()` 메서드를 구현해보려 한다. 서비스 확장의 목적은 라이브러리가 수행할 기능을 인터페이스나 추상클래스로 정의(Service Provider Interface)한 후 그 기능을 구현한 제공자(Service Provider)를 선택적으로 사용할 수 있도록 하는 것이다.
 
 [source,java]
@@ -867,7 +891,7 @@ public class HelloWorldServiceTest extends HelloWorldDataTest {
 com.github.jinahya.verbose.hello.HelloWorldImpl
 
 ----
-이제 서비스를 적재하여 `implementation` 변수의 값을 기록하자.
+이제 서비스를 적재하여 `implementation` 변수의 값을 초기화하자.
 
 [source,java]
 .HelloWorldServiceTest.java#implementation()
@@ -903,7 +927,8 @@ $
 ----
 
 === hello-world-app
-지금까지 우리는 성공적으로 `HelloWorld` 인터페이스를 구현하였다. 상세한 시험 항목을 통해 꼭 필요한 만큼만 구현 작업을 수행한 후 구현한 코드가 의도한데로 그리고 정상적으로 동작하는 것을 확인하였다. 또한 의존성 주입 및 서비스 확장이라는 개념까지 살펴보았다. 이제 우리는 우리가 직접 구현한 코드를 가지고 본 장 첫 부분에서 보았던 `SuccinctHelloWorld` 프로그램과 동일한 기능을 수행하는 프로그램을 만들 수 있다. 다음과 같이 의존성을 확인해보자.
+
+지금까지 우리는 성공적으로 `HelloWorld` 인터페이스를 구현하였다. 상세한 시험 항목을 통해 꼭 필요한 만큼만 구현 작업을 수행한 후 구현한 코드가 의도한데로 그리고 정상적으로 동작하는 것을 확인하였다. 또한 의존성 주입 및 서비스 확장이라는 개념까지 살펴보았다. 이제 직접 구현한 코드를 가지고 본 장 첫 부분에서 보았던 `SuccinctHelloWorld` 프로그램과 동일한 기능을 수행하는 프로그램을 만들 수 있다. 다음과 같이 의존성을 확인해보자.
 
 [source,text]
 ----
@@ -911,21 +936,23 @@ $ pwd
 /.../path/to/.../verbose-java/hello-world-app
 $ mvn dependency:tree -Dscope=runtime
 ...
-[INFO] --- maven-dependency-plugin:x.y.z:tree (default-cli) @ hello-world-app ---
 [INFO] com.github.jinahya:hello-world-app:jar:<version>
 [INFO] +- com.github.jinahya:hello-world-api:jar:<version>:compile
 [INFO] \- com.github.jinahya:hello-world-lib:jar:<version>:runtime
 ...
 $
 ----
-hello-world-app 모듈은 hello-world-api 모듈에 정의된 클래스들만을 (컴파일 시에) 사용하고 hello-world-lib 모듈은 실제로 동작할 때 사용된다. 아래는 hello-world-app 모듈의 pom.xml 파일에 정의된 의존성들을 보여준다.
+
+hello-world-app 모듈은 hello-world-api 모듈에 정의된 클래스들만을 사용하고 hello-world-lib 모듈에 정의된 클래스들은 실제로 동작할 때만 사용되로독 설정하였다. 아래는 hello-world-app 모듈의 pom.xml 파일에 정의된 의존성들을 보여준다.
+
 [source,xml]
 ----
 include::../../../../hello-world-app/pom.xml[lines=32..45]
 ----
 
 ==== HelloWorldMain.java
-우리가 작성한 `HelloWorldImpl` 을 이용하여 `hello, world` 를 인쇄하는 프로그램이다. 앞서 구현했던 서비스 확장 기능을 사용한다.
+
+우리가 작성한 `HelloWorldImpl` 클래스를 이용하여 `hello, world` 를 인쇄하는 프로그램이다. 앞서 구현했던 서비스 확장 기능을 사용한다.
 
 [source,java]
 .HelloWorldMain.java
@@ -939,6 +966,7 @@ include::../../../../hello-world-app/src/main/java/com/github/jinahya/verbose/he
 <3> 반환된 값(`System.out`)에 `println()` 을 호출한다.
 
 다음과 같이 실행해 보자.
+
 [source,text]
 ----
 $ pwd
@@ -949,10 +977,13 @@ $
 ----
 
 ==== Executable JAR
+
 `HelloWorldMain` 클래스를 실행하기 위해서는 hello-world-api 모듈과 hello-world-lib 모듈이 필요하다. hello-world-app 모듈에 `package` 단계(phase)에서 여러가지 방업을 통해 실행 가능한 jar 파일들을 생성하로록 설정된 사항이 있다.
 
 ===== jar-with-dependencies
+
 http://maven.apache.org/plugins/maven-assembly-plugin/[Apache Maven Assembly Plugin]을 이용해 생성한다. 다음과 같이 실행해 보자.
+
 [source,text]
 ----
 $ pwd
@@ -963,7 +994,9 @@ $
 ----
 
 ===== shaded
+
 https://maven.apache.org/plugins/maven-shade-plugin/[Apache Maven Shade Plugin]을 이용해 생성한다. 다음과 같이 실행해 보자.
+
 [source,text]
 ----
 $ pwd
@@ -974,7 +1007,9 @@ $
 ----
 
 ===== spring-boot
+
 https://docs.spring.io/spring-boot/docs/current/reference/html/build-tool-plugins-maven-plugin.html[Spring Boot Maven Plugin]을 이용해 생성한다. 다음과 같이 실행해 보자.
+
 [source,text]
 ----
 $ pwd
@@ -985,7 +1020,9 @@ $
 ----
 
 ===== class-path
+
 실행에 필요한 모듈들을 별도의 디렉토리에 복사한 후 `META-INF/MANIFEST.MF` 항목에 별도의 `Class-Path` 값을 추가하는 방식으로 생성되었다. 다음과 같이 실행해 볼 수 있다.
+
 [source,text]
 ----
 $ pwd
@@ -996,6 +1033,7 @@ $
 ----
 
 `hello-world-app-<version>-class-path.jar` 파일의 `META-INF/MANIFEST.MF` 항목의 확인해 보자.
+
 [source,text]
 ----
 $ pwd

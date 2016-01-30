@@ -17,7 +17,7 @@ package com.github.jinahya.verbose.hex;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
-import static java.nio.ByteBuffer.allocateDirect;
+import static java.nio.ByteBuffer.allocate;
 import java.nio.channels.FileChannel;
 import static java.nio.channels.FileChannel.open;
 import java.nio.channels.ReadableByteChannel;
@@ -32,7 +32,7 @@ import org.openjdk.jmh.annotations.Benchmark;
  */
 public class WritableHexChannelBenchmark {
 
-    private static final ByteBuffer buffer = allocateDirect(128);
+    private static final ByteBuffer buffer = allocate(128);
 
     private void copy(final ReadableByteChannel readable,
                       final WritableByteChannel writable)
