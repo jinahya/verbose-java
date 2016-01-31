@@ -46,9 +46,12 @@ public class HexEncoderTest extends AbstractHexEncoderTest {
         accept(e -> assertThrows(NullPointerException.class,
                                  () -> e.encode(null, allocate(0))));
         {
-            final ByteBuffer decoded = allocate(current().nextInt(128));
-            final ByteBuffer encoded
-                    = allocate(current().nextInt(decoded.capacity() << 1));
+            final int decodedCapacity = current().nextInt(128);
+            final int encodedCapacity
+                    = decodedCapacity == 0
+                      ? 0 : current().nextInt(decodedCapacity << 1);
+            final ByteBuffer decoded = allocate(decodedCapacity);
+            final ByteBuffer encoded = allocate(encodedCapacity);
             final int count = apply(e -> e.encode(decoded, encoded));
             assertEquals(count, decoded.position());
         }

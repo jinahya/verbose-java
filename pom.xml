@@ -19,21 +19,17 @@
   <description>verbose java</description>
   <url>https://github.com/jinahya/verbose-java</url>
   <inceptionYear>2015</inceptionYear>
-
-  <prerequisites>
-    <maven>3.3.9</maven>
-  </prerequisites>
-
+  
   <modules>
     <module>hello-world-api</module>
     <module>hello-world-lib</module>
     <module>hello-world-app</module>
     <module>hex-codec-api</module>
     <module>hex-codec-lib</module>
-    <module>hex-codec-benchmarks</module>
+    <!--<module>hex-codec-benchmarks</module>-->
     <module>percent-codec-api</module>
     <module>percent-codec-lib</module>
-    <module>verbose-java-book</module>
+    <!--<module>verbose-java-book</module>-->
   </modules>
 
   <scm>
@@ -71,7 +67,7 @@
     <org.jacocco.version>0.7.5.201505241946</org.jacocco.version>
     <org.glassfish.hk2.version>2.5.0-b02</org.glassfish.hk2.version>
     <org.glassfish.jersey.core.version>2.22.1</org.glassfish.jersey.core.version>
-    <org.openjdk.jmh.version>1.11.3</org.openjdk.jmh.version>
+    <!--<org.openjdk.jmh.version>1.11.3</org.openjdk.jmh.version>-->
     <org.springframework.version>4.2.4.RELEASE</org.springframework.version>
     <sonar.exclusions>file:**/generated-sources/**</sonar.exclusions>
   </properties>
@@ -118,7 +114,7 @@
         <artifactId>hk2-testng</artifactId>
         <version>${org.glassfish.hk2.version}</version>
       </dependency>
-      <dependency>
+      <!--      <dependency>
         <groupId>org.openjdk.jmh</groupId>
         <artifactId>jmh-core</artifactId>
         <version>${org.openjdk.jmh.version}</version>
@@ -127,7 +123,7 @@
         <groupId>org.openjdk.jmh</groupId>
         <artifactId>jmh-generator-annprocess</artifactId>
         <version>${org.openjdk.jmh.version}</version>
-      </dependency>
+      </dependency>-->
       <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-context</artifactId>
