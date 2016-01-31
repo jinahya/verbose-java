@@ -4,14 +4,13 @@
 .SuccinctHelloWorld.java
 ----
 public class SuccinctHelloWorld {
-
     public static void main(final String[] args) {
         System.out.printf("%s%n", "hello, world");
     }
 }
 ----
 
-가능한 한 Hello World 로 시작하고 싶지는 않았지만 프로젝트를 설계하고 구현하는 방법을 알아보기에 그 간단하고 명료한 요구사항이 적절하다고 판단되어 이 주제를 선택하였다. 이 장에서는 인터페이스를 정의하는 방법을 알아보고 그 인터페이스를 구현하고 사용하는 방법에 대해 알아본다.
+가능한 한 Hello World 로 첫 장을 시작하고 싶지는 않았지만 비교적 간단하고 명확한 요구사항을 바탕으로 프로젝트를 설계하고 구현하는 방법을 알아보고자 한다. 이 장에서는 인터페이스를 정의하는 방법을 알아보고 그 인터페이스를 구현하고 사용하는 방법에 대해 알아본다.
 
 === hello-world-api
 
@@ -72,8 +71,8 @@ public interface HelloWorld {
 .HelloWorld.java#put(ByteBuffer)
 ----
     // 주어진 퍼버에 hello, world 바이트들을 담은 후 그 버퍼를 반환한다.
-    // 버버의 remaining() 이 BYTES 보다 작으면 BufferOverflowException 을 던진다.
-    // 버퍼의 position 값이 BYTES 만큼 증가된다.
+    // 버버에 충분한 공간이 없으면 BufferOverflowException 을 던진다.
+    // 버퍼의 위치(position) 값이 BYTES 만큼 증가된다.
 include::../../../../hello-world-api/src/main/java/com/github/jinahya/verbose/hello/HelloWorld.java[lines=67..82]
 ----
 <1> `buffer` 인자가 `null` 이면 `NullPointerException` 을 던진다.
@@ -122,7 +121,7 @@ public class HelloWorldTest {
 
 `defualt` 메서드들을 시험하기 위해 다음과 같이 `HelloWorld` 객체를 반환하는 메서드를 정의하자.
 [source,java]
-.HelloWorldTest.java#impl()
+.HelloWorldTest.java#mock()
 ----
 include::../../../../hello-world-api/src/test/java/com/github/jinahya/verbose/hello/HelloWorldTest.java[lines=55..58]
 ----
@@ -130,20 +129,20 @@ include::../../../../hello-world-api/src/test/java/com/github/jinahya/verbose/he
 
 [NOTE]
 ====
-`HelloworldTest#impl()` 메서드는 `HelloWorld` 객체를 반환하기 위해 lambda 표현식을 사용하였다. 여기서 사용된 lambda 표현식을 이해하기 위해 동일한 기능을 수행하는 방식들을 따라가 보자.
+`HelloworldTest#mock()` 메서드는 `HelloWorld` 객체를 반환하기 위해 lambda 표현식을 사용하였다. 여기서 사용된 lambda 표현식을 이해하기 위해 동일한 기능을 수행하는 방식들을 따라가 보자.
 
 우선 다음과 같이 `HelloWorld` 인터페이스를 구현하는 클래스를 정의하고 그 객체를 반환할 수 있다.
 
 [source,java]
 ----
-    private static class Impl implements HelloWorld {
+    private static class Mock implements HelloWorld {
         @Override
         public void set(final byte[] array, final int offset) {
             // empty
         }
     }
-    private HelloWorld impl() {
-        return new Impl();
+    private HelloWorld mock() {
+        return new Mock();
     }
 ----
 
@@ -151,7 +150,7 @@ include::../../../../hello-world-api/src/test/java/com/github/jinahya/verbose/he
 
 [source,java]
 ----
-    private HelloWorld impl() {
+    private HelloWorld mock() {
         return new HelloWorld() {
             @Override
             public void set(final byte[] array, final int offset) {
@@ -165,7 +164,7 @@ include::../../../../hello-world-api/src/test/java/com/github/jinahya/verbose/he
 
 [source,java]
 ----
-    private HelloWorld impl() {
+    private HelloWorld mock() {
         return (byte[] a, int o) -> {
             // empty
         };
@@ -176,7 +175,7 @@ include::../../../../hello-world-api/src/test/java/com/github/jinahya/verbose/he
 
 [source,java]
 ----
-    private HelloWorld impl() {
+    private HelloWorld mock() {
         return (a, o) -> {
             // empty
         };
@@ -184,24 +183,28 @@ include::../../../../hello-world-api/src/test/java/com/github/jinahya/verbose/he
 ----
 ====
 
+===== testPut()
+
 이제 다음과 같이 `put(ByteBuffer)` 메서드를 테스트 하자.
+
 [source,java]
-.HelloWorldTest.java#put()
+.HelloWorldTest.java#testPut()
 ----
-include::../../../../hello-world-api/src/test/java/com/github/jinahya/verbose/hello/HelloWorldTest.java[lines=63..80]
+include::../../../../hello-world-api/src/test/java/com/github/jinahya/verbose/hello/HelloWorldTest.java[lines=65..81]
 ----
 <1> `buffer` 값이 `null` 이면 `NullPointerException` 을 던지는지 확인한다.
 <2> `buffer` 에 충분한 공간이 없으면 `BufferOverflowException` 을 던지는지 확인한다.
 <3> `byte[]` 를 사용하는 `buffer` 를 가지고 확인한다.
 <4> `byte[]` 를 사용하지 않는 `buffer` 를 가지고 확인한다.
 
-보는 바와 같이 `put(ByteBufer)` 메서드가 에러 없이 동작하는지를 시험했을 뿐 전달한 `buffer` 에 어떤 값이 들어갔는지 확인하지는 않는다.
+보는 바와 같이 `put(ByteBufer)` 메서드가 에러 없이 동작하는지를 시험했을 뿐 전달한 `buffer` 에 어떤 값이 들어갔는지는 확인하지 않는다.
 
 [NOTE]
 ====
-http://static.javadoc.io/org.testng/testng/6.9.10/org/testng/Assert.html#assertThrows-java.lang.Class-org.testng.Assert.ThrowingRunnable-[`org.testng.Assert.assertThrows`] 메서드의 두번째 인자의 형인 http://static.javadoc.io/org.testng/testng/6.9.10/org/testng/Assert.ThrowingRunnable.html[`ThrowingRunnable`] 인터페이스에는 단 하나의 메서드만이 정의되어 있다. 다시 한번 동일한 기능을 수행하는 코드들을 살펴보자.
+{apidocs-testng}/org/testng/Assert.html#assertThrows-java.lang.Class-org.testng.Assert.ThrowingRunnable-[`org.testng.Assert.assertThrows`] 메서드의 두번째 인자의 형인 {apidocs-testng}/org/testng/Assert.ThrowingRunnable.html[`ThrowingRunnable`] 인터페이스에는 단 하나의 메서드만이 정의되어 있다. 다시 한번 동일한 기능을 수행하는 코드들을 살펴보자.
 
 아래는 익명 클래스를 사용하는 코드이다.
+
 [source,java]
 ----
 assertThrows(NullPointerException.class, new ThrowingRunnable() {
@@ -212,6 +215,7 @@ assertThrows(NullPointerException.class, new ThrowingRunnable() {
 ----
 
 다음과 같이 lambda 표현식을 사용할 수 있다.
+
 [source,java]
 ----
 assertThrows(NullPointerException.class, () -> {
@@ -220,6 +224,7 @@ assertThrows(NullPointerException.class, () -> {
 ----
 
 서술문(statement)이 하나밖에 없으므로 바디 블럭을 최소화할 수 있다.
+
 [source,java]
 ----
 assertThrows(NullPointerException.class, () -> impl().put(null)); // <1>
@@ -227,25 +232,29 @@ assertThrows(NullPointerException.class, () -> impl().put(null)); // <1>
 <1> `impl().put(null)` 바로 뒤에 서술문의 끝을 나타내는 세미콜론(`;`)이 없다.
 ====
 
+===== testWriteWithStream()
+
 다음은 `write(OutputStream)` 메서드를 시험하는 항목이다.
 [source,java]
-.HelloWorldTest.java#writeWithStream()
+.HelloWorldTest.java#testWriteWithStream()
 ----
-include::../../../../hello-world-api/src/test/java/com/github/jinahya/verbose/hello/HelloWorldTest.java[lines=87..94]
+include::../../../../hello-world-api/src/test/java/com/github/jinahya/verbose/hello/HelloWorldTest.java[lines=88..95]
 ----
 <1> `stream` 값이 `null` 이면 `NullPointerException` 을 던지는지 확인한다.
 <2> 유효한 `OutputStream` 값을 `write(OutputStream)` 에 전달한다.
 
 역시나 전달한 `OutputStream` 에 어떤 값이 기록되었는지 확인하지 않는다.
 
+===== testWriteWithChannel()
+
 다음은 `write(WritableByteChannel)` 메서드를 시험한다.
 [source,java]
-.HelloWorldTest.java#writeWithChannel()
+.HelloWorldTest.java#tstWriteWithChannel()
 ----
-include::../../../../hello-world-api/src/test/java/com/github/jinahya/verbose/hello/HelloWorldTest.java[lines=101..109]
+include::../../../../hello-world-api/src/test/java/com/github/jinahya/verbose/hello/HelloWorldTest.java[lines=102..110]
 ----
 <1> `channel` 값이 `null` 이면 `NullPointerException` 을 던지는지 확인한다.
-<2> 유효한 `WritableByteChannel` 값으로 `write(WritableByteChannel)` 을 호출한다.
+<2> 유효한 `WritableByteChannel` 값을 전달한다.
 
 === hello-world-lib
 
@@ -1084,7 +1093,7 @@ $
 . `HelloWorldImpl#set(byte[], int)` 의 `offset` 인자에 `final` 키워드를 추가한 다음 부가적으로 발생하는 문제점(들)을 해결하라.
 +
 [source,java]
-.HelloWorldImpl#set(byte[], int)
+.HelloWorldImpl.java#set(byte[], int)
 ----
 public void set(final byte[] array, final int offset) {
 }
@@ -1093,7 +1102,7 @@ public void set(final byte[] array, final int offset) {
 . `HelloWorldImpl#set(byte[], int)` 메서드를 사헝하기 위한 유효한 데이터를 제공하는 데이터 제공자와 그로부터 데이터를 제공받아 정상적인 동작을 확인하는 시험 항목을 작성하라.
 +
 [source,java]
-.HeloWorldDataProvider#provideValid()
+.HeloWorldDataProvider.java#provideValid()
 ----
     @DataProvider
     static Object[][] provideValid() {
@@ -1103,7 +1112,7 @@ public void set(final byte[] array, final int offset) {
 ----
 +
 [source,java]
-.HeloWorldDataTest#testValid(byte[], int)
+.HeloWorldDataTest.java#testValid(byte[], int)
 ----
     @Test(dataProvider = "provideValid"
           dataProviderClass = HelloWorldDataProvider.class)

@@ -20,7 +20,9 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
-import java.nio.channels.Channels;
+import static java.nio.ByteBuffer.allocate;
+import static java.nio.ByteBuffer.allocateDirect;
+import static java.nio.channels.Channels.newChannel;
 import java.nio.channels.WritableByteChannel;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.util.concurrent.ThreadLocalRandom.current;
@@ -52,7 +54,7 @@ public class HelloWorldTest {
      *
      * @return an implementation of {@link HelloWorld}
      */
-    private HelloWorld impl() {
+    private HelloWorld mock() {
         return (a, o) -> { // <1>
         };
     }
@@ -61,20 +63,19 @@ public class HelloWorldTest {
      * Tests {@link HelloWorld#put(java.nio.ByteBuffer)}.
      */
     @Test
-    public void put() {
-        assertThrows(NullPointerException.class, () -> impl().put(null)); // <1>
+    public void testPut() {
+        assertThrows(NullPointerException.class, () -> mock().put(null)); // <1>
         assertThrows(BufferOverflowException.class, // <2>
-                     () -> impl().put(ByteBuffer.allocate(
+                     () -> mock().put(allocate(
                              current().nextInt(HelloWorld.BYTES))));
         { // <3>
-            final ByteBuffer expected = ByteBuffer.allocate(HelloWorld.BYTES);
-            final ByteBuffer actual = impl().put(expected);
+            final ByteBuffer expected = allocate(HelloWorld.BYTES);
+            final ByteBuffer actual = mock().put(expected);
             assertSame(actual, expected);
         }
         { // <4>
-            final ByteBuffer expected
-                    = ByteBuffer.allocateDirect(HelloWorld.BYTES);
-            final ByteBuffer actual = impl().put(expected);
+            final ByteBuffer expected = allocateDirect(HelloWorld.BYTES);
+            final ByteBuffer actual = mock().put(expected);
             assertSame(actual, expected);
         }
     }
@@ -85,11 +86,11 @@ public class HelloWorldTest {
      * @throws IOException if an I/O error occurs.
      */
     @Test
-    public void writeWithStream() throws IOException {
+    public void testWriteWithStream() throws IOException {
         assertThrows(NullPointerException.class, // <1>
-                     () -> impl().write((OutputStream) null));
+                     () -> mock().write((OutputStream) null));
         final OutputStream expected = new ByteArrayOutputStream();
-        final OutputStream actual = impl().write(expected); // <2>
+        final OutputStream actual = mock().write(expected); // <2>
         assertSame(actual, expected);
     }
 
@@ -99,12 +100,12 @@ public class HelloWorldTest {
      * @throws IOException if an I/O error occurs.
      */
     @Test
-    public void writeWithChannel() throws IOException {
+    public void testWriteWithChannel() throws IOException {
         assertThrows(NullPointerException.class, // <1>
-                     () -> impl().write((WritableByteChannel) null));
+                     () -> mock().write((WritableByteChannel) null));
         final WritableByteChannel expected
-                = Channels.newChannel(new ByteArrayOutputStream());
-        final WritableByteChannel actual = impl().write(expected); // <2>
+                = newChannel(new ByteArrayOutputStream());
+        final WritableByteChannel actual = mock().write(expected); // <2>
         assertSame(actual, expected);
     }
 }
