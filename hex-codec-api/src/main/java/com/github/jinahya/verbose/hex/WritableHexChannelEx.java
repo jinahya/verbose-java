@@ -61,9 +61,9 @@ public class WritableHexChannelEx<T extends WritableByteChannel>
         if (buffer == null) {
             buffer = allocate(capacity);
         }
-        int count = 0;
+        final int position = src.position();
         while (src.hasRemaining()) {
-            count += encoder.encode(src, buffer); // <1>
+            encoder.encode(src, buffer); // <1>
             buffer.flip(); // <2>
             final int remaining = buffer.remaining(); // can write
             final int written = channel.write(buffer); // actaully written
@@ -76,7 +76,7 @@ public class WritableHexChannelEx<T extends WritableByteChannel>
             channel.write(buffer);
         }
         buffer.clear();
-        return count;
+        return src.position() - position;
     }
 
     private final int capacity;

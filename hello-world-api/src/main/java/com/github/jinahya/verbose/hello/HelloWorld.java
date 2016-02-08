@@ -19,6 +19,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
+import static java.nio.ByteBuffer.allocate;
 import java.nio.channels.WritableByteChannel;
 
 /**
@@ -121,7 +122,7 @@ public interface HelloWorld {
         if (channel == null) { // <1>
             throw new NullPointerException("null channel");
         }
-        final ByteBuffer buffer = put(ByteBuffer.allocate(BYTES)); // <2>
+        final ByteBuffer buffer = put(allocate(BYTES)); // <2>
         for (buffer.flip(); buffer.hasRemaining();) { // <3>
             channel.write(buffer);
         }

@@ -60,19 +60,19 @@ public class ReadableHexChannelEx<T extends ReadableByteChannel>
         if (buffer == null) {
             buffer = allocate(capacity);
         }
-        int count = 0;
+        final int position = dst.position();
         while (dst.hasRemaining()) {
             buffer.limit(Math.min(buffer.limit(), dst.remaining() * 2)); // <1>
             final int remaining = buffer.remaining(); // can read
             final int read = channel.read(buffer); // actaully read
             if (read == -1) { // <2>
-                if (count == 0 && buffer.position() == 0) {
+                if (dst.position() == position && buffer.position() == 0) {
                     return -1;
                 }
                 break;
             }
             buffer.flip(); // <3>
-            count += decoder.decode(buffer, dst);
+            decoder.decode(buffer, dst);
             buffer.compact();
             if (read < remaining) { // <4>
                 break;
@@ -87,9 +87,9 @@ public class ReadableHexChannelEx<T extends ReadableByteChannel>
             }
         }
         buffer.flip(); // <6>
-        count += decoder.decode(buffer, dst);
-        buffer.compact();
-        return count;
+        decoder.decode(buffer, dst);
+        buffer.clear();
+        return dst.position() - position;
     }
 
     private final int capacity;
