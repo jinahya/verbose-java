@@ -19,7 +19,7 @@
   <description>verbose java</description>
   <url>https://github.com/jinahya/verbose-java</url>
   <inceptionYear>2015</inceptionYear>
-  
+
   <modules>
     <module>hello-world-api</module>
     <module>hello-world-lib</module>
@@ -443,7 +443,7 @@
       </plugin>
     </plugins>
   </reporting>
-  <!--  <profiles>
+<!--  <profiles>
     <profile>
       <id>benchmark</id>
       <build>
