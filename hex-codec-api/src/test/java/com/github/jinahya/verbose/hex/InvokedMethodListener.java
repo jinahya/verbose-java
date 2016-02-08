@@ -15,24 +15,29 @@
  */
 package com.github.jinahya.verbose.hex;
 
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import static java.util.concurrent.ThreadLocalRandom.current;
-import org.testng.annotations.Test;
+import org.slf4j.Logger;
+import static org.slf4j.LoggerFactory.getLogger;
+import org.testng.IInvokedMethod;
+import org.testng.IInvokedMethodListener;
+import org.testng.ITestResult;
 
 /**
- * A class testing {@link HexOutputStream} class.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HexOutputStreamTest extends AbstractHexEncoderTest {
+public class InvokedMethodListener implements IInvokedMethodListener {
 
-    @Test
-    public void testWrite() throws IOException {
-        try (final HexOutputStream hos = apply(
-                e -> new HexOutputStream(new ByteArrayOutputStream(), e))) {
-            hos.write(current().nextInt());
-        }
+    @Override
+    public void beforeInvocation(final IInvokedMethod method,
+                                 final ITestResult testResult) {
+        logger.debug("invoking {}, {}", method, testResult);
     }
 
+    @Override
+    public void afterInvocation(final IInvokedMethod method,
+                                final ITestResult testResult) {
+        logger.debug("invoked {}, {}", method, testResult);
+    }
+
+    private transient final Logger logger = getLogger(getClass());
 }

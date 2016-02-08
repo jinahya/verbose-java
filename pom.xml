@@ -26,10 +26,8 @@
     <module>hello-world-app</module>
     <module>hex-codec-api</module>
     <module>hex-codec-lib</module>
-    <!--<module>hex-codec-benchmarks</module>-->
     <module>percent-codec-api</module>
     <module>percent-codec-lib</module>
-    <!--<module>verbose-java-book</module>-->
   </modules>
 
   <scm>
@@ -429,23 +427,5 @@
       </plugin>
     </plugins>
   </reporting>
-  <!--  <profiles>
-    <profile>
-      <id>benchmark</id>
-      <build>
-        <plugins>
-          <plugin>
-            <groupId>org.apache.maven.plugins</groupId>
-            <artifactId>maven-surefire-plugin</artifactId>
-            <configuration>
-              <includes>
-                <include>**/*Benchmark.java</include>
-              </includes>
-            </configuration>
-          </plugin>
-        </plugins>
-      </build>
-    </profile>
-  </profiles>-->
 
 </project>
