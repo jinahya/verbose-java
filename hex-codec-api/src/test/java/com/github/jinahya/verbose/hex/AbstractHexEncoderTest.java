@@ -21,7 +21,7 @@ import java.util.function.Function;
 import org.testng.annotations.Guice;
 
 /**
- * A class testing {@link HexOutputStream} class.
+ * An abstract class for testing {@link HexEncoder}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
@@ -43,7 +43,7 @@ class AbstractHexEncoderTest {
      *
      * @param <R> result type parameter
      * @param function the function to apply
-     * @return the result of the function
+     * @return the result of the function applied
      */
     protected <R> R apply(final Function<HexEncoder, R> function) {
         return function.apply(encoder);

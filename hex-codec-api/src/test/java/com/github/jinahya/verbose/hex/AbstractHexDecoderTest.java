@@ -21,24 +21,33 @@ import java.util.function.Function;
 import org.testng.annotations.Guice;
 
 /**
- * A class testing {@link HexOutputStream} class.
+ * An abstract class for testing {@link HexDecoder}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 @Guice(modules = HexDecoderDemoModule.class)
 class AbstractHexDecoderTest {
 
+    /**
+     * Accepts given consumer with an instance of {@link HexDecoder}.
+     *
+     * @param consumer the consumer
+     */
     protected void accept(final Consumer<HexDecoder> consumer) {
         consumer.accept(decoder);
     }
 
+    /**
+     * Apply given function with an {@link HexDecoder} and returns the result.
+     *
+     * @param <R> result type parameter
+     * @param function the function
+     * @return the result the function returns
+     */
     protected <R> R apply(final Function<HexDecoder, R> function) {
         return function.apply(decoder);
     }
 
-//    protected HexDecoder decoder() {
-//        return decoder;
-//    }
     @Inject
     private HexDecoder decoder;
 }

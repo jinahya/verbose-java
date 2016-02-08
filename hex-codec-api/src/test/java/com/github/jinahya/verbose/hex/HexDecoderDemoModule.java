@@ -18,11 +18,15 @@ package com.github.jinahya.verbose.hex;
 import com.google.inject.AbstractModule;
 
 /**
+ * A module binds {@link HexDecoder} to {@link HexDecoderDemo}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 class HexDecoderDemoModule extends AbstractModule {
 
+    /**
+     * Binds injection points of {@link HexDecoder} to {@link HexDecoderDemo}
+     */
     @Override
     protected void configure() {
         bind(HexDecoder.class).to(HexDecoderDemo.class);
