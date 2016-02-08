@@ -17,6 +17,7 @@ package com.github.jinahya.verbose.hex;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import static java.lang.reflect.Proxy.newProxyInstance;
@@ -39,19 +40,20 @@ public class ReadableHexChannelTest extends AbstractHexDecoderTest {
 
     static <T extends ReadableByteChannel> T nonBlocking(
             final Class<T> type, final T channel) {
-        final Method METHOD;
+        final Method readMethod;
         try {
-            METHOD = ReadableByteChannel.class.getMethod(
+            readMethod = ReadableByteChannel.class.getMethod(
                     "read", ByteBuffer.class);
         } catch (final NoSuchMethodException nsme) {
             throw new RuntimeException(nsme);
         }
         final InvocationHandler handler = (proxy, method, args) -> {
-            if (METHOD.equals(method)) {
+            if (readMethod.equals(method)) {
                 final ByteBuffer dst = (ByteBuffer) args[0];
                 final int limit = dst.limit();
-                if (dst.hasRemaining()) {
-                    dst.limit(limit - current().nextInt(dst.remaining()));
+                final int remaining = dst.remaining();
+                if (remaining > 1) {
+                    dst.limit(dst.position() + current().nextInt(remaining));
                 }
                 final int read = channel.read(dst);
                 dst.limit(limit);
@@ -120,40 +122,38 @@ public class ReadableHexChannelTest extends AbstractHexDecoderTest {
     }
 
     /**
-     * Tests {@link ReadableHexChannelEx#read(java.nio.ByteBuffer)}.
+     * Tests {@link ReadableHexChannel#read(java.nio.ByteBuffer)}.
      *
      * @throws IOException if an I/O error occurs.
      */
-    @Test(invocationCount = 128)
+    @Test
     public void testRead() throws IOException {
-        final ReadableByteChannel channel = newChannel(
-                new ByteArrayInputStream(new byte[16384]));
-        try (ReadableHexChannel<ReadableByteChannel> whc
-                = apply(d -> new ReadableHexChannel<>(channel, d))) {
-            for (int i = 0; i < 128; i++) {
-                final ByteBuffer dst = allocate(current().nextInt(128));
-                final int read = whc.read(dst);
-            }
+        final int length = current().nextInt(128) >> 1 << 1;
+        final InputStream stream = new ByteArrayInputStream(new byte[length]);
+        final ReadableByteChannel channel = newChannel(stream);
+        try (ReadableHexChannel<ReadableByteChannel> whc = apply(
+                decoder -> new ReadableHexChannel<>(channel, decoder))) {
+            final ByteBuffer dst = allocate(current().nextInt(1, 128));
+            final int read = whc.read(dst);
         }
     }
 
     /**
-     * Tests {@link ReadableHexChannelEx#read(java.nio.ByteBuffer)} with a
+     * Tests {@link ReadableHexChannel#read(java.nio.ByteBuffer)} with a
      * non-blocking channel.
      *
      * @throws IOException if an I/O error occurs.
      */
-    @Test(invocationCount = 128)
+    @Test
     public void testReadWithNonBlockingChannel() throws IOException {
-        final ReadableByteChannel channel
-                = newChannel(new ByteArrayInputStream(new byte[16384]));
-        try (ReadableByteChannel whc
-                = apply(d -> nonBlocking(ReadableByteChannel.class, new ReadableHexChannel<>(channel, d)))) {
-            for (int i = 0; i < 128; i++) {
-                final ByteBuffer dst = allocate(current().nextInt(128));
-                final int read = whc.read(dst);
-            }
+        final int length = current().nextInt(128) >> 1 << 1;
+        final InputStream stream = new ByteArrayInputStream(new byte[length]);
+        final ReadableByteChannel channel = nonBlocking(
+                ReadableByteChannel.class, newChannel(stream));
+        try (ReadableByteChannel whc = apply(
+                decoder -> new ReadableHexChannel<>(channel, decoder))) {
+            final ByteBuffer dst = allocate(current().nextInt(1, 128));
+            final int read = whc.read(dst);
         }
     }
-
 }

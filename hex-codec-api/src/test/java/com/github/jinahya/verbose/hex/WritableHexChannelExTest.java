@@ -104,17 +104,15 @@ public class WritableHexChannelExTest extends AbstractHexEncoderTest {
      *
      * @throws IOException if an I/O error occurs.
      */
-    @Test(invocationCount = 128)
+    @Test
     public void testWrite() throws IOException {
         final WritableByteChannel channel
                 = newChannel(new ByteArrayOutputStream());
         final int capacity = current().nextInt(2, 128);
         try (WritableByteChannel whc = apply(
                 e -> new WritableHexChannelEx<>(channel, e, capacity))) {
-            for (int i = 0; i < 128; i++) {
-                final ByteBuffer src = allocate(current().nextInt(128));
-                final int written = whc.write(src);
-            }
+            final ByteBuffer src = allocate(current().nextInt(128));
+            final int written = whc.write(src);
         }
     }
 
@@ -124,18 +122,16 @@ public class WritableHexChannelExTest extends AbstractHexEncoderTest {
      *
      * @throws IOException if an I/O error occurs.
      */
-    @Test(invocationCount = 128)
+    @Test
     public void testWriteWithNonBlockingChannel() throws IOException {
-        final WritableByteChannel channel
-                = newChannel(new ByteArrayOutputStream());
-        final int capacity = current().nextInt(2, 128);
-        try (WritableByteChannel whc = apply(e -> nonBlocking(
+        final WritableByteChannel channel = nonBlocking(
                 WritableByteChannel.class,
-                new WritableHexChannelEx<>(channel, e, capacity)))) {
-            for (int i = 0; i < 128; i++) {
-                final ByteBuffer src = allocate(current().nextInt(128));
-                final int written = whc.write(src);
-            }
+                newChannel(new ByteArrayOutputStream()));
+        final int capacity = current().nextInt(2, 128);
+        try (WritableByteChannel whc = apply(
+                e -> new WritableHexChannelEx<>(channel, e, capacity))) {
+            final ByteBuffer src = allocate(current().nextInt(128));
+            final int written = whc.write(src);
         }
     }
 }
