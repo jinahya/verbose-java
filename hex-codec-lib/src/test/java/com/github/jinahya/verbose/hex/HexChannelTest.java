@@ -64,7 +64,7 @@ public class HexChannelTest {
             final WritableByteChannel channel = open(encoded, WRITE, DSYNC);
             final HexEncoder encoder = new HexEncoderImpl();
             try (WritableByteChannel writable
-                    = new WritableHexChannel<>(channel, encoder)) {
+                    = new WritableHexChannel(channel, encoder)) {
                 copy(readable, writable);
             }
         }
@@ -73,7 +73,7 @@ public class HexChannelTest {
             final ReadableByteChannel channel
                     = open(encoded, READ, DELETE_ON_CLOSE);
             final HexDecoder decoder = new HexDecoderImpl();
-            try (ReadableByteChannel readable = new ReadableHexChannel<>(
+            try (ReadableByteChannel readable = new ReadableHexChannel(
                     channel, decoder)) {
                 copy(readable, writable);
             }
