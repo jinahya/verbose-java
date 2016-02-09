@@ -65,9 +65,7 @@ public class ReadableHexChannel extends ReadableFilterChannel {
             }
         }
         aux.flip();
-        final int count = decoder.decode(aux, dst); // <3>
-        aux.clear();
-        return count;
+        return decoder.decode(aux, dst); // <3>
     }
 
     /**
