@@ -44,7 +44,7 @@ public class WritableHexChannelExTest extends AbstractHexEncoderTest {
         final WritableByteChannel channel
                 = newChannel(new ByteArrayOutputStream());
         final int capacity = 1 - (current().nextInt() >>> 1);
-        accept(e -> new WritableHexChannelEx<>(channel, e, capacity));
+        accept(e -> new WritableHexChannelEx(channel, e, capacity));
     }
 
     /**
@@ -59,7 +59,7 @@ public class WritableHexChannelExTest extends AbstractHexEncoderTest {
             final int capacity = current().nextInt(2, 128);
             accept(e -> assertThrows(
                     NullPointerException.class,
-                    () -> new WritableHexChannelEx<>(channel, e, capacity)
+                    () -> new WritableHexChannelEx(channel, e, capacity)
                     .isOpen()));
         }
         {
@@ -67,7 +67,7 @@ public class WritableHexChannelExTest extends AbstractHexEncoderTest {
                     = newChannel(new ByteArrayOutputStream());
             final int capacity = current().nextInt(2, 128);
             final WritableByteChannel whc = apply(
-                    e -> new WritableHexChannelEx<>(channel, e, capacity));
+                    e -> new WritableHexChannelEx(channel, e, capacity));
             assertTrue(whc.isOpen());
             whc.close();
             assertFalse(whc.isOpen());
@@ -83,7 +83,7 @@ public class WritableHexChannelExTest extends AbstractHexEncoderTest {
     public void testClose() throws IOException {
         {
             final WritableByteChannel whc = apply(
-                    e -> new WritableHexChannelEx<>(null, e, 2));
+                    e -> new WritableHexChannelEx(null, e, 2));
             whc.close();
             whc.close();
             whc.close();
@@ -92,7 +92,7 @@ public class WritableHexChannelExTest extends AbstractHexEncoderTest {
             WritableByteChannel channel
                     = newChannel(new ByteArrayOutputStream());
             final WritableByteChannel whc = apply(
-                    e -> new WritableHexChannelEx<>(channel, e, 2));
+                    e -> new WritableHexChannelEx(channel, e, 2));
             whc.close();
             whc.close();
             whc.close();
@@ -110,7 +110,7 @@ public class WritableHexChannelExTest extends AbstractHexEncoderTest {
                 = newChannel(new ByteArrayOutputStream());
         final int capacity = current().nextInt(2, 128);
         try (WritableByteChannel whc = apply(
-                e -> new WritableHexChannelEx<>(channel, e, capacity))) {
+                e -> new WritableHexChannelEx(channel, e, capacity))) {
             final ByteBuffer src = allocate(current().nextInt(128));
             final int written = whc.write(src);
         }
@@ -129,7 +129,7 @@ public class WritableHexChannelExTest extends AbstractHexEncoderTest {
                 newChannel(new ByteArrayOutputStream()));
         final int capacity = current().nextInt(2, 128);
         try (WritableByteChannel whc = apply(
-                e -> new WritableHexChannelEx<>(channel, e, capacity))) {
+                e -> new WritableHexChannelEx(channel, e, capacity))) {
             final ByteBuffer src = allocate(current().nextInt(128));
             final int written = whc.write(src);
         }

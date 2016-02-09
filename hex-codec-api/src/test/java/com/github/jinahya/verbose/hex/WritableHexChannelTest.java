@@ -86,9 +86,9 @@ public class WritableHexChannelTest extends AbstractHexEncoderTest {
     public void testIsOpen() throws IOException {
         accept(e -> assertThrows(
                 NullPointerException.class,
-                () -> new WritableHexChannel<>(null, e).isOpen()));
+                () -> new WritableHexChannel(null, e).isOpen()));
         {
-            final WritableByteChannel whc = apply(e -> new WritableHexChannel<>(
+            final WritableByteChannel whc = apply(e -> new WritableHexChannel(
                     newChannel(new ByteArrayOutputStream()), e));
             assertTrue(whc.isOpen());
             whc.close();
@@ -104,14 +104,14 @@ public class WritableHexChannelTest extends AbstractHexEncoderTest {
     @Test
     public void testClose() throws IOException {
         {
-            final WritableHexChannel<?> whc
-                    = apply(e -> new WritableHexChannel<>(null, e));
+            final WritableHexChannel whc
+                    = apply(e -> new WritableHexChannel(null, e));
             whc.close();
             whc.close();
             whc.close();
         }
         {
-            final WritableByteChannel whc = apply(e -> new WritableHexChannel<>(
+            final WritableByteChannel whc = apply(e -> new WritableHexChannel(
                     newChannel(new ByteArrayOutputStream()), e));
             whc.close();
             whc.close();
@@ -129,7 +129,7 @@ public class WritableHexChannelTest extends AbstractHexEncoderTest {
         final WritableByteChannel channel
                 = newChannel(new ByteArrayOutputStream());
         try (WritableByteChannel whc = apply(
-                encoder -> new WritableHexChannel<>(channel, encoder))) {
+                encoder -> new WritableHexChannel(channel, encoder))) {
             final ByteBuffer src = allocate(current().nextInt(1, 128));
             final int written = whc.write(src);
         }
@@ -147,7 +147,7 @@ public class WritableHexChannelTest extends AbstractHexEncoderTest {
                 WritableByteChannel.class,
                 newChannel(new ByteArrayOutputStream()));
         try (WritableByteChannel whc = apply(
-                encoder -> new WritableHexChannel<>(channel, encoder))) {
+                encoder -> new WritableHexChannel(channel, encoder))) {
             final ByteBuffer src = allocate(current().nextInt(1, 128));
             final int written = whc.write(src);
         }

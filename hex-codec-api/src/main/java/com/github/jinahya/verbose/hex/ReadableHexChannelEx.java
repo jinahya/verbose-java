@@ -25,10 +25,8 @@ import java.nio.channels.ReadableByteChannel;
  * A readable byte channel decodes hex characters to bytes.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
- * @param <T> channel type parameter
  */
-public class ReadableHexChannelEx<T extends ReadableByteChannel>
-        extends ReadableHexChannel<T> {
+public class ReadableHexChannelEx extends ReadableHexChannel {
 
     /**
      * Creates a new instance on top of given channel.
@@ -37,8 +35,8 @@ public class ReadableHexChannelEx<T extends ReadableByteChannel>
      * @param decoder a decoder to decode hex characters to bytes
      * @param capacity capacity for decoding buffer
      */
-    public ReadableHexChannelEx(final T channel, final HexDecoder decoder,
-                                final int capacity) {
+    public ReadableHexChannelEx(final ReadableByteChannel channel,
+                                final HexDecoder decoder, final int capacity) {
         super(channel, decoder);
         if (capacity < 2) { // <1>
             throw new IllegalArgumentException(

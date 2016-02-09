@@ -22,13 +22,12 @@ import java.nio.channels.ReadableByteChannel;
 /**
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
- * @param <T> channel type parameter
  */
-public class ReadableFilterChannel<T extends ReadableByteChannel>
-        extends FilterChannel<T>
+public class ReadableFilterChannel
+        extends FilterChannel<ReadableByteChannel>
         implements ReadableByteChannel {
 
-    public ReadableFilterChannel(final T channel) {
+    public ReadableFilterChannel(final ReadableByteChannel channel) {
         super(channel);
     }
 

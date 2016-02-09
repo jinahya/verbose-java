@@ -30,37 +30,12 @@ import org.testng.annotations.Test;
 public class HexInputStreamTest extends AbstractHexDecoderTest {
 
     /**
-     * Tests {@link HexInputStream#read()},
-     *
-     * @throws IOException if an I/O error occurs.
-     */
-    @Test
-    public void read() throws IOException {
-        try (final HexInputStream his = apply(d -> new HexInputStream(
-                new ByteArrayInputStream(new byte[0]), d))) {
-            final int b = his.read();
-        }
-    }
-
-    /**
-     * Tests {@link HexInputStream#read(byte[], int, int)}.
-     *
-     * @throws IOException if an I/O error occurs.
-     */
-    @Test
-    public void readWithArray() throws IOException {
-        final HexInputStream his = apply(d -> new HexInputStream(
-                new ByteArrayInputStream(new byte[128]), d));
-        final int read = his.read(new byte[current().nextInt(128)]);
-    }
-
-    /**
      * Tests {@link HexInputStream#read()} with even number of bytes.
      *
      * @throws IOException if an I/O error occurs.
      */
     @Test
-    public void readFromEvenBytes() throws IOException {
+    public void read() throws IOException {
         final InputStream in = new ByteArrayInputStream(
                 new byte[(current().nextInt(128) >> 1) << 1]);
         try (final InputStream his = apply(d -> new HexInputStream(in, d))) {
@@ -90,7 +65,7 @@ public class HexInputStreamTest extends AbstractHexDecoderTest {
      * @throws IOException if an I/O error occurs.
      */
     @Test
-    public void readWithArrayFromEvenBytes() throws IOException {
+    public void readWithArray() throws IOException {
         final int length = (current().nextInt(128) >> 1) << 1;
         final InputStream in = new ByteArrayInputStream(new byte[length]);
         try (final InputStream his = apply(d -> new HexInputStream(in, d))) {

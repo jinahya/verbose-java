@@ -24,10 +24,8 @@ import java.nio.channels.ReadableByteChannel;
 /**
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
- * @param <T> channel type parameter
  */
-public class ReadableHexChannel<T extends ReadableByteChannel>
-        extends ReadableFilterChannel<T> {
+public class ReadableHexChannel extends ReadableFilterChannel {
 
     /**
      * Creates a new instance on top of given channel.
@@ -35,7 +33,8 @@ public class ReadableHexChannel<T extends ReadableByteChannel>
      * @param channel the channel from which encoded characters are read
      * @param decoder the decoder for decoding characters into bytes.
      */
-    public ReadableHexChannel(final T channel, final HexDecoder decoder) {
+    public ReadableHexChannel(final ReadableByteChannel channel,
+                              final HexDecoder decoder) {
         super(channel);
         this.decoder = decoder;
     }
@@ -58,7 +57,7 @@ public class ReadableHexChannel<T extends ReadableByteChannel>
             return -1;
         }
         if ((aux.position() & 1) == 1) { // <3>
-            aux.position(aux.position() + 1);
+            aux.limit(aux.position() + 1);
             while (aux.hasRemaining()) {
                 if (channel.read(aux) == -1) { // unacceptable end-of-stream
                     throw new EOFException();
@@ -75,4 +74,5 @@ public class ReadableHexChannel<T extends ReadableByteChannel>
      * The decoder for decoding characters into bytes.
      */
     protected HexDecoder decoder;
+
 }

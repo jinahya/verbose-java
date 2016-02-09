@@ -22,13 +22,12 @@ import java.nio.channels.WritableByteChannel;
 /**
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
- * @param <T> channel type parameter
  */
-public class WritableFilterChannel<T extends WritableByteChannel>
-        extends FilterChannel<T>
+public class WritableFilterChannel
+        extends FilterChannel<WritableByteChannel>
         implements WritableByteChannel {
 
-    public WritableFilterChannel(final T channel) {
+    public WritableFilterChannel(final WritableByteChannel channel) {
         super(channel);
     }
 

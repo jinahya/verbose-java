@@ -23,10 +23,8 @@ import java.nio.channels.WritableByteChannel;
 /**
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
- * @param <T> channel type parameter
  */
-public class WritableHexChannel<T extends WritableByteChannel>
-        extends WritableFilterChannel<T> {
+public class WritableHexChannel extends WritableFilterChannel {
 
     /**
      * Creates a new instance on top of given channel.
@@ -34,7 +32,8 @@ public class WritableHexChannel<T extends WritableByteChannel>
      * @param channel the channel into which encoded hex characters are written
      * @param encoder the encoder to encode bytes
      */
-    public WritableHexChannel(final T channel, final HexEncoder encoder) {
+    public WritableHexChannel(final WritableByteChannel channel,
+                              final HexEncoder encoder) {
         super(channel);
         this.encoder = encoder;
     }

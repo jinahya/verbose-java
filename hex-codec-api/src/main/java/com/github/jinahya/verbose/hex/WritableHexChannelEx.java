@@ -24,10 +24,9 @@ import java.nio.channels.WritableByteChannel;
  * A writable byte channel encodes bytes to hex characters.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
- * @param <T> channel type parameter
  */
-public class WritableHexChannelEx<T extends WritableByteChannel>
-        extends WritableHexChannel<T> {
+public class WritableHexChannelEx
+        extends WritableHexChannel {
 
     /**
      * Creates a new instance on top of given channel.
@@ -36,8 +35,8 @@ public class WritableHexChannelEx<T extends WritableByteChannel>
      * @param encoder the encoder for encoding bytes
      * @param capacity the capacity of intermediate buffer.
      */
-    public WritableHexChannelEx(final T channel, final HexEncoder encoder,
-                                final int capacity) {
+    public WritableHexChannelEx(final WritableByteChannel channel,
+                                final HexEncoder encoder, final int capacity) {
         super(channel, encoder);
         if (capacity < 2) { // <1>
             throw new IllegalArgumentException(

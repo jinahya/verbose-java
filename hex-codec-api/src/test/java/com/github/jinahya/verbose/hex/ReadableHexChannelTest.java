@@ -85,9 +85,9 @@ public class ReadableHexChannelTest extends AbstractHexDecoderTest {
     public void testIsOpen() throws IOException {
         accept(d -> assertThrows(
                 NullPointerException.class,
-                () -> new ReadableHexChannel<>(null, d).isOpen()));
+                () -> new ReadableHexChannel(null, d).isOpen()));
         try (final ReadableByteChannel rhc = apply(
-                d -> new ReadableHexChannel<>(newChannel(
+                d -> new ReadableHexChannel(newChannel(
                         new ByteArrayInputStream(new byte[0])), d))) {
             assertTrue(rhc.isOpen());
             rhc.close();
@@ -104,7 +104,7 @@ public class ReadableHexChannelTest extends AbstractHexDecoderTest {
     public void testClose() throws IOException {
         {
             final ReadableByteChannel rhc
-                    = new ReadableHexChannel<>(null, null);
+                    = new ReadableHexChannel(null, null);
             rhc.close();
             rhc.close();
             rhc.close();
@@ -114,7 +114,7 @@ public class ReadableHexChannelTest extends AbstractHexDecoderTest {
                     = newChannel(new ByteArrayInputStream(new byte[0]));
             final HexDecoder decoder = null;
             final ReadableByteChannel rhc
-                    = new ReadableHexChannel<>(channel, decoder);
+                    = new ReadableHexChannel(channel, decoder);
             rhc.close();
             rhc.close();
             rhc.close();
@@ -131,8 +131,8 @@ public class ReadableHexChannelTest extends AbstractHexDecoderTest {
         final int length = current().nextInt(128) >> 1 << 1;
         final InputStream stream = new ByteArrayInputStream(new byte[length]);
         final ReadableByteChannel channel = newChannel(stream);
-        try (ReadableHexChannel<ReadableByteChannel> whc = apply(
-                decoder -> new ReadableHexChannel<>(channel, decoder))) {
+        try (ReadableHexChannel whc = apply(
+                decoder -> new ReadableHexChannel(channel, decoder))) {
             final ByteBuffer dst = allocate(current().nextInt(1, 128));
             final int read = whc.read(dst);
         }
@@ -151,7 +151,7 @@ public class ReadableHexChannelTest extends AbstractHexDecoderTest {
         final ReadableByteChannel channel = nonBlocking(
                 ReadableByteChannel.class, newChannel(stream));
         try (ReadableByteChannel whc = apply(
-                decoder -> new ReadableHexChannel<>(channel, decoder))) {
+                d -> new ReadableHexChannel(channel, d))) {
             final ByteBuffer dst = allocate(current().nextInt(1, 128));
             final int read = whc.read(dst);
         }
