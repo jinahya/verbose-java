@@ -63,11 +63,10 @@ public class WritableHexChannelEx
         final int position = src.position();
         while (src.hasRemaining()) {
             encoder.encode(src, buffer); // <1>
-            buffer.flip(); // <2>
-            final int remaining = buffer.remaining(); // can write
-            final int written = channel.write(buffer); // actaully written
+            buffer.flip();
+            channel.write(buffer); // <2>
             buffer.compact();
-            if (written < remaining) { // <3>
+            if (buffer.position() > 0) { // <3>
                 break;
             }
         }

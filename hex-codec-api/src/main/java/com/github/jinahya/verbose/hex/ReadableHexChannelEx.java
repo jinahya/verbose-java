@@ -17,6 +17,7 @@ package com.github.jinahya.verbose.hex;
 
 import java.io.EOFException;
 import java.io.IOException;
+import static java.lang.Math.min;
 import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
 import java.nio.channels.ReadableByteChannel;
@@ -60,19 +61,18 @@ public class ReadableHexChannelEx extends ReadableHexChannel {
         }
         final int position = dst.position();
         while (dst.hasRemaining()) {
-            buffer.limit(Math.min(buffer.limit(), dst.remaining() * 2)); // <1>
-            final int remaining = buffer.remaining(); // can read
-            final int read = channel.read(buffer); // actaully read
+            buffer.limit(min(buffer.limit(), dst.remaining() * 2)); // <1>
+            final int read = channel.read(buffer);
             if (read == -1) { // <2>
                 if (dst.position() == position && buffer.position() == 0) {
                     return -1;
                 }
                 break;
             }
-            buffer.flip(); // <3>
-            decoder.decode(buffer, dst);
+            buffer.flip();
+            decoder.decode(buffer, dst); // <3>
             buffer.compact();
-            if (read < remaining) { // <4>
+            if (buffer.position() > 0) { // <4>
                 break;
             }
         }
