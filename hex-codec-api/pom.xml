@@ -32,12 +32,10 @@
         <artifactId>maven-surefire-plugin</artifactId>
         <configuration>
           <properties>
-            <!--
             <property>
               <name>listener</name>
               <value>com.github.jinahya.verbose.hex.InvokedMethodListener</value>
             </property>
-            -->
           </properties>
         </configuration>
       </plugin>
