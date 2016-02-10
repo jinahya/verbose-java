@@ -52,15 +52,12 @@ public class ReadableHexChannel extends ReadableFilterChannel {
      */
     @Override
     public int read(final ByteBuffer dst) throws IOException {
-        final ByteBuffer aux = allocate(dst.remaining() >> 1 << 2); // <1>
-        System.out.println("aux: " + aux);
+        final ByteBuffer aux = allocate(dst.remaining() << 1); // <1>
         if (channel.read(aux) == -1) { // <2>
             return -1;
         }
-        System.out.println("aux: " + aux);
         if ((aux.position() & 1) == 1) { // <3>
             aux.limit(aux.position() + 1);
-            System.out.println("aux: " + aux);
             while (aux.hasRemaining()) {
                 if (channel.read(aux) == -1) { // unacceptable end-of-stream
                     throw new EOFException();
