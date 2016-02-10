@@ -129,7 +129,7 @@ public class WritableHexChannelTest extends AbstractHexEncoderTest {
         final WritableByteChannel channel
                 = newChannel(new ByteArrayOutputStream());
         try (WritableByteChannel whc = apply(
-                encoder -> new WritableHexChannel(channel, encoder))) {
+                e -> new WritableHexChannel(channel, e))) {
             final ByteBuffer src = allocate(current().nextInt(1, 128));
             final int written = whc.write(src);
         }
@@ -142,12 +142,12 @@ public class WritableHexChannelTest extends AbstractHexEncoderTest {
      * @throws IOException if an I/O error occurs.
      */
     @Test
-    public void testWriteWithNonBlockingChannel() throws IOException {
+    public void testWriteNonBlocking() throws IOException {
         final WritableByteChannel channel = nonBlocking(
                 WritableByteChannel.class,
                 newChannel(new ByteArrayOutputStream()));
         try (WritableByteChannel whc = apply(
-                encoder -> new WritableHexChannel(channel, encoder))) {
+                e -> new WritableHexChannel(channel, e))) {
             final ByteBuffer src = allocate(current().nextInt(1, 128));
             final int written = whc.write(src);
         }

@@ -23,9 +23,6 @@ import static java.nio.ByteBuffer.allocate;
 import static java.nio.channels.Channels.newChannel;
 import java.nio.channels.WritableByteChannel;
 import static java.util.concurrent.ThreadLocalRandom.current;
-import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertThrows;
-import static org.testng.Assert.assertTrue;
 import org.testng.annotations.Test;
 
 /**
@@ -45,58 +42,6 @@ public class WritableHexChannelExTest extends AbstractHexEncoderTest {
                 = newChannel(new ByteArrayOutputStream());
         final int capacity = 1 - (current().nextInt() >>> 1);
         accept(e -> new WritableHexChannelEx(channel, e, capacity));
-    }
-
-    /**
-     * Tests {@link WritableHexChannelEx#isOpen()}.
-     *
-     * @throws IOException if an I/O error occurs.
-     */
-    @Test
-    public void testIsOpen() throws IOException {
-        {
-            final WritableByteChannel channel = null;
-            final int capacity = current().nextInt(2, 128);
-            accept(e -> assertThrows(
-                    NullPointerException.class,
-                    () -> new WritableHexChannelEx(channel, e, capacity)
-                    .isOpen()));
-        }
-        {
-            final WritableByteChannel channel
-                    = newChannel(new ByteArrayOutputStream());
-            final int capacity = current().nextInt(2, 128);
-            final WritableByteChannel whc = apply(
-                    e -> new WritableHexChannelEx(channel, e, capacity));
-            assertTrue(whc.isOpen());
-            whc.close();
-            assertFalse(whc.isOpen());
-        }
-    }
-
-    /**
-     * Tests {@link WritableHexChannelEx#close()}.
-     *
-     * @throws IOException if an I/O error occurs
-     */
-    @Test
-    public void testClose() throws IOException {
-        {
-            final WritableByteChannel whc = apply(
-                    e -> new WritableHexChannelEx(null, e, 2));
-            whc.close();
-            whc.close();
-            whc.close();
-        }
-        {
-            WritableByteChannel channel
-                    = newChannel(new ByteArrayOutputStream());
-            final WritableByteChannel whc = apply(
-                    e -> new WritableHexChannelEx(channel, e, 2));
-            whc.close();
-            whc.close();
-            whc.close();
-        }
     }
 
     /**
