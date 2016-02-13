@@ -22,6 +22,7 @@ import static java.nio.ByteBuffer.allocate;
 import java.nio.channels.ReadableByteChannel;
 
 /**
+ * A {@code ReadableByteChannel} decodes hex characters to bytes.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
@@ -40,10 +41,9 @@ public class ReadableHexChannel extends ReadableFilterChannel {
     }
 
     /**
-     * Reads a sequence of bytes from this channel into the given buffer. The
-     * {@code read(ByteBuffer)} method of {@code ReadableHexChannel} class read
-     * maximum by double number of bytes of {@code dst.remaining()} and decodes
-     * them using {@link #decoder}.
+     * {@inheritDoc} The {@code read(ByteBuffer)} method of
+     * {@code ReadableHexChannel} class read maximum by double number of bytes
+     * of {@code dst.remaining()} and decodes them using {@link #decoder}.
      *
      * @param dst The buffer into which bytes are to be transferred
      * @return The number of bytes read, possibly zero, or -1 if the channel has
@@ -53,7 +53,7 @@ public class ReadableHexChannel extends ReadableFilterChannel {
     @Override
     public int read(final ByteBuffer dst) throws IOException {
         final ByteBuffer aux = allocate(dst.remaining() << 1); // <1>
-        if (channel.read(aux) == -1) { // <2>
+        if (super.read(aux) == -1) { // <2>
             return -1;
         }
         if ((aux.position() & 1) == 1) { // <3>
@@ -65,7 +65,7 @@ public class ReadableHexChannel extends ReadableFilterChannel {
             }
         }
         aux.flip();
-        return decoder.decode(aux, dst); // <3>
+        return decoder.decode(aux, dst); // <4>
     }
 
     /**

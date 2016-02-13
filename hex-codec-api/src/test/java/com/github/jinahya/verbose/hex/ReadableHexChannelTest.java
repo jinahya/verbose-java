@@ -39,32 +39,43 @@ import org.testng.annotations.Test;
  */
 public class ReadableHexChannelTest extends AbstractHexDecoderTest {
 
+    /**
+     * Creates a new proxy which intercepts the invocation of
+     * {@link ReadableByteChannel#read(java.nio.ByteBuffer)} and mimics
+     * non-blocking channel by temporarily adjusting the
+     * {@link ByteBuffer#remaining()} of the buffer.
+     *
+     * @param <T> channel type parameter
+     * @param type channel type
+     * @param channel the channel
+     * @return a new proxy
+     */
     static <T extends ReadableByteChannel> T nonBlocking(
             final Class<T> type, final T channel) {
-        final Method readMethod;
+        final Method method; // <1>
         try {
-            readMethod = ReadableByteChannel.class.getMethod(
+            method = ReadableByteChannel.class.getMethod(
                     "read", ByteBuffer.class);
         } catch (final NoSuchMethodException nsme) {
             throw new RuntimeException(nsme);
         }
-        final InvocationHandler handler = (proxy, method, args) -> {
-            if (readMethod.equals(method)) {
-                final ByteBuffer dst = (ByteBuffer) args[0];
-                final int limit = dst.limit();
-                final int remaining = dst.remaining();
-                if (remaining > 1) {
-                    dst.limit(dst.position() + current().nextInt(remaining));
+        final InvocationHandler handler = (p, m, a) -> { // <1>
+            if (method.equals(m)) { // <2>
+                final ByteBuffer dst = (ByteBuffer) a[0]; // <3>
+                final int limit = dst.limit(); // <4>
+                try {
+                    dst.limit(dst.position() // <5>
+                              + current().nextInt(dst.remaining() + 1));
+                    return channel.read(dst); // <6>
+                } finally {
+                    dst.limit(limit); // <7>
                 }
-                final int read = channel.read(dst);
-                dst.limit(limit);
-                return read;
             }
-            return method.invoke(channel, args);
+            return m.invoke(channel, a); // <8>
         };
-        final Object proxy = newProxyInstance(
+        final Object proxy = newProxyInstance( // <1>
                 type.getClassLoader(), new Class<?>[]{type}, handler);
-        return type.cast(proxy);
+        return type.cast(proxy); // <2>
     }
 
     private static <T extends ReadableByteChannel> T nonBlockingHelper(
@@ -72,6 +83,17 @@ public class ReadableHexChannelTest extends AbstractHexDecoderTest {
         return nonBlocking(type, type.cast(channel));
     }
 
+    /**
+     * Creates a new proxy which intercepts the invocation of
+     * {@link ReadableByteChannel#read(java.nio.ByteBuffer)} and mimics
+     * non-blocking channel by temporarily adjusting the
+     * {@link ByteBuffer#remaining()} of the buffer.
+     *
+     * @param <T> channel type parameter
+     * @param type channel type
+     * @param channel the channel
+     * @return a new proxy
+     */
     @SuppressWarnings("unchecked")
     static <T extends ReadableByteChannel> T nonBlocking(final T channel) {
         return (T) nonBlockingHelper(channel.getClass(), channel);

@@ -19,32 +19,14 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
 
-/**
- * A {@code WritableByteChannel} for filtering another
- * {@code WritableByteChannel}.
- *
- * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
- */
-public class WritableFilterChannel
-        extends FilterChannel<WritableByteChannel>
+public class TypedWritableFilterChannel<T extends WritableByteChannel>
+        extends FilterChannel<T>
         implements WritableByteChannel {
 
-    /**
-     * Creates a new instance of top of given channel.
-     *
-     * @param channel the channel.
-     */
-    public WritableFilterChannel(final WritableByteChannel channel) {
+    public TypedWritableFilterChannel(final T channel) {
         super(channel);
     }
 
-    /**
-     * Writes a sequence of bytes to this channel from the given buffer.
-     *
-     * @param src The buffer from which bytes are to be retrieved
-     * @return The number of bytes written, possibly zero
-     * @throws IOException If some other I/O error occurs
-     */
     @Override
     public int write(final ByteBuffer src) throws IOException {
         return channel.write(src);

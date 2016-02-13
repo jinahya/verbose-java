@@ -42,9 +42,9 @@ public class HexEncoderTest extends AbstractHexEncoderTest {
             assertEquals(encoded.remaining(), decoded.capacity() << 1);
         }
         accept(e -> assertThrows(NullPointerException.class,
-                                 () -> e.encode(allocate(0), null)));
+                                 () -> e.encode(allocate(1), null)));
         accept(e -> assertThrows(NullPointerException.class,
-                                 () -> e.encode(null, allocate(0))));
+                                 () -> e.encode(null, allocate(2))));
         {
             final int decodedCapacity = current().nextInt(128);
             final int encodedCapacity

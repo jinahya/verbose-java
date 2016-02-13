@@ -2,7 +2,6 @@ package com.github.jinahya.verbose.hex;
 
 import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
-import static java.util.Objects.requireNonNull;
 
 /**
  * A class implementing {@code HexDecoder}.
@@ -44,7 +43,7 @@ public class HexDecoderImpl implements HexDecoder {
 
     @Override
     public int decodeOctet(final ByteBuffer decoded) {
-        if (requireNonNull(decoded).remaining() < 2) {
+        if (decoded.remaining() < 2) {
             throw new BufferUnderflowException();
         }
         final int upper = decodeNibble(decoded.get());

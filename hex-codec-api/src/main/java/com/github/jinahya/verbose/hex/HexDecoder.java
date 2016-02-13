@@ -23,7 +23,7 @@ public interface HexDecoder {
      * {@code encoded.remaining()} is less than {@code 2}.
      *
      * @param encoded the byte buffer contains encoded characters.
-     * @return a decoded octet.
+     * @return a decoded octet whose value is between {@code 0} and {@code 255}
      */
     int decodeOctet(ByteBuffer encoded);
 
@@ -40,18 +40,11 @@ public interface HexDecoder {
      * @return number of decoded bytes produced to {@code decoded}
      */
     default int decode(final ByteBuffer encoded, final ByteBuffer decoded) {
-        if (encoded == null) {
-            throw new NullPointerException("null decoded");
+        final int position = decoded.position();
+        while (encoded.remaining() >= 2 && decoded.hasRemaining()) { // <1>
+            decoded.put((byte) decodeOctet(encoded));
         }
-        if (decoded == null) {
-            throw new NullPointerException("null decoded");
-        }
-        int count = 0;
-        while ((encoded.remaining() >= 2) && decoded.hasRemaining()) { // <1>
-            decoded.put((byte) decodeOctet(encoded)); // <2>
-            count++;
-        }
-        return count;
+        return decoded.position() - position;
     }
 
     /**
@@ -62,13 +55,9 @@ public interface HexDecoder {
      * @return a byte buffer containing result
      */
     default ByteBuffer decode(final ByteBuffer encoded) {
-        if (encoded == null) {
-            throw new NullPointerException("null encoded");
-        }
         final ByteBuffer decoded = allocate(encoded.remaining() >> 1); // <1>
         decode(encoded, decoded); // <2>
-        decoded.flip(); // <3>
-        return decoded;
+        return (ByteBuffer) decoded.flip(); // <3>
     }
 
     /**
@@ -80,12 +69,6 @@ public interface HexDecoder {
      * @return a decoded string
      */
     default String decode(final String encoded, final Charset charset) {
-        if (encoded == null) {
-            throw new NullPointerException("null encoded");
-        }
-        if (charset == null) {
-            throw new NullPointerException("null charset");
-        }
         final byte[] encodedBytes = encoded.getBytes(US_ASCII); // <1>
         final byte[] decodedBytes = new byte[encodedBytes.length / 2]; // <2>
         decode(wrap(encodedBytes), wrap(decodedBytes)); // <3>

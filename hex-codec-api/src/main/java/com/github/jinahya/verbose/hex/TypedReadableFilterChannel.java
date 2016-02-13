@@ -19,32 +19,14 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
 
-/**
- * A {@code ReadableByteChannel} filters another {@code ReadableByteChannel}.
- *
- * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
- */
-public class ReadableFilterChannel
-        extends FilterChannel<ReadableByteChannel>
+public class TypedReadableFilterChannel<T extends ReadableByteChannel>
+        extends FilterChannel<T>
         implements ReadableByteChannel {
 
-    /**
-     * Creates a new instance of top of given channel.
-     *
-     * @param channel the channel
-     */
-    public ReadableFilterChannel(final ReadableByteChannel channel) {
+    public TypedReadableFilterChannel(final T channel) {
         super(channel);
     }
 
-    /**
-     * Reads a sequence of bytes from this channel into the given buffer.
-     *
-     * @param dst The buffer into which bytes are to be transferred
-     * @return The number of bytes read, possibly zero, or -1 if the channel has
-     * reached end-of-stream
-     * @throws IOException If some other I/O error occurs
-     */
     @Override
     public int read(final ByteBuffer dst) throws IOException {
         return channel.read(dst);

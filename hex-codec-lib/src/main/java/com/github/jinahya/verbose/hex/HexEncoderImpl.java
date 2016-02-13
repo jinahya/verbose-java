@@ -2,7 +2,6 @@ package com.github.jinahya.verbose.hex;
 
 import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
-import static java.util.Objects.requireNonNull;
 
 /**
  * A class implementing {@code HexEncoder}.
@@ -29,15 +28,15 @@ public class HexEncoderImpl implements HexEncoder {
             case 7:
             case 8:
             case 9:
-                return decoded + 48; // to '0'(48, 0x30) ~ '9'(57, 0x39)
+                return decoded + 48; // to '0'(48, 0x30) ~ '9'(57, 0x39) <1>
             default: // assume 10 to 15
-                return decoded + 55; // to 'A'(65, 0x40) ~ 'F'(70, 0x46)
+                return decoded + 55; // to 'A'(65, 0x40) ~ 'F'(70, 0x46) <2>
         }
     }
 
     @Override
     public void encodeOctet(final int decoded, final ByteBuffer encoded) {
-        if (requireNonNull(encoded).remaining() < 2) {
+        if (encoded.remaining() < 2) {
             throw new BufferOverflowException();
         }
         final int upper = (decoded >> 0b100) & 017; // <1>

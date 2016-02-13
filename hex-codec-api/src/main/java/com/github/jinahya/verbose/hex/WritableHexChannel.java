@@ -21,6 +21,8 @@ import static java.nio.ByteBuffer.allocate;
 import java.nio.channels.WritableByteChannel;
 
 /**
+ * A {@code WritableByteChannel} writes encoded hex characters to underlying
+ * channel.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
@@ -50,7 +52,7 @@ public class WritableHexChannel extends WritableFilterChannel {
         final ByteBuffer aux = allocate(src.remaining() << 1); // <1>
         final int count = encoder.encode(src, aux); // <2>
         for (aux.flip(); aux.hasRemaining();) { // <3>
-            channel.write(aux);
+            super.write(aux);
         }
         return count;
     }

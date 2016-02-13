@@ -54,7 +54,7 @@ public class HexStreamTest {
         }
         assertEquals(encoded.length(), created.length() << 1);
         assertEquals(decoded.length(), encoded.length() >> 1);
-        for (final String algorithm : asList("MD5", "SHA-1", "SHA-256")) { // <7>
+        for (final String algorithm : asList("MD5", "SHA-1", "SHA-256")) {
             final byte[] createdDigest = digest(created, algorithm);
             final byte[] decodedDigest = digest(decoded, algorithm);
             assertEquals(decodedDigest, createdDigest);

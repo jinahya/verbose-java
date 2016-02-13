@@ -88,11 +88,11 @@ final class IoUtils2 {
         try (FileChannel readable = open(source, READ);
              FileChannel writable = open(
                      target, CREATE, TRUNCATE_EXISTING, WRITE)) {
-            for (long count = readable.size(); count > 0L;) {
+            for (long remaining = readable.size(); remaining > 0L;) {
                 final long transferred = readable.transferTo(
-                        readable.position(), count, writable);
+                        readable.position(), remaining, writable);
                 readable.position(readable.position() + transferred);
-                count -= transferred;
+                remaining -= transferred;
             }
             writable.force(false);
         }
@@ -103,11 +103,11 @@ final class IoUtils2 {
         try (FileChannel readable = open(source, READ);
              FileChannel writable = open(
                      target, CREATE, TRUNCATE_EXISTING, WRITE)) {
-            for (long count = readable.size(); count > 0L;) {
+            for (long remaining = readable.size(); remaining > 0L;) {
                 final long transferred = writable.transferFrom(
-                        readable, writable.position(), count);
+                        readable, writable.position(), remaining);
                 writable.position(writable.position() + transferred);
-                count -= transferred;
+                remaining -= transferred;
             }
             writable.force(false);
         }

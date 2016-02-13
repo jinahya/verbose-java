@@ -19,6 +19,7 @@ import java.io.FilterOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
+import static java.nio.ByteBuffer.allocate;
 
 /**
  * An output stream encodes bytes to hex characters.
@@ -49,7 +50,7 @@ public class HexOutputStream extends FilterOutputStream {
     @Override
     public void write(final int b) throws IOException {
         if (buf == null) { // <1>
-            buf = ByteBuffer.allocate(2);
+            buf = allocate(2);
         }
         enc.encodeOctet(b, buf); // <2>
         buf.flip();

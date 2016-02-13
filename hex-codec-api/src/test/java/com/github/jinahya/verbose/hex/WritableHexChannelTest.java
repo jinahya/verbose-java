@@ -39,26 +39,26 @@ public class WritableHexChannelTest extends AbstractHexEncoderTest {
 
     static <T extends WritableByteChannel> T nonBlocking(
             final Class<T> type, final T channel) {
-        final Method writeMethod; // <1>
+        final Method method; // <1>
         try {
-            writeMethod = WritableByteChannel.class.getMethod(
+            method = WritableByteChannel.class.getMethod(
                     "write", ByteBuffer.class);
         } catch (final NoSuchMethodException nsme) {
             throw new RuntimeException(nsme);
         }
-        final InvocationHandler handler = (proxy, method, args) -> {
-            if (writeMethod.equals(method)) {
-                final ByteBuffer src = (ByteBuffer) args[0]; // <1>
+        final InvocationHandler handler = (p, m, a) -> {
+            if (method.equals(m)) {
+                final ByteBuffer src = (ByteBuffer) a[0]; // <1>
                 final int limit = src.limit(); // <2>
-                final int remaining = src.remaining();
-                if (remaining > 1) { // <3>
-                    src.limit(src.position() + current().nextInt(remaining));
+                try {
+                    src.limit(src.position() // <3>
+                              + current().nextInt(src.remaining() + 1));
+                    return channel.write(src); // <4>
+                } finally {
+                    src.limit(limit); // <5>
                 }
-                final int written = channel.write(src); // <4>
-                src.limit(limit); // <5>
-                return written; // <6>
             }
-            return method.invoke(channel, args); // <7>
+            return m.invoke(channel, a); // <6>
         };
         final Object proxy = newProxyInstance( // <1>
                 type.getClassLoader(), new Class<?>[]{type}, handler);

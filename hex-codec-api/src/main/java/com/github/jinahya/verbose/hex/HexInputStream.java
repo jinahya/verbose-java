@@ -43,7 +43,7 @@ public class HexInputStream extends FilterInputStream {
      * Returns an estimate of the number of bytes that can be read (or skipped
      * over) from this input stream without blocking by the next invocation of a
      * method for this input stream. The {@code available()} method of
-     * {@code HexInputStream} class invokes {@code super.avilable() / 2}.
+     * {@code HexInputStream} class returns {@code super.avilable() / 2}.
      *
      * @return an estimate of the number of bytes that can be read (or skipped
      * over) from this input stream without blocking or {@code 0} when it
@@ -150,7 +150,7 @@ public class HexInputStream extends FilterInputStream {
      */
     @Override
     public long skip(final long n) throws IOException {
-        long skipped = super.skip((n >> 1) << 1); // <1>
+        long skipped = super.skip(n << 1); // <1>
         if ((skipped & 1L) == 1L) { // <2>
             if (super.read() == -1) {
                 throw new EOFException(); // unexpected end-of-stream
