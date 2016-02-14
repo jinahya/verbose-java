@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jinahya.security;
+package com.github.jinahya.verbose.security;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,6 +21,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
+import static java.security.MessageDigest.getInstance;
 import java.security.NoSuchAlgorithmException;
 import static java.util.concurrent.ThreadLocalRandom.current;
 
@@ -29,8 +30,7 @@ public final class MdUtils1 {
     private static byte[] digest1(final InputStream input,
                                   final String algorithm)
             throws NoSuchAlgorithmException, IOException {
-        final MessageDigest digest // <1>
-                = MessageDigest.getInstance(algorithm);
+        final MessageDigest digest = getInstance(algorithm); // <1>
         final byte[] buffer = new byte[4096];
         for (int length; (length = input.read(buffer)) != -1;) {
             digest.update(buffer, 0, length); // <2>
@@ -40,13 +40,12 @@ public final class MdUtils1 {
 
     private static byte[] digest2(InputStream input, final String algorithm)
             throws NoSuchAlgorithmException, IOException {
-        input = new DigestInputStream( // <1>
-                input, MessageDigest.getInstance(algorithm));
+        input = new DigestInputStream(input, getInstance(algorithm)); // <1>
         for (final byte[] b = new byte[4096]; input.read(b) != -1;); // <2>
-        return ((DigestInputStream) input).getMessageDigest().digest();
+        return ((DigestInputStream) input).getMessageDigest().digest(); // <3>
     }
 
-    public static byte[] digest(final InputStream input, final String algorithm)
+    static byte[] digest(final InputStream input, final String algorithm)
             throws NoSuchAlgorithmException, IOException {
         switch (current().nextInt(2)) {
             case 0:
@@ -56,10 +55,18 @@ public final class MdUtils1 {
         }
     }
 
-    public static byte[] digest(final File file, final String algorithm)
+    private static byte[] digest1(final File file, final String algorithm)
             throws IOException, NoSuchAlgorithmException {
         try (InputStream stream = new FileInputStream(file)) {
             return digest(stream, algorithm);
+        }
+    }
+
+    static byte[] digest(final File file, final String algorithm)
+            throws IOException, NoSuchAlgorithmException {
+        switch (current().nextInt(1)) {
+            default:
+                return digest1(file, algorithm);
         }
     }
 

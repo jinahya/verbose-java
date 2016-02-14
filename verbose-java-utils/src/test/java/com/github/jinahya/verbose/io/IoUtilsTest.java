@@ -13,13 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jinahya.io;
+package com.github.jinahya.verbose.io;
 
-import com.github.jinahya.security.MdUtils1;
-import com.github.jinahya.security.MdUtils2;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
@@ -27,6 +27,7 @@ import java.nio.channels.FileChannel;
 import static java.nio.channels.FileChannel.open;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import static java.nio.file.StandardOpenOption.READ;
 import static java.nio.file.StandardOpenOption.WRITE;
 import java.security.NoSuchAlgorithmException;
 import static java.util.concurrent.ThreadLocalRandom.current;
@@ -52,19 +53,17 @@ public class IoUtilsTest {
         }
         final File target = File.createTempFile("tmp", null);
         target.deleteOnExit();
-        if (current().nextBoolean()) {
-            try (OutputStream o = new FileOutputStream(target)) {
-                final byte[] bytes = new byte[current().nextInt(1048576)];
-                current().nextBytes(bytes);
-                o.write(bytes);
-                o.flush();
-            }
+        try (OutputStream o = new FileOutputStream(target)) {
+            final byte[] bytes = new byte[current().nextInt(1048576)];
+            current().nextBytes(bytes);
+            o.write(bytes);
+            o.flush();
         }
         IoUtils.copy(source, target);
-        for (final String algorithm : new String[]{"MD5", "SHA-1", "SHA-256"}) {
-            final byte[] createdDigest = MdUtils1.digest(source, algorithm);
-            final byte[] decodedDigest = MdUtils1.digest(target, algorithm);
-            assertEquals(decodedDigest, createdDigest);
+        assertEquals(target.length(), source.length());
+        try (InputStream ti = new FileInputStream(target);
+             InputStream si = new FileInputStream(source)) {
+            assertEquals(ti.read(), si.read());
         }
     }
 
@@ -78,23 +77,28 @@ public class IoUtilsTest {
             while (b.hasRemaining()) {
                 c.write(b);
             }
+            c.force(false);
         }
         final Path target = Files.createTempFile(null, null);
         target.toFile().deleteOnExit();
-        if (current().nextBoolean()) {
-            try (FileChannel c = open(target, WRITE)) {
-                final ByteBuffer b = allocate(1048576);
-                current().nextBytes(b.array());
-                while (b.hasRemaining()) {
-                    c.write(b);
-                }
+        try (FileChannel c = open(target, WRITE)) {
+            final ByteBuffer b = allocate(1048576);
+            current().nextBytes(b.array());
+            while (b.hasRemaining()) {
+                c.write(b);
             }
+            c.force(false);
         }
         IoUtils.copy(source, target);
-        for (final String algorithm : new String[]{"MD5", "SHA-1", "SHA-256"}) {
-            final byte[] createdDigest = MdUtils2.digest(source, algorithm);
-            final byte[] decodedDigest = MdUtils2.digest(target, algorithm);
-            assertEquals(decodedDigest, createdDigest);
+        try (FileChannel tc = open(target, READ);
+             FileChannel sc = open(source, READ)) {
+            final ByteBuffer tb = allocate(1);
+            final ByteBuffer sb = allocate(1);
+            assertEquals(tc.read(tb), 1);
+            assertEquals(sc.read(sb), 1);
+            assertEquals(tb, sb);
+            tb.clear();
+            sb.clear();
         }
     }
 

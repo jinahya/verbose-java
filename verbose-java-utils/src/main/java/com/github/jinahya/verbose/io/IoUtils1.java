@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jinahya.io;
+package com.github.jinahya.verbose.io;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -21,10 +21,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import static java.util.concurrent.ThreadLocalRandom.current;
 
 final class IoUtils1 {
 
-    static long copy(final InputStream input, final OutputStream output)
+    private static long copy1(final InputStream input,
+                              final OutputStream output)
             throws IOException {
         long count = 0L;
         final byte[] buffer = new byte[4096]; // <1>
@@ -34,11 +36,28 @@ final class IoUtils1 {
         return count;
     }
 
-    static void copy(final File source, final File target) throws IOException {
+    static long copy(final InputStream input, final OutputStream output)
+            throws IOException {
+        switch (current().nextInt(1)) {
+            default:
+                return copy1(input, output);
+        }
+    }
+
+    private static void copy1(final File source, final File target)
+            throws IOException {
         try (InputStream input = new FileInputStream(source);
              OutputStream output = new FileOutputStream(target)) {
-            copy(input, output);
+            copy1(input, output);
             output.flush(); // <1>
+        }
+    }
+
+    static void copy(final File source, final File target) throws IOException {
+        switch (current().nextInt(1)) {
+            default:
+                copy1(source, target);
+                break;
         }
     }
 

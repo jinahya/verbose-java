@@ -13,41 +13,56 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jinahya.security;
+package com.github.jinahya.verbose.security;
 
+import java.io.File;
 import java.io.IOException;
-import java.nio.ByteBuffer;
-import static java.nio.ByteBuffer.allocate;
-import static java.nio.channels.FileChannel.open;
+import java.io.InputStream;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Path;
-import static java.nio.file.StandardOpenOption.READ;
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import static java.util.concurrent.ThreadLocalRandom.current;
 
-public final class MdUtils2 {
+/**
+ *
+ * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
+ */
+public final class MdUtils {
+
+    public static byte[] digest(final InputStream input, final String algorithm)
+            throws NoSuchAlgorithmException, IOException {
+        switch (current().nextInt(1)) {
+            default:
+                return MdUtils1.digest(input, algorithm);
+        }
+    }
+
+    public static byte[] digest(final File file, final String algorithm)
+            throws IOException, NoSuchAlgorithmException {
+        switch (current().nextInt(1)) {
+            default:
+                return MdUtils1.digest(file, algorithm);
+        }
+    }
 
     public static byte[] digest(final ReadableByteChannel channel,
                                 final String algorithm)
             throws NoSuchAlgorithmException, IOException {
-        final MessageDigest digest = MessageDigest.getInstance(algorithm);
-        for (final ByteBuffer b = allocate(4096); channel.read(b) != -1;) {
-            b.flip();
-            digest.update(b); // <1>
-            b.clear();
+        switch (current().nextInt(1)) {
+            default:
+                return MdUtils2.digest(channel, algorithm);
         }
-        return digest.digest();
     }
 
     public static byte[] digest(final Path path, final String algorithm)
             throws IOException, NoSuchAlgorithmException {
-        try (ReadableByteChannel channel = open(path, READ)) {
-            return digest(channel, algorithm);
+        switch (current().nextInt(1)) {
+            default:
+                return MdUtils2.digest(path, algorithm);
         }
     }
 
-    private MdUtils2() {
+    private MdUtils() {
         super();
     }
-
 }
