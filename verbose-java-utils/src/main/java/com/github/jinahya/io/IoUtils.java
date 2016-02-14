@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jinahya.verbose.hex;
+package com.github.jinahya.io;
 
 import java.io.File;
 import java.io.IOException;
@@ -22,18 +22,16 @@ import java.io.OutputStream;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.nio.file.Path;
-import java.util.concurrent.ExecutionException;
 import static java.util.concurrent.ThreadLocalRandom.current;
-import static org.testng.Assert.fail;
 
 /**
  * Utilities for testing hex codec.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-final class IoUtils {
+public final class IoUtils {
 
-    static long copy(final InputStream input, final OutputStream output)
+    public static long copy(final InputStream input, final OutputStream output)
             throws IOException {
         switch (current().nextInt(1)) {
             default:
@@ -41,15 +39,16 @@ final class IoUtils {
         }
     }
 
-    static void copy(final File source, final File target) throws IOException {
+    public static void copy(final File source, final File target)
+            throws IOException {
         switch (current().nextInt(1)) {
             default:
                 IoUtils1.copy(source, target);
         }
     }
 
-    static long copy(final ReadableByteChannel readable,
-                     final WritableByteChannel writable)
+    public static long copy(final ReadableByteChannel readable,
+                            final WritableByteChannel writable)
             throws IOException {
         switch (current().nextInt(1)) {
             default:
@@ -57,17 +56,11 @@ final class IoUtils {
         }
     }
 
-    static void copy(final Path source, final Path target) throws IOException {
-        switch (current().nextInt(2)) {
-            case 0:
-                IoUtils2.copy(source, target);
-                break;
+    public static void copy(final Path source, final Path target)
+            throws IOException {
+        switch (current().nextInt(1)) {
             default:
-                try {
-                    IoUtils3.copy(source, target);
-                } catch (InterruptedException | ExecutionException e) {
-                    fail(e.getMessage(), e);
-                }
+                IoUtils2.copy(source, target);
                 break;
         }
     }

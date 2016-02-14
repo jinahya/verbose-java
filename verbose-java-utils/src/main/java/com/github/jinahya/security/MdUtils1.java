@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jinahya.verbose.hex;
+package com.github.jinahya.security;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -24,7 +24,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import static java.util.concurrent.ThreadLocalRandom.current;
 
-final class MdUtils1 {
+public final class MdUtils1 {
 
     private static byte[] digest1(final InputStream input,
                                   final String algorithm)
@@ -46,7 +46,7 @@ final class MdUtils1 {
         return ((DigestInputStream) input).getMessageDigest().digest();
     }
 
-    static byte[] digest(final InputStream input, final String algorithm)
+    public static byte[] digest(final InputStream input, final String algorithm)
             throws NoSuchAlgorithmException, IOException {
         switch (current().nextInt(2)) {
             case 0:
@@ -56,7 +56,7 @@ final class MdUtils1 {
         }
     }
 
-    static byte[] digest(final File file, final String algorithm)
+    public static byte[] digest(final File file, final String algorithm)
             throws IOException, NoSuchAlgorithmException {
         try (InputStream stream = new FileInputStream(file)) {
             return digest(stream, algorithm);

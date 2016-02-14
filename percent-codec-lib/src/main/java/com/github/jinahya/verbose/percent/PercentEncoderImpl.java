@@ -16,7 +16,6 @@
 package com.github.jinahya.verbose.percent;
 
 import com.github.jinahya.verbose.hex.HexEncoder;
-import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
@@ -54,17 +53,14 @@ public class PercentEncoderImpl implements PercentEncoder {
     @Override
     public void encodeOctet(final int decoded, final ByteBuffer encoded) {
         if ((decoded >= 0x30 && decoded <= 0x39) // digit
-            || (decoded >= 0x41 && decoded <= 0x5A) // upper case alpha
-            || (decoded >= 0x61 && decoded <= 0x7A) // lower case alpha
+            || (decoded >= 0x41 && decoded <= 0x5A) // alpha, upper case
+            || (decoded >= 0x61 && decoded <= 0x7A) // alpha, lower case
             || decoded == 0x2D // '-'
             || decoded == 0x5F // '_'
             || decoded == 0x2E // '.'
             || decoded == 0x7E) { // '~'
             encoded.put((byte) decoded); // <1>
             return;
-        }
-        if (encoded.remaining() < 3) {
-            throw new BufferOverflowException();
         }
         encoded.put((byte) 0x25); // '%'  // <2>
         ofNullable(hexEncoder) // <3>
@@ -74,5 +70,5 @@ public class PercentEncoderImpl implements PercentEncoder {
 
     private final Supplier<HexEncoder> hexEncoderSupplier; // <1>
 
-    private HexEncoder hexEncoder; // <1>
+    private transient HexEncoder hexEncoder; // <1>
 }

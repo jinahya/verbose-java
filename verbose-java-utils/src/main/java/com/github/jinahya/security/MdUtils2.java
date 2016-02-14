@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jinahya.verbose.hex;
+package com.github.jinahya.security;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -25,10 +25,10 @@ import static java.nio.file.StandardOpenOption.READ;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
-final class MdUtils2 {
+public final class MdUtils2 {
 
-    static byte[] digest(final ReadableByteChannel channel,
-                         final String algorithm)
+    public static byte[] digest(final ReadableByteChannel channel,
+                                final String algorithm)
             throws NoSuchAlgorithmException, IOException {
         final MessageDigest digest = MessageDigest.getInstance(algorithm);
         for (final ByteBuffer b = allocate(4096); channel.read(b) != -1;) {
@@ -39,7 +39,7 @@ final class MdUtils2 {
         return digest.digest();
     }
 
-    static byte[] digest(final Path path, final String algorithm)
+    public static byte[] digest(final Path path, final String algorithm)
             throws IOException, NoSuchAlgorithmException {
         try (ReadableByteChannel channel = open(path, READ)) {
             return digest(channel, algorithm);

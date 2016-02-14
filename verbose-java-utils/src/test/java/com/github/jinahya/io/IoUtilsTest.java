@@ -13,8 +13,10 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jinahya.verbose.hex;
+package com.github.jinahya.io;
 
+import com.github.jinahya.security.MdUtils1;
+import com.github.jinahya.security.MdUtils2;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -95,4 +97,5 @@ public class IoUtilsTest {
             assertEquals(decodedDigest, createdDigest);
         }
     }
+
 }

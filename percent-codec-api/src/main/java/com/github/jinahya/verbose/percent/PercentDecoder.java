@@ -35,16 +35,18 @@ public interface PercentDecoder {
      * {@code decoded}
      */
     default int decode(final ByteBuffer encoded, final ByteBuffer decoded) {
-        final int previous = decoded.position(); // <1>
+        final int decodedPosition = decoded.position(); // <1>
         while (decoded.hasRemaining()) { // <2>
+            final int encodedPosition = encoded.position(); // <3>
             try {
-                final int octet = decodeOctet(encoded); // <3>
+                final int octet = decodeOctet(encoded); // <4>
                 decoded.put((byte) octet);
-            } catch (final BufferUnderflowException bue) { // NOSONAR <4>
+            } catch (final BufferUnderflowException bue) { // NOSONAR
+                encoded.position(encodedPosition); // <5>
                 break;
             }
         }
-        return decoded.position() - previous; // <5>
+        return decoded.position() - decodedPosition; // <6>
     }
 
     /**
@@ -57,8 +59,7 @@ public interface PercentDecoder {
     default ByteBuffer decode(final ByteBuffer encoded) {
         final ByteBuffer decoded = allocate(encoded.remaining()); // <1>
         decode(encoded, decoded); // <2>
-        decoded.flip(); // <3>
-        return decoded;
+        return (ByteBuffer) decoded.flip(); // <3>
     }
 
     /**

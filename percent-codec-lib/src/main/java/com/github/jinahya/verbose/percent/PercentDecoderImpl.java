@@ -16,7 +16,6 @@
 package com.github.jinahya.verbose.percent;
 
 import com.github.jinahya.verbose.hex.HexDecoder;
-import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import static java.util.Objects.requireNonNull;
 import static java.util.Optional.ofNullable;
@@ -52,24 +51,16 @@ public class PercentDecoderImpl implements PercentDecoder {
 
     @Override
     public int decodeOctet(final ByteBuffer encoded) {
-        if (!encoded.hasRemaining()) {
-            throw new BufferUnderflowException();
-        }
-        final byte e = encoded.get(encoded.position()); // <1>
-        if (e == 0x25) { // <2>
-            if (encoded.remaining() < 3) {
-                throw new BufferUnderflowException();
-            }
-            encoded.position(encoded.position() + 1);
-            return ofNullable(hexDecoder) // <3>
+        final byte e = encoded.get(); // <1>
+        if (e == 0x25) { // '%' <2>
+            return ofNullable(hexDecoder)
                     .orElseGet(hexDecoderSupplier)
                     .decodeOctet(encoded);
         }
-        encoded.position(encoded.position() + 1); // <4>
-        return e;
+        return e; // <3>
     }
 
     private final Supplier<HexDecoder> hexDecoderSupplier; // <1>
 
-    private HexDecoder hexDecoder; // <2>
+    private transient HexDecoder hexDecoder; // <2>
 }
