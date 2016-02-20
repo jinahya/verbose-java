@@ -20,7 +20,10 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import static java.util.concurrent.ThreadLocalRandom.current;
+import java.util.concurrent.atomic.AtomicInteger;
+import static org.mockito.Matchers.anyInt;
 import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.testng.Assert.assertTrue;
@@ -38,13 +41,16 @@ public class HexInputStreamTest extends AbstractHexDecoderTest {
      *
      * @throws IOException if an I/O error occurs.
      */
-    @Test
+    @Test(invocationCount = 128)
     public void read() throws IOException {
-        final InputStream in = new ByteArrayInputStream(
-                new byte[(current().nextInt(128) >> 1) << 1]);
-        try (final InputStream his = apply(d -> new HexInputStream(in, d))) {
-            while (his.read() != -1);
-        }
+        final int bytes = current().nextInt(128) >> 1 << 1;
+        final AtomicInteger counter = new AtomicInteger(bytes);
+        final InputStream in = mock(InputStream.class);
+        when(in.read()).then(
+                i -> counter.getAndDecrement() > 0
+                     ? current().nextInt(256) : -1);
+        final InputStream his = apply(dec -> new HexInputStream(in, dec));
+        while (his.read() != -1);
     }
 
     /**
@@ -53,13 +59,16 @@ public class HexInputStreamTest extends AbstractHexDecoderTest {
      *
      * @throws IOException if an I/O error occurs.
      */
-    @Test(expectedExceptions = EOFException.class)
+    @Test(expectedExceptions = EOFException.class, invocationCount = 128)
     public void readFromOddBytes() throws IOException {
-        final InputStream in = new ByteArrayInputStream(
-                new byte[current().nextInt(128) | 1]);
-        try (final InputStream his = apply(d -> new HexInputStream(in, d))) {
-            while (his.read() != -1);
-        }
+        final int bytes = current().nextInt(128) | 1;
+        final AtomicInteger counter = new AtomicInteger(bytes);
+        final InputStream in = mock(InputStream.class);
+        when(in.read()).then(
+                i -> counter.getAndDecrement() > 0
+                     ? current().nextInt(256) : -1);
+        final InputStream his = apply(dec -> new HexInputStream(in, dec));
+        while (his.read() != -1);
     }
 
     /**
@@ -99,8 +108,9 @@ public class HexInputStreamTest extends AbstractHexDecoderTest {
      */
     @Test
     public void mark() {
-        final InputStream his = apply(d -> new HexInputStream(
-                new ByteArrayInputStream(new byte[current().nextInt(128)]), d));
+        final InputStream in = mock(InputStream.class); // <2>
+        doNothing().when(in).mark(anyInt());
+        final InputStream his = apply(d -> new HexInputStream(in, d));
         his.mark(current().nextInt() >> 2);
     }
 
@@ -109,11 +119,14 @@ public class HexInputStreamTest extends AbstractHexDecoderTest {
      *
      * @throws IOException if an I/O error occurs
      */
-    @Test
+    @Test(invocationCount = 128)
     public void available() throws IOException {
-        final InputStream his = apply(d -> new HexInputStream(
-                new ByteArrayInputStream(new byte[current().nextInt(128)]), d));
-        final int available = his.available();
+        final int returning = current().nextInt(1024); // <1>
+        final InputStream in = mock(InputStream.class); // <2>
+        when(in.available()).thenReturn(returning); // <3>
+        InputStream his = apply(dec -> new HexInputStream(in, dec));
+        final int returned = his.available(); // <4>
+        assertTrue(returned <= returning / 2);
     }
 
     /**
@@ -123,13 +136,12 @@ public class HexInputStreamTest extends AbstractHexDecoderTest {
      */
     @Test(invocationCount = 128)
     public void skip() throws IOException {
-        final InputStream in = mock(InputStream.class);
+        final InputStream in = mock(InputStream.class); // <1>
         when(in.skip(anyLong())).thenAnswer(
-                i -> current().nextLong(i.getArgumentAt(0, long.class) + 1));
-        try (InputStream his = apply(dec -> new HexInputStream(in, dec))) {
-            final long n = current().nextLong(current().nextLong(1024L));
-            final long skipped = his.skip(n);
-            assertTrue(skipped <= n);
-        }
+                i -> current().nextLong(i.getArgumentAt(0, long.class) + 1)); // <2>
+        InputStream his = apply(dec -> new HexInputStream(in, dec));
+        final long n = current().nextLong(1024L);
+        final long skipped = his.skip(n); // <3>
+        assertTrue(skipped <= n);
     }
 }
