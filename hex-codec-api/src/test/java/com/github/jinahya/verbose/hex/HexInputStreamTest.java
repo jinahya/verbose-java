@@ -20,6 +20,10 @@ import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
 import static java.util.concurrent.ThreadLocalRandom.current;
+import static org.mockito.Matchers.anyLong;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.Test;
 
 /**
@@ -117,11 +121,15 @@ public class HexInputStreamTest extends AbstractHexDecoderTest {
      *
      * @throws IOException if an I/O error occurs.
      */
-    @Test
+    @Test(invocationCount = 128)
     public void skip() throws IOException {
-        final int length = current().nextInt(128, 256);
-        final InputStream his = apply(d -> new HexInputStream(
-                new ByteArrayInputStream(new byte[length]), d));
-        his.skip(current().nextLong(64));
+        final InputStream in = mock(InputStream.class);
+        when(in.skip(anyLong())).thenAnswer(
+                i -> current().nextLong(i.getArgumentAt(0, long.class) + 1));
+        try (InputStream his = apply(dec -> new HexInputStream(in, dec))) {
+            final long n = current().nextLong(current().nextLong(1024L));
+            final long skipped = his.skip(n);
+            assertTrue(skipped <= n);
+        }
     }
 }
