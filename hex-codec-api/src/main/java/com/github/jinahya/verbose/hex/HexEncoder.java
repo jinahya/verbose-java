@@ -86,9 +86,6 @@ public interface HexEncoder {
      * @see #encode(java.lang.String, java.nio.charset.Charset)
      */
     default String encode(final String decoded) {
-        if (decoded == null) {
-            throw new NullPointerException("null decoded");
-        }
         return encode(decoded, UTF_8);
     }
 }
