@@ -16,13 +16,17 @@
 package com.github.jinahya.verbose.security;
 
 import static com.github.jinahya.verbose.security.MdUtils.digest;
+import java.io.ByteArrayInputStream;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
+import static java.nio.channels.Channels.newChannel;
 import java.nio.channels.FileChannel;
+import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import static java.nio.file.StandardOpenOption.WRITE;
@@ -44,6 +48,16 @@ public class MdUtilsTest {
     }
 
     @Test(dataProvider = "algorithms", invocationCount = 128)
+    public static void digestStream(final String algorithm)
+            throws IOException, NoSuchAlgorithmException {
+        final byte[] bytes = new byte[current().nextInt(2014)];
+        current().nextBytes(bytes);
+        try (InputStream stream = new ByteArrayInputStream(bytes)) {
+            final byte[] digest = digest(stream, algorithm);
+        }
+    }
+
+    @Test(dataProvider = "algorithms", invocationCount = 128)
     public static void digestFile(final String algorithm)
             throws IOException, NoSuchAlgorithmException {
         final File file = File.createTempFile("tmp", null);
@@ -55,6 +69,17 @@ public class MdUtilsTest {
             s.flush();
         }
         final byte[] digest = digest(file, algorithm);
+    }
+
+    @Test(dataProvider = "algorithms", invocationCount = 128)
+    public static void digestChannel(final String algorithm)
+            throws IOException, NoSuchAlgorithmException {
+        final byte[] bytes = new byte[current().nextInt(2014)];
+        current().nextBytes(bytes);
+        try (ReadableByteChannel channel
+                = newChannel(new ByteArrayInputStream(bytes))) {
+            final byte[] digest = digest(channel, algorithm);
+        }
     }
 
     @Test(dataProvider = "algorithms", invocationCount = 128)

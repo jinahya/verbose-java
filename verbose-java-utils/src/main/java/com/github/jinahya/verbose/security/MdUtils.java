@@ -29,11 +29,12 @@ import static java.util.concurrent.ThreadLocalRandom.current;
  */
 public final class MdUtils {
 
-    public static byte[] digest(final InputStream input, final String algorithm)
+    public static byte[] digest(final InputStream stream,
+                                final String algorithm)
             throws NoSuchAlgorithmException, IOException {
         switch (current().nextInt(1)) {
             default:
-                return MdUtils1.digest(input, algorithm);
+                return MdUtils1.digest(stream, algorithm);
         }
     }
 
