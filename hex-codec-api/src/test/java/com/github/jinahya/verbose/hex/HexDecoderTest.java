@@ -60,9 +60,19 @@ public class HexDecoderTest extends AbstractHexDecoderTest {
                                  () -> d.decode(null, UTF_8)));
         accept(d -> assertThrows(NullPointerException.class,
                                  () -> d.decode("", null)));
-        final int count = (current().nextInt(128) >> 1) << 1;
-        final String encoded = randomAscii(count);
-        final String decoded = apply(d -> d.decode(encoded, UTF_8));
-        assertNotNull(decoded);
+        {
+            final int count = (current().nextInt(128) >> 1) << 1;
+            final String encoded = randomAscii(count);
+            final String decoded = apply(d -> d.decode(encoded, UTF_8));
+            assertNotNull(decoded);
+        }
+        accept(d -> assertThrows(NullPointerException.class,
+                                 () -> d.decode((String) null)));
+        {
+            final int count = (current().nextInt(128) >> 1) << 1;
+            final String encoded = randomAscii(count);
+            final String decoded = apply(d -> d.decode(encoded));
+            assertNotNull(decoded);
+        }
     }
 }
