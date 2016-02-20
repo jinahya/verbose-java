@@ -77,9 +77,9 @@ public interface HexDecoder {
 
     /**
      * Decodes given string. This method invokes
-     * {@link #decode(java.lang.String, java.nio.charset.Charset)} with given
-     * string and {@link StandardCharsets#UTF_8} as its arguments and returns
-     * the result.
+     * {@link #decode(java.lang.String, java.nio.charset.Charset)} method with
+     * given string and {@link StandardCharsets#UTF_8} as its arguments and
+     * returns the result.
      *
      * @param encoded the string to decode
      * @return a decoded string

@@ -41,7 +41,7 @@ public final class BcUtils {
      * @param channel the channel
      * @return a new proxy instance
      */
-    public static <T extends WritableByteChannel> T newNonBlockingProxy(
+    public static <T extends WritableByteChannel> T nonBlocking(
             final Class<T> type, final T channel) {
         final Method method; // <1>
         try {
@@ -69,15 +69,15 @@ public final class BcUtils {
         return type.cast(proxy); // <2>
     }
 
-    private static <T extends WritableByteChannel> T newNonBlockingProxyHelper(
+    private static <T extends WritableByteChannel> T nonBlockingHelper(
             final Class<T> type, final WritableByteChannel channel) {
-        return BcUtils.newNonBlockingProxy(type, type.cast(channel));
+        return nonBlocking(type, type.cast(channel));
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends WritableByteChannel> T newNonBlockingProxy(
+    public static <T extends WritableByteChannel> T nonBlocking(
             final T channel) {
-        return (T) newNonBlockingProxyHelper(channel.getClass(), channel);
+        return (T) nonBlockingHelper(channel.getClass(), channel);
     }
 
     /**
@@ -91,7 +91,7 @@ public final class BcUtils {
      * @param channel the channel
      * @return a new proxy
      */
-    public static <T extends ReadableByteChannel> T newNonBlockingProxy(
+    public static <T extends ReadableByteChannel> T nonBlocking(
             final Class<T> type, final T channel) {
         final Method method; // <1>
         try {
@@ -119,9 +119,9 @@ public final class BcUtils {
         return type.cast(proxy); // <2>
     }
 
-    private static <T extends ReadableByteChannel> T newNonBlockingProxyHelper(
+    private static <T extends ReadableByteChannel> T nonBlockingHelper(
             final Class<T> type, final ReadableByteChannel channel) {
-        return BcUtils.newNonBlockingProxy(type, type.cast(channel));
+        return nonBlocking(type, type.cast(channel));
     }
 
     /**
@@ -135,9 +135,9 @@ public final class BcUtils {
      * @return a new proxy
      */
     @SuppressWarnings("unchecked")
-    public static <T extends ReadableByteChannel> T newNonBlockingProxy(
+    public static <T extends ReadableByteChannel> T nonBlocking(
             final T channel) {
-        return (T) newNonBlockingProxyHelper(channel.getClass(), channel);
+        return (T) nonBlockingHelper(channel.getClass(), channel);
     }
 
     private BcUtils() {
