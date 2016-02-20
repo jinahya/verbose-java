@@ -15,8 +15,14 @@
  */
 package com.github.jinahya.verbose.nio.channels;
 
-import java.nio.channels.ReadableByteChannel;
+import static com.github.jinahya.verbose.nio.channels.BcUtils.nonBlocking;
+import java.io.IOException;
+import java.nio.ByteBuffer;
+import static java.nio.ByteBuffer.allocate;
 import java.nio.channels.WritableByteChannel;
+import static java.util.concurrent.ThreadLocalRandom.current;
+import static org.mockito.Matchers.any;
+import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import org.testng.annotations.Test;
 
@@ -27,8 +33,15 @@ import org.testng.annotations.Test;
 public class BcUtilsTest {
 
     @Test
-    public static void nonBlocking() {
-        BcUtils.nonBlocking(WritableByteChannel.class, mock(WritableByteChannel.class));
-        BcUtils.nonBlocking(ReadableByteChannel.class, mock(ReadableByteChannel.class));
+    public static void nonBlockingWritableByteChannel() throws IOException {
+        WritableByteChannel blocking = mock(WritableByteChannel.class);
+        doAnswer(i -> {
+            final ByteBuffer src = i.getArgumentAt(0, ByteBuffer.class);
+            src.position(src.limit());
+            return null;
+        }).when(blocking).write(any(ByteBuffer.class));
+        final WritableByteChannel channel
+                = nonBlocking(WritableByteChannel.class, blocking);
+        final int written = channel.write(allocate(current().nextInt(128)));
     }
 }
