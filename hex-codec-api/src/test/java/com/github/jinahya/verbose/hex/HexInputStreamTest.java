@@ -122,6 +122,6 @@ public class HexInputStreamTest extends AbstractHexDecoderTest {
         final int length = current().nextInt(128, 256);
         final InputStream his = apply(d -> new HexInputStream(
                 new ByteArrayInputStream(new byte[length]), d));
-        his.skip(current().nextLong(128));
+        his.skip(current().nextLong(64));
     }
 }

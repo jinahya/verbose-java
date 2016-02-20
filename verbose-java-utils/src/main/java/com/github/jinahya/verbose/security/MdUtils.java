@@ -29,6 +29,16 @@ import static java.util.concurrent.ThreadLocalRandom.current;
  */
 public final class MdUtils {
 
+    /**
+     * Computes a hash value for all bytes from given input stream using
+     * specified algorithm name.
+     *
+     * @param stream the input stream
+     * @param algorithm the algorithm
+     * @return message digest value
+     * @throws NoSuchAlgorithmException if {@code algorithm} is unknown
+     * @throws IOException if an I/O error occurs.
+     */
     public static byte[] digest(final InputStream stream,
                                 final String algorithm)
             throws NoSuchAlgorithmException, IOException {
