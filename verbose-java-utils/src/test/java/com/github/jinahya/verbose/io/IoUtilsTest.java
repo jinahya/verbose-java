@@ -15,6 +15,8 @@
  */
 package com.github.jinahya.verbose.io;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileOutputStream;
@@ -23,8 +25,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
+import static java.nio.channels.Channels.newChannel;
 import java.nio.channels.FileChannel;
 import static java.nio.channels.FileChannel.open;
+import java.nio.channels.ReadableByteChannel;
+import java.nio.channels.WritableByteChannel;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import static java.nio.file.StandardOpenOption.READ;
@@ -42,11 +47,22 @@ import org.testng.annotations.Test;
 public class IoUtilsTest {
 
     @Test(invocationCount = 128)
-    public void copyFile() throws IOException, NoSuchAlgorithmException {
+    public void copyStreams() throws IOException, NoSuchAlgorithmException {
+        final byte[] bytes = new byte[current().nextInt(1024)];
+        current().nextBytes(bytes);
+        try (InputStream input = new ByteArrayInputStream(bytes);
+             OutputStream output = new ByteArrayOutputStream(bytes.length)) {
+            IoUtils.copy(input, output);
+            output.flush();
+        }
+    }
+
+    @Test(invocationCount = 128)
+    public void copyFiles() throws IOException, NoSuchAlgorithmException {
         final File source = File.createTempFile("tmp", null);
         source.deleteOnExit();
         try (OutputStream o = new FileOutputStream(source)) {
-            final byte[] bytes = new byte[current().nextInt(1048576)];
+            final byte[] bytes = new byte[current().nextInt(1024)];
             current().nextBytes(bytes);
             o.write(bytes);
             o.flush();
@@ -54,7 +70,7 @@ public class IoUtilsTest {
         final File target = File.createTempFile("tmp", null);
         target.deleteOnExit();
         try (OutputStream o = new FileOutputStream(target)) {
-            final byte[] bytes = new byte[current().nextInt(1048576)];
+            final byte[] bytes = new byte[current().nextInt(1024)];
             current().nextBytes(bytes);
             o.write(bytes);
             o.flush();
@@ -68,11 +84,23 @@ public class IoUtilsTest {
     }
 
     @Test(invocationCount = 128)
-    public void copyPath() throws IOException, NoSuchAlgorithmException {
+    public void copyChannels() throws IOException, NoSuchAlgorithmException {
+        final byte[] bytes = new byte[current().nextInt(1024)];
+        current().nextBytes(bytes);
+        try (ReadableByteChannel readable
+                = newChannel(new ByteArrayInputStream(bytes));
+             WritableByteChannel writable
+             = newChannel(new ByteArrayOutputStream(bytes.length))) {
+            IoUtils.copy(readable, writable);
+        }
+    }
+
+    @Test(invocationCount = 128)
+    public void copyPaths() throws IOException, NoSuchAlgorithmException {
         final Path source = Files.createTempFile(null, null);
         source.toFile().deleteOnExit();
         try (FileChannel c = open(source, WRITE)) {
-            final ByteBuffer b = allocate(1048576);
+            final ByteBuffer b = allocate(1024);
             current().nextBytes(b.array());
             while (b.hasRemaining()) {
                 c.write(b);
@@ -82,7 +110,7 @@ public class IoUtilsTest {
         final Path target = Files.createTempFile(null, null);
         target.toFile().deleteOnExit();
         try (FileChannel c = open(target, WRITE)) {
-            final ByteBuffer b = allocate(1048576);
+            final ByteBuffer b = allocate(1024);
             current().nextBytes(b.array());
             while (b.hasRemaining()) {
                 c.write(b);
