@@ -15,7 +15,6 @@
  */
 package com.github.jinahya.verbose.nio.channels;
 
-import static com.github.jinahya.verbose.nio.channels.BcUtils.nonBlocking;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
@@ -34,14 +33,14 @@ public class BcUtilsTest {
 
     @Test
     public static void nonBlockingWritableByteChannel() throws IOException {
-        WritableByteChannel blocking = mock(WritableByteChannel.class);
+        final WritableByteChannel blocking = mock(WritableByteChannel.class);
         doAnswer(i -> {
             final ByteBuffer src = i.getArgumentAt(0, ByteBuffer.class);
             src.position(src.limit());
             return null;
         }).when(blocking).write(any(ByteBuffer.class));
-        final WritableByteChannel channel
-                = nonBlocking(WritableByteChannel.class, blocking);
+        final WritableByteChannel channel = BcUtils.nonBlockingWritable(
+                WritableByteChannel.class, blocking);
         final int written = channel.write(allocate(current().nextInt(128)));
     }
 }

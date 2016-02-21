@@ -41,7 +41,7 @@ public final class BcUtils {
      * @param channel the channel
      * @return a new proxy instance
      */
-    public static <T extends WritableByteChannel> T nonBlocking(
+    public static <T extends WritableByteChannel> T nonBlockingWritable(
             final Class<T> type, final T channel) {
         final Method method; // <1>
         try {
@@ -51,33 +51,49 @@ public final class BcUtils {
             throw new RuntimeException(nsme);
         }
         final InvocationHandler handler = (p, m, a) -> {
-            if (method.equals(m)) {
-                final ByteBuffer src = (ByteBuffer) a[0]; // <1>
-                final int limit = src.limit(); // <2>
+            if (m.equals(method)) { // <1>
+                final ByteBuffer src = (ByteBuffer) a[0]; // <2>
+                final int limit = src.limit(); // <3>
                 try {
-                    src.limit(src.position() // <3>
+                    src.limit(src.position() // <4>
                               + current().nextInt(src.remaining() + 1));
-                    return channel.write(src); // <4>
+                    return channel.write(src); // <5>
                 } finally {
-                    src.limit(limit); // <5>
+                    src.limit(limit); // <6>
                 }
             }
-            return m.invoke(channel, a); // <6>
+            return m.invoke(channel, a); // <7>
         };
         final Object proxy = newProxyInstance( // <1>
                 type.getClassLoader(), new Class<?>[]{type}, handler);
         return type.cast(proxy); // <2>
     }
 
-    private static <T extends WritableByteChannel> T nonBlockingHelper(
+    private static <T extends WritableByteChannel> T nonBlockingWritableHelper(
             final Class<T> type, final WritableByteChannel channel) {
-        return nonBlocking(type, type.cast(channel));
+        return nonBlockingWritable(type, type.cast(channel)); // ClassCastException
+    }
+
+    /**
+     * Creates a new proxy instance which intercepts
+     * {@link WritableByteChannel#write(java.nio.ByteBuffer)} method and mimics
+     * non-blocking writing by temporarily adjusting the
+     * {@link ByteBuffer#remaining()} of the buffer.
+     *
+     * @param <T> channel type parameter
+     * @param channel the channel
+     * @return a new proxy instance
+     */
+    @SuppressWarnings("unchecked")
+    public static <T extends WritableByteChannel> T nonBlockingWritable(
+            final T channel) {
+        return (T) nonBlockingWritableHelper(channel.getClass(), channel);
     }
 
     @SuppressWarnings("unchecked")
-    public static <T extends WritableByteChannel> T nonBlocking(
+    public static <T extends WritableByteChannel> T nonBlockingWritable_(
             final T channel) {
-        return (T) nonBlockingHelper(channel.getClass(), channel);
+        return nonBlockingWritable((Class<T>) channel.getClass(), channel);
     }
 
     /**
@@ -91,7 +107,7 @@ public final class BcUtils {
      * @param channel the channel
      * @return a new proxy
      */
-    public static <T extends ReadableByteChannel> T nonBlocking(
+    public static <T extends ReadableByteChannel> T nonBlockingReadable(
             final Class<T> type, final T channel) {
         final Method method; // <1>
         try {
@@ -119,9 +135,9 @@ public final class BcUtils {
         return type.cast(proxy); // <2>
     }
 
-    private static <T extends ReadableByteChannel> T nonBlockingHelper(
+    private static <T extends ReadableByteChannel> T nonBlockingReadableHelper(
             final Class<T> type, final ReadableByteChannel channel) {
-        return nonBlocking(type, type.cast(channel));
+        return nonBlockingReadable(type, type.cast(channel));
     }
 
     /**
@@ -135,9 +151,9 @@ public final class BcUtils {
      * @return a new proxy
      */
     @SuppressWarnings("unchecked")
-    public static <T extends ReadableByteChannel> T nonBlocking(
+    public static <T extends ReadableByteChannel> T nonBlockingReadable(
             final T channel) {
-        return (T) nonBlockingHelper(channel.getClass(), channel);
+        return (T) nonBlockingReadableHelper(channel.getClass(), channel);
     }
 
     private BcUtils() {
