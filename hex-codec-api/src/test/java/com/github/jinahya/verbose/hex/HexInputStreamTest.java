@@ -82,7 +82,7 @@ public class HexInputStreamTest extends AbstractHexDecoderTest {
         final int length = (current().nextInt(128) >> 1) << 1;
         final InputStream in = new ByteArrayInputStream(new byte[length]);
         try (final InputStream his = apply(d -> new HexInputStream(in, d))) {
-            final byte[] buf = new byte[current().nextInt(128)];
+            final byte[] buf = new byte[current().nextInt(1, 128)];
             while (his.read(buf) != -1);
         }
     }
@@ -98,7 +98,7 @@ public class HexInputStreamTest extends AbstractHexDecoderTest {
         final int length = current().nextInt(128) | 1;
         final InputStream in = new ByteArrayInputStream(new byte[length]);
         try (final InputStream his = apply(d -> new HexInputStream(in, d))) {
-            final byte[] buf = new byte[current().nextInt(128)];
+            final byte[] buf = new byte[current().nextInt(1, 128)];
             while (his.read(buf) != -1);
         }
     }
