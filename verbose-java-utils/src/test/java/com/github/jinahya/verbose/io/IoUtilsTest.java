@@ -57,7 +57,7 @@ public class IoUtilsTest {
         }
     }
 
-    @Test(invocationCount = 128)
+    @Test
     public void copyFiles() throws IOException, NoSuchAlgorithmException {
         final File source = File.createTempFile("tmp", null);
         source.deleteOnExit();
@@ -83,7 +83,7 @@ public class IoUtilsTest {
         }
     }
 
-    @Test(invocationCount = 128)
+    @Test
     public void copyChannels() throws IOException, NoSuchAlgorithmException {
         final byte[] bytes = new byte[current().nextInt(1024)];
         current().nextBytes(bytes);
@@ -95,7 +95,7 @@ public class IoUtilsTest {
         }
     }
 
-    @Test(invocationCount = 128)
+    @Test
     public void copyPaths() throws IOException, NoSuchAlgorithmException {
         final Path source = Files.createTempFile(null, null);
         source.toFile().deleteOnExit();

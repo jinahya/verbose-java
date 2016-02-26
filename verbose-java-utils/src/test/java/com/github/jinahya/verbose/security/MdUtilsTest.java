@@ -57,13 +57,13 @@ public class MdUtilsTest {
         }
     }
 
-    @Test(dataProvider = "algorithms", invocationCount = 128)
+    @Test(dataProvider = "algorithms")
     public static void digestFile(final String algorithm)
             throws IOException, NoSuchAlgorithmException {
         final File file = File.createTempFile("tmp", null);
         file.deleteOnExit();
         try (OutputStream s = new FileOutputStream(file)) {
-            final byte[] b = new byte[current().nextInt(1048576)];
+            final byte[] b = new byte[current().nextInt(1024)];
             current().nextBytes(b);
             s.write(b);
             s.flush();
@@ -74,7 +74,7 @@ public class MdUtilsTest {
     @Test(dataProvider = "algorithms", invocationCount = 128)
     public static void digestChannel(final String algorithm)
             throws IOException, NoSuchAlgorithmException {
-        final byte[] bytes = new byte[current().nextInt(2014)];
+        final byte[] bytes = new byte[current().nextInt(1024)];
         current().nextBytes(bytes);
         try (ReadableByteChannel channel
                 = newChannel(new ByteArrayInputStream(bytes))) {
@@ -82,12 +82,13 @@ public class MdUtilsTest {
         }
     }
 
-    @Test(dataProvider = "algorithms", invocationCount = 128)
+    @Test(dataProvider = "algorithms")
     public static void digestPath(final String algorithm)
             throws IOException, NoSuchAlgorithmException {
         final Path path = Files.createTempFile(null, null);
+        path.toFile().deleteOnExit();
         try (FileChannel c = FileChannel.open(path, WRITE)) { // <2>
-            final ByteBuffer b = allocate(current().nextInt(1048576));
+            final ByteBuffer b = allocate(current().nextInt(1024));
             current().nextBytes(b.array());
             for (; b.hasRemaining(); c.write(b));
             c.force(false);
