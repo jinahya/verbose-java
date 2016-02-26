@@ -28,7 +28,7 @@ public class HexStreamTest {
         final File created = createTempFile("tmp", null);
         created.deleteOnExit(); // <1>
         try (OutputStream o = new FileOutputStream(created)) {
-            final byte[] b = new byte[current().nextInt(1048576)];
+            final byte[] b = new byte[current().nextInt(1024)];
             current().nextBytes(b);
             o.write(b);
         }

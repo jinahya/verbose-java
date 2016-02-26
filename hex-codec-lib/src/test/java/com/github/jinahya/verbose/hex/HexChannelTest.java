@@ -54,7 +54,7 @@ public class HexChannelTest {
             throws IOException, NoSuchAlgorithmException {
         final Path created = createTempFile(null, null);
         try (FileChannel c = open(created, WRITE, DSYNC)) { // <2>
-            final ByteBuffer b = allocate(current().nextInt(1048576));
+            final ByteBuffer b = allocate(current().nextInt(1024));
             current().nextBytes(b.array());
             for (; b.hasRemaining(); c.write(b));
         }
