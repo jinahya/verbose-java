@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jinahya.verbose.io;
+package com.github.jinahya.verbose.util;
 
 import java.io.File;
 import java.io.FileInputStream;

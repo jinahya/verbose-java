@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jinahya.verbose.security;
+package com.github.jinahya.verbose.util;
 
 import java.io.File;
 import java.io.FileInputStream;
@@ -25,6 +25,11 @@ import static java.security.MessageDigest.getInstance;
 import java.security.NoSuchAlgorithmException;
 import static java.util.concurrent.ThreadLocalRandom.current;
 
+/**
+ * Utilities for {@link MessageDigest} with {@code java.io} package.
+ *
+ * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
+ */
 public final class MdUtils1 {
 
     private static byte[] digest1(final InputStream input,
@@ -45,6 +50,15 @@ public final class MdUtils1 {
         return ((DigestInputStream) input).getMessageDigest().digest(); // <3>
     }
 
+    /**
+     * Digests all bytes from given stream for specified algorithm.
+     *
+     * @param input the input stream
+     * @param algorithm the algorithm name
+     * @return a message digest
+     * @throws NoSuchAlgorithmException if {@code algorithm} is unknown.
+     * @throws IOException if an I/O error occurs.
+     */
     static byte[] digest(final InputStream input, final String algorithm)
             throws NoSuchAlgorithmException, IOException {
         switch (current().nextInt(2)) {
@@ -62,6 +76,15 @@ public final class MdUtils1 {
         }
     }
 
+    /**
+     * Digests all bytes from given file for specified algorithm.
+     *
+     * @param input the input file
+     * @param algorithm the algorithm name
+     * @return a message digest
+     * @throws NoSuchAlgorithmException if {@code algorithm} is unknown.
+     * @throws IOException if an I/O error occurs.
+     */
     static byte[] digest(final File file, final String algorithm)
             throws IOException, NoSuchAlgorithmException {
         switch (current().nextInt(1)) {

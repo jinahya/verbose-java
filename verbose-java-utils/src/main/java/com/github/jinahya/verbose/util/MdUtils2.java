@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jinahya.verbose.security;
+package com.github.jinahya.verbose.util;
 
 import java.io.IOException;
 import java.nio.ByteBuffer;
@@ -27,6 +27,11 @@ import static java.security.MessageDigest.getInstance;
 import java.security.NoSuchAlgorithmException;
 import static java.util.concurrent.ThreadLocalRandom.current;
 
+/**
+ * Utilities for {@link MessageDigest} with {@code java.nio.channels} package.
+ *
+ * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
+ */
 public final class MdUtils2 {
 
     private static byte[] digest1(final ReadableByteChannel channel,

@@ -13,9 +13,9 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jinahya.verbose.io;
+package com.github.jinahya.verbose.util;
 
-import static com.github.jinahya.verbose.io.IoUtils.copy;
+import static com.github.jinahya.verbose.util.IoUtils.copy;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;

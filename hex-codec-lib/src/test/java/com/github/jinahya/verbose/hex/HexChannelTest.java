@@ -1,7 +1,7 @@
 package com.github.jinahya.verbose.hex;
 
-import static com.github.jinahya.verbose.io.IoUtils.copy;
-import static com.github.jinahya.verbose.security.MdUtils.digest;
+import static com.github.jinahya.verbose.util.IoUtils.copy;
+import static com.github.jinahya.verbose.util.MdUtils.digest;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;

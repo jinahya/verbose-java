@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-package com.github.jinahya.verbose.nio.channels;
+package com.github.jinahya.verbose.util;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
