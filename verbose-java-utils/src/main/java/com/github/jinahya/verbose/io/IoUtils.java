@@ -25,12 +25,20 @@ import java.nio.file.Path;
 import static java.util.concurrent.ThreadLocalRandom.current;
 
 /**
- * Utilities for testing hex codec.
+ * Utilities for I/O.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 public final class IoUtils {
 
+    /**
+     * Copies all bytes from given input stream to specified output stream.
+     *
+     * @param input the input stream
+     * @param output the output stream
+     * @return the number of byte copied
+     * @throws IOException if an I/O error occurs.
+     */
     public static long copy(final InputStream input, final OutputStream output)
             throws IOException {
         switch (current().nextInt(1)) {
@@ -39,6 +47,13 @@ public final class IoUtils {
         }
     }
 
+    /**
+     * Copies all bytes from given source file to target file.
+     *
+     * @param source the source file
+     * @param target the target file
+     * @throws IOException if an I/O error occurs.
+     */
     public static void copy(final File source, final File target)
             throws IOException {
         switch (current().nextInt(1)) {
@@ -47,6 +62,15 @@ public final class IoUtils {
         }
     }
 
+    /**
+     * Copies all bytes from given readable byte channel to specified writable
+     * byte channel.
+     *
+     * @param readable the readable byte channel
+     * @param writable the writable byte channel
+     * @return the number of bytes copied
+     * @throws IOException if an I/O error occurs.
+     */
     public static long copy(final ReadableByteChannel readable,
                             final WritableByteChannel writable)
             throws IOException {
@@ -56,6 +80,13 @@ public final class IoUtils {
         }
     }
 
+    /**
+     * Copies all bytes from given source path to specified target path.
+     *
+     * @param source the source path
+     * @param target the target path
+     * @throws IOException if an I/O error occurs.
+     */
     public static void copy(final Path source, final Path target)
             throws IOException {
         switch (current().nextInt(1)) {

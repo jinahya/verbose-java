@@ -23,6 +23,11 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import static java.util.concurrent.ThreadLocalRandom.current;
 
+/**
+ * I/O utilities for {@code java.io} package.
+ *
+ * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
+ */
 final class IoUtils1 {
 
     private static long copy1(final InputStream input,
@@ -36,6 +41,14 @@ final class IoUtils1 {
         return count;
     }
 
+    /**
+     * Copies all bytes from given input stream to specified output stream.
+     *
+     * @param input the input stream
+     * @param output the output stream
+     * @return the number of bytes to copied.
+     * @throws IOException if an I/O error occurs.
+     */
     static long copy(final InputStream input, final OutputStream output)
             throws IOException {
         switch (current().nextInt(1)) {
@@ -53,6 +66,13 @@ final class IoUtils1 {
         }
     }
 
+    /**
+     * Copies all bytes from given source file to specified target file.
+     *
+     * @param input the source file
+     * @param output the target file
+     * @throws IOException if an I/O error occurs.
+     */
     static void copy(final File source, final File target) throws IOException {
         switch (current().nextInt(1)) {
             default:

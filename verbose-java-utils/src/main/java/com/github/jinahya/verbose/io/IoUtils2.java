@@ -29,6 +29,11 @@ import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 import static java.nio.file.StandardOpenOption.WRITE;
 import static java.util.concurrent.ThreadLocalRandom.current;
 
+/**
+ * I/O utilities for {@code java.nio.channels} package.
+ *
+ * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
+ */
 final class IoUtils2 {
 
     private static long copy1(final ReadableByteChannel readable,
@@ -62,6 +67,14 @@ final class IoUtils2 {
         return count;
     }
 
+    /**
+     * Copies all bytes from given source channel to specified target channel.
+     *
+     * @param readable the source channel from which bytes are copied.
+     * @param writable the target channel to which bytes are copied.
+     * @return the number of bytes copied.
+     * @throws IOException if an I/O error occurs.
+     */
     static long copy(final ReadableByteChannel readable,
                      final WritableByteChannel writable)
             throws IOException {
@@ -113,6 +126,13 @@ final class IoUtils2 {
         }
     }
 
+    /**
+     * Copies all bytes from given source path to specified target path.
+     *
+     * @param source the source path from which bytes are copied.
+     * @param target the target path to which bytes are copied.
+     * @throws IOException if an I/O error occurs.
+     */
     static void copy(final Path source, final Path target) throws IOException {
         switch (current().nextInt(3)) {
             case 0:

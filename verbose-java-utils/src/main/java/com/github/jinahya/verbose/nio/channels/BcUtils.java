@@ -41,7 +41,7 @@ public final class BcUtils {
      * @param channel the channel
      * @return a new proxy instance
      */
-    public static <T extends WritableByteChannel> T nonBlockingWritable(
+    public static <T extends WritableByteChannel> T nonBlocking(
             final Class<T> type, final T channel) {
         final Method method; // <1>
         try {
@@ -69,9 +69,9 @@ public final class BcUtils {
         return type.cast(proxy); // <2>
     }
 
-    private static <T extends WritableByteChannel> T nonBlockingWritableHelper(
+    private static <T extends WritableByteChannel> T nonBlockingHelper(
             final Class<T> type, final WritableByteChannel channel) {
-        return nonBlockingWritable(type, type.cast(channel)); // ClassCastException
+        return BcUtils.nonBlocking(type, type.cast(channel)); // ClassCastException
     }
 
     /**
@@ -85,15 +85,9 @@ public final class BcUtils {
      * @return a new proxy instance
      */
     @SuppressWarnings("unchecked")
-    public static <T extends WritableByteChannel> T nonBlockingWritable(
+    public static <T extends WritableByteChannel> T nonBlocking(
             final T channel) {
-        return (T) nonBlockingWritableHelper(channel.getClass(), channel);
-    }
-
-    @SuppressWarnings("unchecked")
-    public static <T extends WritableByteChannel> T nonBlockingWritable_(
-            final T channel) {
-        return nonBlockingWritable((Class<T>) channel.getClass(), channel);
+        return (T) nonBlockingHelper(channel.getClass(), channel);
     }
 
     /**
@@ -107,7 +101,7 @@ public final class BcUtils {
      * @param channel the channel
      * @return a new proxy
      */
-    public static <T extends ReadableByteChannel> T nonBlockingReadable(
+    public static <T extends ReadableByteChannel> T nonBlocking(
             final Class<T> type, final T channel) {
         final Method method; // <1>
         try {
@@ -135,9 +129,9 @@ public final class BcUtils {
         return type.cast(proxy); // <2>
     }
 
-    private static <T extends ReadableByteChannel> T nonBlockingReadableHelper(
+    private static <T extends ReadableByteChannel> T nonBlockingHelper(
             final Class<T> type, final ReadableByteChannel channel) {
-        return nonBlockingReadable(type, type.cast(channel));
+        return nonBlocking(type, type.cast(channel));
     }
 
     /**
@@ -151,9 +145,9 @@ public final class BcUtils {
      * @return a new proxy
      */
     @SuppressWarnings("unchecked")
-    public static <T extends ReadableByteChannel> T nonBlockingReadable(
+    public static <T extends ReadableByteChannel> T nonBlocking(
             final T channel) {
-        return (T) nonBlockingReadableHelper(channel.getClass(), channel);
+        return (T) nonBlockingHelper(channel.getClass(), channel);
     }
 
     private BcUtils() {

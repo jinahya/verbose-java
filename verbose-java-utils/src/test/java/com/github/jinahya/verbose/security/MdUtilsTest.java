@@ -28,6 +28,7 @@ import static java.nio.channels.Channels.newChannel;
 import java.nio.channels.FileChannel;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Files;
+import static java.nio.file.Files.delete;
 import java.nio.file.Path;
 import static java.nio.file.StandardOpenOption.WRITE;
 import java.security.NoSuchAlgorithmException;
@@ -50,18 +51,17 @@ public class MdUtilsTest {
     @Test(dataProvider = "algorithms", invocationCount = 128)
     public static void digestStream(final String algorithm)
             throws IOException, NoSuchAlgorithmException {
-        final byte[] bytes = new byte[current().nextInt(2014)];
+        final byte[] bytes = new byte[current().nextInt(1024)];
         current().nextBytes(bytes);
         try (InputStream stream = new ByteArrayInputStream(bytes)) {
             final byte[] digest = digest(stream, algorithm);
         }
     }
 
-    @Test(dataProvider = "algorithms")
+    @Test(dataProvider = "algorithms", invocationCount = 128)
     public static void digestFile(final String algorithm)
             throws IOException, NoSuchAlgorithmException {
         final File file = File.createTempFile("tmp", null);
-        file.deleteOnExit();
         try (OutputStream s = new FileOutputStream(file)) {
             final byte[] b = new byte[current().nextInt(1024)];
             current().nextBytes(b);
@@ -69,6 +69,7 @@ public class MdUtilsTest {
             s.flush();
         }
         final byte[] digest = digest(file, algorithm);
+        file.delete();
     }
 
     @Test(dataProvider = "algorithms", invocationCount = 128)
@@ -82,11 +83,10 @@ public class MdUtilsTest {
         }
     }
 
-    @Test(dataProvider = "algorithms")
+    @Test(dataProvider = "algorithms", invocationCount = 128)
     public static void digestPath(final String algorithm)
             throws IOException, NoSuchAlgorithmException {
         final Path path = Files.createTempFile(null, null);
-        path.toFile().deleteOnExit();
         try (FileChannel c = FileChannel.open(path, WRITE)) { // <2>
             final ByteBuffer b = allocate(current().nextInt(1024));
             current().nextBytes(b.array());
@@ -94,5 +94,6 @@ public class MdUtilsTest {
             c.force(false);
         }
         final byte[] digest = digest(path, algorithm);
+        delete(path);
     }
 }

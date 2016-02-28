@@ -39,7 +39,7 @@ public class BcUtilsTest {
             src.position(src.limit());
             return null;
         }).when(blocking).write(any(ByteBuffer.class));
-        final WritableByteChannel channel = BcUtils.nonBlockingWritable(
+        final WritableByteChannel channel = BcUtils.nonBlocking(
                 WritableByteChannel.class, blocking);
         final int written = channel.write(allocate(current().nextInt(128)));
     }
