@@ -15,9 +15,11 @@
  */
 package com.github.jinahya.verbose.util;
 
+import static com.github.jinahya.verbose.util.BcUtils.nonBlocking;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
+import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.mockito.Matchers.any;
@@ -26,6 +28,7 @@ import static org.mockito.Mockito.mock;
 import org.testng.annotations.Test;
 
 /**
+ * Tests {@link BcUtils}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
@@ -39,8 +42,21 @@ public class BcUtilsTest {
             src.position(src.limit());
             return null;
         }).when(blocking).write(any(ByteBuffer.class));
-        final WritableByteChannel channel = BcUtils.nonBlocking(
-                WritableByteChannel.class, blocking);
-        final int written = channel.write(allocate(current().nextInt(128)));
+        final WritableByteChannel nonblocking
+                = nonBlocking(WritableByteChannel.class, blocking);
+        final int written = nonblocking.write(allocate(current().nextInt(128)));
+    }
+
+    @Test
+    public static void nonBlockingReadableByteChannel() throws IOException {
+        final ReadableByteChannel blocking = mock(ReadableByteChannel.class);
+        doAnswer(i -> {
+            final ByteBuffer dst = i.getArgumentAt(0, ByteBuffer.class);
+            dst.position(dst.limit());
+            return null;
+        }).when(blocking).read(any(ByteBuffer.class));
+        final ReadableByteChannel nonblocking
+                = nonBlocking(ReadableByteChannel.class, blocking);
+        final int read = nonblocking.read(allocate(current().nextInt(128)));
     }
 }

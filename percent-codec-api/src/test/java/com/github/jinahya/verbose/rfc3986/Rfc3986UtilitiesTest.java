@@ -15,6 +15,8 @@
  */
 package com.github.jinahya.verbose.rfc3986;
 
+import static com.github.jinahya.verbose.rfc3986.Rfc3986Utilities.isRfc3986UnsafeCharacter;
+import static com.github.jinahya.verbose.rfc3986.Rfc3986Utilities.requireRfc3986UnsafeCharacter;
 import static java.lang.invoke.MethodHandles.lookup;
 import java.util.logging.Logger;
 import static java.util.logging.Logger.getLogger;
@@ -31,9 +33,16 @@ public class Rfc3986UtilitiesTest {
             = getLogger(lookup().lookupClass().getName());
 
     @Test
-    public static void isRfc3986UnsafeCharacterStream() {
+    public static void testIsRfc3986UnsafeCharacter() {
         Rfc3986Constants.RFC3986_UNRESERVED_CHARACTERS.forEach(
-                d -> assertTrue(Rfc3986Utilities.isRfc3986UnsafeCharacter(d))
+                d -> assertTrue(isRfc3986UnsafeCharacter(d))
+        );
+    }
+
+    @Test
+    public static void testRequireRfc3986UnsafeCharacter() {
+        Rfc3986Constants.RFC3986_UNRESERVED_CHARACTERS.forEach(
+                d -> requireRfc3986UnsafeCharacter(d)
         );
     }
 
