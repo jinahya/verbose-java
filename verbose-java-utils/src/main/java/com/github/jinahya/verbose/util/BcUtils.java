@@ -43,15 +43,15 @@ public final class BcUtils {
      */
     public static <T extends WritableByteChannel> T nonBlocking(
             final Class<T> type, final T channel) {
-        final Method method; // <1>
+        final Method target; // <1>
         try {
-            method = WritableByteChannel.class.getMethod(
+            target = WritableByteChannel.class.getMethod(
                     "write", ByteBuffer.class);
         } catch (final NoSuchMethodException nsme) {
             throw new RuntimeException(nsme);
         }
         final InvocationHandler handler = (p, m, a) -> {
-            if (m.equals(method)) { // <1>
+            if (m.equals(target)) { // <1>
                 final ByteBuffer src = (ByteBuffer) a[0]; // <2>
                 final int limit = src.limit(); // <3>
                 try {

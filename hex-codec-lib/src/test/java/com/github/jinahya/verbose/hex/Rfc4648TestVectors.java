@@ -15,7 +15,7 @@
  */
 package com.github.jinahya.verbose.hex;
 
-import java.util.Arrays;
+import static java.util.Arrays.asList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -29,7 +29,7 @@ import java.util.function.BiConsumer;
  */
 final class Rfc4648TestVectors {
 
-    private static final List<String> BASE64 = Arrays.asList(
+    private static final List<String> BASE64 = asList(
             "", "",
             "f", "Zg==",
             "fo", "Zm8=",
@@ -39,7 +39,7 @@ final class Rfc4648TestVectors {
             "foobar", "Zm9vYmFy"
     );
 
-    private static final List<String> BASE32 = Arrays.asList(
+    private static final List<String> BASE32 = asList(
             "", "",
             "f", "MY======",
             "fo", "MZXQ====",
@@ -49,7 +49,7 @@ final class Rfc4648TestVectors {
             "foobar", "MZXW6YTBOI======"
     );
 
-    private static final List<String> BASE32HEX = Arrays.asList(
+    private static final List<String> BASE32HEX = asList(
             "", "",
             "f", "CO======",
             "fo", "CPNG====",
@@ -59,7 +59,7 @@ final class Rfc4648TestVectors {
             "foobar", "CPNMUOJ1E8======"
     );
 
-    private static final List<String> BASE16 = Arrays.asList(
+    private static final List<String> BASE16 = asList(
             "", "",
             "f", "66",
             "fo", "666F",

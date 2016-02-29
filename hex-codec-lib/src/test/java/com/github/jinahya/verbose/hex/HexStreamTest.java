@@ -31,6 +31,7 @@ public class HexStreamTest {
             final byte[] b = new byte[current().nextInt(1024)];
             current().nextBytes(b);
             o.write(b);
+            o.flush();
         }
         final File encoded = createTempFile("tmp", null);
         encoded.deleteOnExit();

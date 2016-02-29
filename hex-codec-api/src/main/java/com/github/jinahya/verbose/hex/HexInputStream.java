@@ -20,6 +20,7 @@ import java.io.FilterInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.nio.ByteBuffer;
+import static java.nio.ByteBuffer.allocate;
 
 /**
  * An input stream decodes hex characters to bytes.
@@ -83,7 +84,7 @@ public class HexInputStream extends FilterInputStream {
     @Override
     public int read() throws IOException {
         if (buf == null) { // <1>
-            buf = ByteBuffer.allocate(2);
+            buf = allocate(2);
         }
         final int b1 = super.read(); // <2>
         if (b1 == -1) {
