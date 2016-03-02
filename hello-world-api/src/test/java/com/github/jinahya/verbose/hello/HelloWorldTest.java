@@ -63,7 +63,7 @@ public class HelloWorldTest {
      * Tests {@link HelloWorld#put(java.nio.ByteBuffer)}.
      */
     @Test
-    public void testPut() {
+    public void putOnBuffer() {
         assertThrows(NullPointerException.class, () -> mock().put(null)); // <1>
         assertThrows(BufferOverflowException.class, // <2>
                      () -> mock().put(allocate(
@@ -86,7 +86,7 @@ public class HelloWorldTest {
      * @throws IOException if an I/O error occurs.
      */
     @Test
-    public void testWriteWithStream() throws IOException {
+    public void writeToStream() throws IOException {
         assertThrows(NullPointerException.class, // <1>
                      () -> mock().write((OutputStream) null));
         final OutputStream expected = new ByteArrayOutputStream();
@@ -100,7 +100,7 @@ public class HelloWorldTest {
      * @throws IOException if an I/O error occurs.
      */
     @Test
-    public void testWriteWithChannel() throws IOException {
+    public void writeToChannel() throws IOException {
         assertThrows(NullPointerException.class, // <1>
                      () -> mock().write((WritableByteChannel) null));
         final WritableByteChannel expected

@@ -17,6 +17,7 @@ package com.github.jinahya.verbose.util;
 
 import static com.github.jinahya.verbose.util.BcUtils.nonBlocking;
 import java.io.IOException;
+import java.lang.reflect.Constructor;
 import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
 import java.nio.channels.ReadableByteChannel;
@@ -58,5 +59,15 @@ public class BcUtilsTest {
         final ReadableByteChannel nonblocking
                 = nonBlocking(ReadableByteChannel.class, blocking);
         final int read = nonblocking.read(allocate(current().nextInt(128)));
+    }
+
+    @Test
+    public void construct() throws ReflectiveOperationException {
+        final Constructor<BcUtils> constructor
+                = BcUtils.class.getDeclaredConstructor();
+        if (!constructor.isAccessible()) {
+            constructor.setAccessible(true);
+        }
+        final BcUtils instance = constructor.newInstance();
     }
 }

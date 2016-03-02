@@ -47,8 +47,8 @@ public final class BcUtils {
         try {
             target = WritableByteChannel.class.getMethod(
                     "write", ByteBuffer.class);
-        } catch (final NoSuchMethodException nsme) { // NOSONAR
-            throw new RuntimeException(nsme);
+        } catch (final NoSuchMethodException nsme) {
+            throw new RuntimeException(nsme); // NOSOANR
         }
         final InvocationHandler handler = (p, m, a) -> {
             if (m.equals(target)) { // <1>
@@ -107,8 +107,8 @@ public final class BcUtils {
         try {
             method = ReadableByteChannel.class.getMethod(
                     "read", ByteBuffer.class);
-        } catch (final NoSuchMethodException nsme) { // NOSONAR
-            throw new RuntimeException(nsme);
+        } catch (final NoSuchMethodException nsme) {
+            throw new RuntimeException(nsme); // NOSOANR
         }
         final InvocationHandler handler = (p, m, a) -> { // <1>
             if (method.equals(m)) { // <2>
