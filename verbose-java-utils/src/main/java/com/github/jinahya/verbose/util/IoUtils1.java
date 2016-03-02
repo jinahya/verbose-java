@@ -35,8 +35,9 @@ final class IoUtils1 {
             throws IOException {
         long count = 0L;
         final byte[] buffer = new byte[4096]; // <1>
-        for (int length; (length = input.read(buffer)) != -1; count += length) { // <2>
+        for (int length; (length = input.read(buffer)) != -1;) { // <2>
             output.write(buffer, 0, length); // <3>
+            count += length;
         }
         return count;
     }
