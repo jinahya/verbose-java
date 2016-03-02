@@ -22,6 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.lang.reflect.Constructor;
 import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
 import static java.nio.channels.Channels.newChannel;
@@ -95,5 +96,15 @@ public class MdUtilsTest {
         }
         final byte[] digest = digest(path, algorithm);
         delete(path);
+    }
+
+    @Test
+    public void construct() throws ReflectiveOperationException {
+        final Constructor<MdUtils> constructor
+                = MdUtils.class.getDeclaredConstructor();
+        if (!constructor.isAccessible()) {
+            constructor.setAccessible(true);
+        }
+        final MdUtils instance = constructor.newInstance();
     }
 }
