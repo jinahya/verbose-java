@@ -31,6 +31,11 @@
       <version>${project.version}</version>
       <scope>compile</scope>
     </dependency>
+    <dependency>
+      <groupId>com.google.inject</groupId>
+      <artifactId>guice</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <profiles>
@@ -85,12 +90,12 @@
           <artifactId>dagger-compiler</artifactId>
           <scope>test</scope>
         </dependency>
-        <dependency> <!-- overriding to latest -->
+        <!--        <dependency>
           <groupId>com.google.guava</groupId>
           <artifactId>guava</artifactId>
-          <version>18.0</version>
+          <version>20.0</version>
           <scope>test</scope>
-        </dependency>
+        </dependency>-->
       </dependencies>
       <build>
         <plugins>
