@@ -21,8 +21,8 @@ import java.io.IOException;
 import java.io.InputStream;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import java.util.concurrent.atomic.AtomicInteger;
-import static org.mockito.Matchers.anyInt;
-import static org.mockito.Matchers.anyLong;
+import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
@@ -138,7 +138,7 @@ public class HexInputStreamTest extends AbstractHexDecoderTest {
     public void skip() throws IOException {
         final InputStream in = mock(InputStream.class); // <1>
         when(in.skip(anyLong())).thenAnswer(
-                i -> current().nextLong(i.getArgumentAt(0, long.class) + 1)); // <2>
+                i -> current().nextLong((long) i.getArgument(0) + 1)); // <2>
         InputStream his = apply(dec -> new HexInputStream(in, dec));
         final long n = current().nextLong(1024L);
         final long skipped = his.skip(n); // <3>

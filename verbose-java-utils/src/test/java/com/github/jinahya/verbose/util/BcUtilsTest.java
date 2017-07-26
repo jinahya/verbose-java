@@ -23,7 +23,7 @@ import static java.nio.ByteBuffer.allocate;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import static java.util.concurrent.ThreadLocalRandom.current;
-import static org.mockito.Matchers.any;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import org.testng.annotations.Test;
@@ -39,7 +39,7 @@ public class BcUtilsTest {
     public static void nonBlockingWritableByteChannel() throws IOException {
         final WritableByteChannel blocking = mock(WritableByteChannel.class);
         doAnswer(i -> {
-            final ByteBuffer src = i.getArgumentAt(0, ByteBuffer.class);
+            final ByteBuffer src = i.getArgument(0);
             src.position(src.limit());
             return null;
         }).when(blocking).write(any(ByteBuffer.class));
@@ -52,7 +52,7 @@ public class BcUtilsTest {
     public static void nonBlockingReadableByteChannel() throws IOException {
         final ReadableByteChannel blocking = mock(ReadableByteChannel.class);
         doAnswer(i -> {
-            final ByteBuffer dst = i.getArgumentAt(0, ByteBuffer.class);
+            final ByteBuffer dst = i.getArgument(0);
             dst.position(dst.limit());
             return null;
         }).when(blocking).read(any(ByteBuffer.class));
