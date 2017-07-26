@@ -31,19 +31,18 @@ import java.nio.channels.WritableByteChannel;
 public interface HelloWorld {
 
     /**
-     * Number of required bytes for representing {@code "hello, world"} in
+     * Number of required bytes for presenting {@code "hello, world"} encoded in
      * {@code US-ASCII} character set.
      */
     int BYTES = 12;
 
     /**
-     * Sets {@value #BYTES} bytes representing {@code "hello, world"} in
-     * {@code US-ASCII} character set on given array starting at specified
+     * Sets {@value #BYTES} bytes representing {@code "hello, world"} encoded in
+     * {@code US-ASCII} character set onto given array starting at specified
      * offset.
      *
      * @param array the array
      * @param offset the start offset in {@code array}
-     *
      * @throws NullPointerException if {@code array} is {@code null}.
      * @throws IndexOutOfBoundsException if {@code offset} is negative or
      * {@code offset} + {@link #BYTES}({@value #BYTES}) is greater than
@@ -52,22 +51,21 @@ public interface HelloWorld {
     void set(byte[] array, int offset);
 
     /**
-     * Puts {@value #BYTES} bytes representing {@code "hello, world"} in
-     * {@code US-ASCII} character set on given buffer. Upon return, the buffer's
-     * position will be incremented by {@value HelloWorld#BYTES}.
+     * Puts {@value #BYTES} bytes representing {@code "hello, world"} encoded in
+     * {@code US-ASCII} character set onto given buffer. Upon return, the
+     * buffer's position will be incremented by {@value HelloWorld#BYTES}.
      *
      * @param buffer the byte buffer
      * @return given byte buffer
      * @throws NullPointerException if {@code buffer} is {@code null}.
      * @throws BufferOverflowException if {@code buffer.remaining} is less than
      * {@value #BYTES}
-     *
      * @see #set(byte[], int)
      * @see ByteBuffer#put(byte[])
      */
     default ByteBuffer put(final ByteBuffer buffer) {
         if (buffer == null) { // <1>
-            throw new NullPointerException("null buffer");
+            throw new NullPointerException("buffer is null");
         }
         if (buffer.remaining() < BYTES) { // <2>
             throw new BufferOverflowException();
@@ -83,8 +81,8 @@ public interface HelloWorld {
     }
 
     /**
-     * Writes {@value #BYTES} bytes representing {@code "hello, world"} on given
-     * output stream.
+     * Writes {@value #BYTES} bytes representing {@code "hello, world"} encoded
+     * in {@code US-ASCII} character set onto given output stream.
      *
      * @param <T> output stream type parameter
      * @param stream the output stream
@@ -95,7 +93,7 @@ public interface HelloWorld {
     default <T extends OutputStream> T write(final T stream)
             throws IOException {
         if (stream == null) { // <1>
-            throw new NullPointerException("null stream");
+            throw new NullPointerException("stream is null");
         }
         final byte[] array = new byte[BYTES]; // <2>
         final int offset = 0;
@@ -105,8 +103,9 @@ public interface HelloWorld {
     }
 
     /**
-     * Writes {@value #BYTES} bytes representing {@code "hello, world"} on given
-     * byte channel.
+     * Writes {@value #BYTES} bytes representing {@code "hello, world"} encoded
+     * in {@code US-ASCII} character set onto given byte channel and returns the
+     * channel.
      *
      * @param <T> channel type parameter
      * @param channel the byte channel
@@ -120,7 +119,7 @@ public interface HelloWorld {
     default <T extends WritableByteChannel> T write(final T channel)
             throws IOException {
         if (channel == null) { // <1>
-            throw new NullPointerException("null channel");
+            throw new NullPointerException("channel is null");
         }
         final ByteBuffer buffer = put(allocate(BYTES)); // <2>
         for (buffer.flip(); buffer.hasRemaining();) { // <3>
