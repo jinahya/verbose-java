@@ -37,7 +37,7 @@ public interface HelloWorld {
     int BYTES = 12;
 
     /**
-     * Sets {@value #BYTES} bytes representing {@code "hello, world"} encoded in
+     * Sets {@value #BYTES} bytes presenting {@code "hello, world"} encoded in
      * {@code US-ASCII} character set onto given array starting at specified
      * offset.
      *
@@ -51,10 +51,11 @@ public interface HelloWorld {
     void set(byte[] array, int offset);
 
     /**
-     * Puts {@value #BYTES} bytes representing {@code "hello, world"} encoded in
+     * Puts {@value #BYTES} bytes presenting {@code "hello, world"} encoded in
      * {@code US-ASCII} character set onto given buffer. Upon return, the
      * buffer's position will be incremented by {@value HelloWorld#BYTES}.
      *
+     * @param <T> byte buffer type parameter
      * @param buffer the byte buffer
      * @return given byte buffer
      * @throws NullPointerException if {@code buffer} is {@code null}.
@@ -63,7 +64,8 @@ public interface HelloWorld {
      * @see #set(byte[], int)
      * @see ByteBuffer#put(byte[])
      */
-    default ByteBuffer put(final ByteBuffer buffer) {
+    @SuppressWarnings("unchecked")
+    default <T extends ByteBuffer> T put(final T buffer) {
         if (buffer == null) { // <1>
             throw new NullPointerException("buffer is null");
         }
@@ -72,12 +74,12 @@ public interface HelloWorld {
         }
         if (buffer.hasArray()) { // <3>
             set(buffer.array(), buffer.arrayOffset() + buffer.position());
-            return (ByteBuffer) buffer.position(buffer.position() + BYTES);
+            return (T) buffer.position(buffer.position() + BYTES);
         }
         final byte[] array = new byte[BYTES]; // <4>
         final int offset = 0;
         set(array, offset);
-        return buffer.put(array); // <5>
+        return (T) buffer.put(array); // <5>
     }
 
     /**
@@ -103,8 +105,8 @@ public interface HelloWorld {
     }
 
     /**
-     * Writes {@value #BYTES} bytes representing {@code "hello, world"} encoded
-     * in {@code US-ASCII} character set onto given byte channel and returns the
+     * Writes {@value #BYTES} bytes presenting {@code "hello, world"} encoded in
+     * {@code US-ASCII} character set onto given byte channel and returns the
      * channel.
      *
      * @param <T> channel type parameter
@@ -122,7 +124,8 @@ public interface HelloWorld {
             throw new NullPointerException("channel is null");
         }
         final ByteBuffer buffer = put(allocate(BYTES)); // <2>
-        for (buffer.flip(); buffer.hasRemaining();) { // <3>
+        for (buffer.flip(); // <3>
+             buffer.hasRemaining();) { // <4>
             channel.write(buffer);
         }
         return channel;

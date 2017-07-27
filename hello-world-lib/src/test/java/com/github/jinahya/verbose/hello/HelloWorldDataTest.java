@@ -15,6 +15,7 @@
  */
 package com.github.jinahya.verbose.hello;
 
+import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
 /**
@@ -86,5 +87,35 @@ abstract class HelloWorldDataTest {
           expectedExceptions = IndexOutOfBoundsException.class)
     public void testCapacityNotEnough(final byte[] array, final int offset) {
         implementation().set(array, offset);
+    }
+
+    /**
+     * Expects an {@code IndexOutOfBoundsException} while invoking
+     * {@link HelloWorld#set(byte[], int)} on the instance
+     * {@link #implementation()} returns with an array and an offset provided by
+     * {@link HelloWorldDataProvider#provideValid()}.
+     *
+     * @param array the array which should not be {@code null}
+     * @param offset the offset which should be equals or greater than zero and
+     * should be equals or less than {@code array.length - HelloWorld.BYTES}
+     *
+     * @see #implementation()
+     */
+    @Test(dataProvider = "provideValid",
+          dataProviderClass = HelloWorldDataProvider.class)
+    public void testValid(final byte[] array, final int offset) {
+        implementation().set(array, offset);
+        assertEquals(array[offset + 0x0], 'h'); // NOSONAR <1>
+        assertEquals(array[offset + 0x1], 'e');
+        assertEquals(array[offset + 0x2], 'l');
+        assertEquals(array[offset + 0x3], 'l');
+        assertEquals(array[offset + 0x4], 'o');
+        assertEquals(array[offset + 0x5], ',');
+        assertEquals(array[offset + 0x6], ' ');
+        assertEquals(array[offset + 0x7], 'w');
+        assertEquals(array[offset + 0x8], 'o');
+        assertEquals(array[offset + 0x9], 'r');
+        assertEquals(array[offset + 0xA], 'l');
+        assertEquals(array[offset + 0xB], 'd');
     }
 }

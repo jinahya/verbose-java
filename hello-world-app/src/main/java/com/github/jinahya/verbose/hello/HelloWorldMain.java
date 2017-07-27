@@ -13,10 +13,11 @@ import static java.util.ServiceLoader.load;
 public class HelloWorldMain {
 
     /**
-     * Prints {@code hello, world} following a new line character to
-     * {@code System.out}. This method loads an instance of {@link HelloWorld}
-     * using {@link ServiceLoader#load(java.lang.Class)} and invokes
-     * {@link HelloWorld#write(java.io.OutputStream)} with {@link System#out}.
+     * Prints {@code hello, world} followed by a (system dependent) new line
+     * character to {@code System.out}. This method loads an instance of
+     * {@link HelloWorld} using {@link ServiceLoader#load(java.lang.Class)} and
+     * invokes {@link HelloWorld#write(java.io.OutputStream)} with
+     * {@link System#out}.
      *
      * @param args command line arguments
      * @throws IOException if an I/O error occurs.

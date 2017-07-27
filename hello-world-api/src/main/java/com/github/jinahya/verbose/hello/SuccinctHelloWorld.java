@@ -24,11 +24,11 @@ package com.github.jinahya.verbose.hello;
 public class SuccinctHelloWorld {
 
     /**
-     * Prints {@code hello, world\n} via {@link System#out}.
+     * Prints {@code hello, world%n} onto {@link System#out}.
      *
      * @param args command line arguments
      */
-    public static void main(final String[] args) {
-        System.out.printf("%s%n", "hello, world");
+    public static void main(final String... args) {
+        System.out.printf("hello, world%n");
     }
 }

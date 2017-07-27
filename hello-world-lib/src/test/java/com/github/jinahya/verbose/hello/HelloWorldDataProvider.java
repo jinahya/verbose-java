@@ -17,6 +17,8 @@ package com.github.jinahya.verbose.hello;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import static java.util.stream.Collectors.toList;
+import java.util.stream.IntStream;
 import org.testng.annotations.DataProvider;
 
 /**
@@ -66,5 +68,19 @@ class HelloWorldDataProvider {
                 new Object[]{new byte[HelloWorld.BYTES + 2], 3},
                 new Object[]{new byte[HelloWorld.BYTES + 3], 4}
         ).iterator();
+    }
+
+    /**
+     * Provides valid test data for {@link HelloWorld#set(byte[], int) }.
+     *
+     * @return an iterator of test data
+     */
+    @DataProvider
+    static Iterator<Object[]> provideValid() {
+        return IntStream
+                .range(0, 16) // <1>
+                .mapToObj(i -> new Object[]{new byte[HelloWorld.BYTES + i], i}) // <2>
+                .collect(toList()) // <3>
+                .iterator(); // <4>
     }
 }
