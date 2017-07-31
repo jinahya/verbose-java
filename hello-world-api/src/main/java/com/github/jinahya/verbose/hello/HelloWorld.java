@@ -21,6 +21,7 @@ import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
 import java.nio.channels.WritableByteChannel;
+import static java.nio.charset.StandardCharsets.US_ASCII;
 
 /**
  * An interface for generating {@code "hello, world"} bytes.
@@ -31,10 +32,10 @@ import java.nio.channels.WritableByteChannel;
 public interface HelloWorld {
 
     /**
-     * Number of required bytes for presenting {@code "hello, world"} encoded in
-     * {@code US-ASCII} character set.
+     * The number of required bytes for presenting {@code "hello, world"}
+     * encoded in {@code US-ASCII} character set.
      */
-    int BYTES = 12;
+    int BYTES = "hello, world".getBytes(US_ASCII).length;
 
     /**
      * Sets {@value #BYTES} bytes presenting {@code "hello, world"} encoded in
@@ -49,6 +50,28 @@ public interface HelloWorld {
      * {@code array.length}.
      */
     void set(byte[] array, int offset);
+
+    /**
+     * Writes {@value #BYTES} bytes presenting {@code "hello, world"} encoded in
+     * {@code US-ASCII} character set onto given output stream.
+     *
+     * @param <T> output stream type parameter
+     * @param stream the output stream
+     * @return given output stream
+     * @throws NullPointerException if {@code stream} is {@code null}
+     * @throws IOException if an I/O error occurs.
+     */
+    default <T extends OutputStream> T write(final T stream)
+            throws IOException {
+        if (stream == null) { // <1>
+            throw new NullPointerException("stream is null");
+        }
+        final byte[] array = new byte[BYTES]; // <2>
+        final int offset = 0;
+        set(array, offset);
+        stream.write(array); // <3>
+        return stream;
+    }
 
     /**
      * Puts {@value #BYTES} bytes presenting {@code "hello, world"} encoded in
@@ -80,28 +103,6 @@ public interface HelloWorld {
         final int offset = 0;
         set(array, offset);
         return (T) buffer.put(array); // <5>
-    }
-
-    /**
-     * Writes {@value #BYTES} bytes representing {@code "hello, world"} encoded
-     * in {@code US-ASCII} character set onto given output stream.
-     *
-     * @param <T> output stream type parameter
-     * @param stream the output stream
-     * @return given output stream
-     * @throws NullPointerException if {@code stream} is {@code null}
-     * @throws IOException if an I/O error occurs.
-     */
-    default <T extends OutputStream> T write(final T stream)
-            throws IOException {
-        if (stream == null) { // <1>
-            throw new NullPointerException("stream is null");
-        }
-        final byte[] array = new byte[BYTES]; // <2>
-        final int offset = 0;
-        set(array, offset);
-        stream.write(array); // <3>
-        return stream;
     }
 
     /**
