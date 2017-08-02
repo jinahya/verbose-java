@@ -17,6 +17,7 @@ package com.github.jinahya.verbose.hello;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import static java.lang.invoke.MethodHandles.lookup;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 import org.testng.annotations.BeforeClass;
@@ -28,13 +29,12 @@ import org.testng.annotations.BeforeClass;
  */
 public class HelloWorldGuiceTest extends HelloWorldInjectionTest {
 
+    private static final Logger logger = getLogger(lookup().lookupClass());
+
     @BeforeClass
     void inject() {
         final Injector injector
                 = Guice.createInjector(new HelloWorldGuiceModule());
         injector.injectMembers(this);
-        logger.debug("injected");
     }
-
-    private transient final Logger logger = getLogger(getClass());
 }

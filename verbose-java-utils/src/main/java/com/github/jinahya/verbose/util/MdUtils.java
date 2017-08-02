@@ -18,10 +18,13 @@ package com.github.jinahya.verbose.util;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import static java.lang.invoke.MethodHandles.lookup;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
 import static java.util.concurrent.ThreadLocalRandom.current;
+import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 
 /**
  *
@@ -29,6 +32,10 @@ import static java.util.concurrent.ThreadLocalRandom.current;
  */
 public final class MdUtils {
 
+    private static final Logger logger
+            = getLogger(lookup().lookupClass().getName());
+
+    // -------------------------------------------------------------------------
     /**
      * Computes a hash value for all bytes from given input stream using
      * specified algorithm name.
@@ -73,6 +80,7 @@ public final class MdUtils {
         }
     }
 
+    // -------------------------------------------------------------------------
     private MdUtils() {
         super();
     }

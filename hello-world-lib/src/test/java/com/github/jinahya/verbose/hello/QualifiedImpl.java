@@ -25,7 +25,7 @@ import java.lang.annotation.Target;
 import javax.inject.Qualifier;
 
 /**
- * An injection qualifier for being injected with {@code HelloWorldImpl}.
+ * An injection qualifier for being injected with {@link HelloWorldImpl}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */

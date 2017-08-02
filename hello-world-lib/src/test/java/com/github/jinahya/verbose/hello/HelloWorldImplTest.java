@@ -49,7 +49,7 @@ public class HelloWorldImplTest {
      */
     @Test(expectedExceptions = IndexOutOfBoundsException.class)
     public void expectIndexOutOfBoundsWhenOffsetIsNegative() {
-        final byte[] array = new byte[0];
+        final byte[] array = new byte[0]; // <1>
         final int offset = -1;
         new HelloWorldImpl().set(array, offset);
     }
@@ -61,8 +61,8 @@ public class HelloWorldImplTest {
      */
     @Test(expectedExceptions = IndexOutOfBoundsException.class)
     public void expectIndexOutOfBoundsExceptionWhenCapacityIsNotEnough() {
-        final byte[] array = new byte[HelloWorld.BYTES];
-        final int offset = 1;
+        final byte[] array = new byte[HelloWorld.BYTES]; // <1>
+        final int offset = 1; // <2>
         new HelloWorldImpl().set(array, offset);
     }
 

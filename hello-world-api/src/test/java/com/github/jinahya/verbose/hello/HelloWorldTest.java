@@ -59,7 +59,7 @@ public class HelloWorldTest {
     public void testWriteStream() throws IOException {
         try {
             mock().write((OutputStream) null); // <1>
-            fail("NullPointerException hasn't been thrown");
+            fail("NullPointerException should be thrown!");
         } catch (final NullPointerException npe) { // NOPMD
             // expected
         }

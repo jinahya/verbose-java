@@ -15,6 +15,7 @@
  */
 package com.github.jinahya.verbose.hello;
 
+import static java.lang.invoke.MethodHandles.lookup;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 import org.testng.annotations.BeforeClass;
@@ -27,6 +28,9 @@ import org.testng.annotations.BeforeClass;
  */
 public class HelloWorldDagger2Test extends HelloWorldInjectionTest {
 
+    private static final Logger logger = getLogger(lookup().lookupClass());
+
+    // -------------------------------------------------------------------------
     @BeforeClass
     void inject() {
         final HelloWorldDagger2Component component
@@ -34,7 +38,4 @@ public class HelloWorldDagger2Test extends HelloWorldInjectionTest {
         component.injectMembers(this);
         logger.debug("injected");
     }
-
-    private transient final Logger logger = getLogger(getClass());
-
 }

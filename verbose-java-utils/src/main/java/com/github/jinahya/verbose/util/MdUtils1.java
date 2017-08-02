@@ -19,11 +19,14 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import static java.lang.invoke.MethodHandles.lookup;
 import java.security.DigestInputStream;
 import java.security.MessageDigest;
 import static java.security.MessageDigest.getInstance;
 import java.security.NoSuchAlgorithmException;
 import static java.util.concurrent.ThreadLocalRandom.current;
+import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 
 /**
  * Utilities for {@link MessageDigest} with {@code java.io} package.
@@ -32,6 +35,10 @@ import static java.util.concurrent.ThreadLocalRandom.current;
  */
 public final class MdUtils1 {
 
+    private static final Logger logger
+            = getLogger(lookup().lookupClass().getName());
+
+    // -------------------------------------------------------------------------
     private static byte[] digest1(final InputStream input,
                                   final String algorithm)
             throws NoSuchAlgorithmException, IOException {
@@ -93,6 +100,7 @@ public final class MdUtils1 {
         }
     }
 
+    // -------------------------------------------------------------------------
     private MdUtils1() {
         super();
     }

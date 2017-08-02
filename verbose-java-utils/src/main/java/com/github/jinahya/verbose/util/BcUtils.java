@@ -15,6 +15,7 @@
  */
 package com.github.jinahya.verbose.util;
 
+import static java.lang.invoke.MethodHandles.lookup;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.Method;
 import static java.lang.reflect.Proxy.newProxyInstance;
@@ -22,6 +23,8 @@ import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import static java.util.concurrent.ThreadLocalRandom.current;
+import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 
 /**
  * Utilities for byte channels.
@@ -30,6 +33,10 @@ import static java.util.concurrent.ThreadLocalRandom.current;
  */
 public final class BcUtils {
 
+    private static final Logger logger
+            = getLogger(lookup().lookupClass().getName());
+
+    // -------------------------------------------------------------------------
     /**
      * Creates a new proxy instance which intercepts
      * {@link WritableByteChannel#write(java.nio.ByteBuffer)} method and mimics
@@ -150,6 +157,7 @@ public final class BcUtils {
         return (T) nonBlockingHelper(channel.getClass(), channel);
     }
 
+    // -------------------------------------------------------------------------
     private BcUtils() {
         super();
     }

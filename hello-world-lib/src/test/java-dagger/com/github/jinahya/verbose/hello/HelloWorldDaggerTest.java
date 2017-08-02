@@ -16,6 +16,7 @@
 package com.github.jinahya.verbose.hello;
 
 import dagger.ObjectGraph;
+import static java.lang.invoke.MethodHandles.lookup;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 import org.testng.annotations.BeforeClass;
@@ -28,6 +29,9 @@ import org.testng.annotations.BeforeClass;
  */
 public class HelloWorldDaggerTest extends HelloWorldInjectionTest {
 
+    private static final Logger logger = getLogger(lookup().lookupClass());
+
+    // -------------------------------------------------------------------------
     @BeforeClass
     void inject() {
         final ObjectGraph graph
@@ -35,6 +39,4 @@ public class HelloWorldDaggerTest extends HelloWorldInjectionTest {
         graph.inject(this);
         logger.debug("injected");
     }
-
-    private transient final Logger logger = getLogger(getClass());
 }

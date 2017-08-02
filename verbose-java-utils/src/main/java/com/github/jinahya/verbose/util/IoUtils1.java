@@ -21,7 +21,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import static java.lang.invoke.MethodHandles.lookup;
 import static java.util.concurrent.ThreadLocalRandom.current;
+import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 
 /**
  * I/O utilities for {@code java.io} package.
@@ -30,6 +33,10 @@ import static java.util.concurrent.ThreadLocalRandom.current;
  */
 final class IoUtils1 {
 
+    private static final Logger logger
+            = getLogger(lookup().lookupClass().getName());
+
+    // -------------------------------------------------------------------------
     private static long copy1(final InputStream input,
                               final OutputStream output)
             throws IOException {

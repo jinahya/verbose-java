@@ -59,44 +59,35 @@
     <java.cryptographic.extension.classes>${java.home}/lib/jce.jar</java.cryptographic.extension.classes>
     <java.secure.socket.extension.classes>${java.home}/lib/jsse.jar</java.secure.socket.extension.classes>
     <github.site.noJekyll>true</github.site.noJekyll>
-    <com.google.dagger.version>2.11</com.google.dagger.version>
-    <com.squareup.dagger.version>1.2.5</com.squareup.dagger.version>
-    <org.glassfish.hk2.version>2.5.0-b43</org.glassfish.hk2.version>
-    <org.springframework.version>4.3.10.RELEASE</org.springframework.version>
+    <version.com.google.dagger>2.11</version.com.google.dagger>
+    <version.com.google.inject>4.1.0</version.com.google.inject>
+    <version.com.squareup.dagger>1.2.5</version.com.squareup.dagger>
+    <version.org.glassfish.hk2>2.5.0-b43</version.org.glassfish.hk2>
+    <version.org.springframework>4.3.10.RELEASE</version.org.springframework>
     <sonar.exclusions>file:**/generated-sources/**</sonar.exclusions>
   </properties>
 
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>com.google.dagger</groupId>
-        <artifactId>dagger</artifactId>
-        <version>${com.google.dagger.version}</version>
+        <groupId>com.google.guava</groupId>
+        <artifactId>guava</artifactId>
+        <version>22.0</version>
       </dependency>
       <dependency>
         <groupId>com.google.dagger</groupId>
         <artifactId>dagger-compiler</artifactId>
-        <version>${com.google.dagger.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>com.google.guava</groupId>
-        <artifactId>guava</artifactId>
-        <version>20.0</version>
+        <version>${version.com.google.dagger}</version>
       </dependency>
       <dependency>
         <groupId>com.google.inject</groupId>
         <artifactId>guice</artifactId>
-        <version>4.0</version>
-      </dependency>
-      <dependency>
-        <groupId>com.squareup.dagger</groupId>
-        <artifactId>dagger</artifactId>
-        <version>${com.squareup.dagger.version}</version>
+        <version>${version.com.google.inject}</version>
       </dependency>
       <dependency>
         <groupId>com.squareup.dagger</groupId>
         <artifactId>dagger-compiler</artifactId>
-        <version>${com.squareup.dagger.version}</version>
+        <version>${version.com.squareup.dagger}</version>
       </dependency>
       <dependency>
         <groupId>commons-codec</groupId>
@@ -121,37 +112,17 @@
       <dependency>
         <groupId>org.glassfish.hk2</groupId>
         <artifactId>hk2-core</artifactId>
-        <version>${org.glassfish.hk2.version}</version>
-      </dependency>
-      <!--      <dependency>
-        <groupId>org.glassfish.hk2</groupId>
-        <artifactId>hk2-testing</artifactId>
-        <version>${org.glassfish.hk2.version}</version>
-      </dependency>-->
-      <dependency>
-        <groupId>org.glassfish.hk2</groupId>
-        <artifactId>hk2-testng</artifactId>
-        <version>${org.glassfish.hk2.version}</version>
+        <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
         <version>2.8.47</version>
       </dependency>
-      <!--      <dependency>
-        <groupId>org.openjdk.jmh</groupId>
-        <artifactId>jmh-core</artifactId>
-        <version>${org.openjdk.jmh.version}</version>
-      </dependency>
-      <dependency>
-        <groupId>org.openjdk.jmh</groupId>
-        <artifactId>jmh-generator-annprocess</artifactId>
-        <version>${org.openjdk.jmh.version}</version>
-      </dependency>-->
-      <dependency>
+      <dependency>      
         <groupId>org.springframework</groupId>
         <artifactId>spring-context</artifactId>
-        <version>${org.springframework.version}</version>
+        <version>${version.org.springframework}</version>
       </dependency>
     </dependencies>
   </dependencyManagement>
@@ -229,6 +200,11 @@
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-assembly-plugin</artifactId>
           <version>2.6</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-clean-plugin</artifactId>
+          <version>3.0.0</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>

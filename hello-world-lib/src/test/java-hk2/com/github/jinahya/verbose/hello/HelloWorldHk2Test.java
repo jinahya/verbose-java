@@ -15,6 +15,7 @@
  */
 package com.github.jinahya.verbose.hello;
 
+import static java.lang.invoke.MethodHandles.lookup;
 import org.glassfish.hk2.api.ServiceLocator;
 import org.glassfish.hk2.utilities.Binder;
 import org.glassfish.hk2.utilities.ServiceLocatorUtilities;
@@ -30,6 +31,9 @@ import org.testng.annotations.BeforeClass;
  */
 public class HelloWorldHk2Test extends HelloWorldInjectionTest {
 
+    private static final Logger logger = getLogger(lookup().lookupClass());
+
+    // -------------------------------------------------------------------------
     @BeforeClass
     void inject() {
         final Binder binder = new HelloWorldHk2Binder();
@@ -37,6 +41,4 @@ public class HelloWorldHk2Test extends HelloWorldInjectionTest {
         locator.inject(this);
         logger.debug("injected");
     }
-
-    private transient final Logger logger = getLogger(getClass());
 }

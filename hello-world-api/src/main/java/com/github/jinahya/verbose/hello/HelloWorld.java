@@ -67,10 +67,10 @@ public interface HelloWorld {
             throw new NullPointerException("stream is null");
         }
         final byte[] array = new byte[BYTES]; // <2>
-        final int offset = 0;
-        set(array, offset);
-        stream.write(array); // <3>
-        return stream;
+        final int offset = 0; //<3>
+        set(array, offset); // <4>
+        stream.write(array); // <5>
+        return stream; // <6>
     }
 
     /**
@@ -126,8 +126,8 @@ public interface HelloWorld {
         }
         final ByteBuffer buffer = put(allocate(BYTES)); // <2>
         for (buffer.flip(); // <3>
-             buffer.hasRemaining();) { // <4>
-            channel.write(buffer);
+             buffer.hasRemaining(); // <4>
+             channel.write(buffer)) { // <5>
         }
         return channel;
     }

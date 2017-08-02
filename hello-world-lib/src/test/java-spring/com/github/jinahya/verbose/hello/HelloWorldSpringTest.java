@@ -15,6 +15,7 @@
  */
 package com.github.jinahya.verbose.hello;
 
+import static java.lang.invoke.MethodHandles.lookup;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 import org.springframework.beans.factory.config.AutowireCapableBeanFactory;
@@ -31,8 +32,11 @@ import org.testng.annotations.BeforeClass;
  */
 public class HelloWorldSpringTest extends HelloWorldInjectionTest {
 
+    private static final Logger logger = getLogger(lookup().lookupClass());
+
+    // -------------------------------------------------------------------------
     @BeforeClass
-    protected void inject() {
+    void inject() {
         final GenericApplicationContext context
                 = new AnnotationConfigApplicationContext(
                         HelloWorldSpringConfiguration.class);
@@ -41,6 +45,4 @@ public class HelloWorldSpringTest extends HelloWorldInjectionTest {
         factory.autowireBean(this);
         logger.debug("injected");
     }
-
-    private transient final Logger logger = getLogger(getClass());
 }

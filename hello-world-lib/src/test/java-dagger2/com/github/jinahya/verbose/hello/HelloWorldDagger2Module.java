@@ -17,8 +17,11 @@ package com.github.jinahya.verbose.hello;
 
 import dagger.Module;
 import dagger.Provides;
+import static java.lang.invoke.MethodHandles.lookup;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import javax.inject.Named;
+import org.slf4j.Logger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  *
@@ -27,34 +30,36 @@ import javax.inject.Named;
 @Module
 public class HelloWorldDagger2Module {
 
+    private static final Logger logger = getLogger(lookup().lookupClass());
+
+    // -------------------------------------------------------------------------
     @Provides
-    HelloWorld providesHelloWorld() {
+    HelloWorld providesAny() {
         return current().nextBoolean()
                ? new HelloWorldImpl() : new HelloWorldDemo();
     }
 
     @Provides
     @Named("demo")
-    HelloWorld providesHelloWorldNamedAsDemo() {
+    HelloWorld providesNamedDemo() {
         return new HelloWorldDemo();
     }
 
     @Provides
     @Named("impl")
-    HelloWorld providesHelloWorldnamedAsImpl() {
+    HelloWorld providesNmedImpl() {
         return new HelloWorldImpl();
     }
 
     @Provides
     @QualifiedDemo
-    HelloWorld providesHelloWorldQualifiedWithDemo() {
+    HelloWorld providesQualifiedDemo() {
         return new HelloWorldDemo();
     }
 
     @Provides
     @QualifiedImpl
-    HelloWorld providesHelloWorldQualifiedWithImpl() {
+    HelloWorld providesQualifiedImpl() {
         return new HelloWorldImpl();
     }
-
 }

@@ -15,6 +15,7 @@
  */
 package com.github.jinahya.verbose.hello;
 
+import static java.lang.invoke.MethodHandles.lookup;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import org.glassfish.hk2.api.AnnotationLiteral;
 import org.glassfish.hk2.utilities.binding.AbstractBinder;
@@ -27,18 +28,19 @@ import static org.slf4j.LoggerFactory.getLogger;
  */
 public class HelloWorldHk2Binder extends AbstractBinder {
 
-    class DemoLiteral extends AnnotationLiteral<QualifiedDemo>
+    private static final Logger logger = getLogger(lookup().lookupClass());
+
+    // -------------------------------------------------------------------------
+    private static class DemoLiteral extends AnnotationLiteral<QualifiedDemo>
             implements QualifiedDemo {
 
         private static final long serialVersionUID = -103484319922866187L;
-
     }
 
-    class ImplLiteral extends AnnotationLiteral<QualifiedImpl>
+    private static class ImplLiteral extends AnnotationLiteral<QualifiedImpl>
             implements QualifiedImpl {
 
         private static final long serialVersionUID = -4180074935060055710L;
-
     }
 
     @Override
@@ -58,6 +60,4 @@ public class HelloWorldHk2Binder extends AbstractBinder {
                 .to(HelloWorld.class);
         logger.debug("configured");
     }
-
-    private transient final Logger logger = getLogger(getClass());
 }

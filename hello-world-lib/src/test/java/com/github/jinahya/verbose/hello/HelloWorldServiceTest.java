@@ -15,6 +15,7 @@
  */
 package com.github.jinahya.verbose.hello;
 
+import static java.lang.invoke.MethodHandles.lookup;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.ServiceLoader;
@@ -28,6 +29,8 @@ import static org.testng.Assert.fail;
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 public class HelloWorldServiceTest extends HelloWorldDataTest {
+
+    private static final Logger logger = getLogger(lookup().lookupClass());
 
     @Override
     HelloWorld implementation() {
@@ -44,8 +47,6 @@ public class HelloWorldServiceTest extends HelloWorldDataTest {
         }
         return implementation;
     }
-
-    private transient final Logger logger = getLogger(getClass());
 
     private HelloWorld implementation;
 }

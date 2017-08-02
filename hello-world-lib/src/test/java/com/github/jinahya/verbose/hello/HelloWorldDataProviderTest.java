@@ -24,7 +24,7 @@ import org.testng.annotations.Test;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class HelloWorldDataProviderTest {
+class HelloWorldDataProviderTest {
 
     /**
      * Checks {@link HelloWorldDataProvider#provideArrayNull()} method provides

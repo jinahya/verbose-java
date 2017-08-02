@@ -16,6 +16,7 @@
 package com.github.jinahya.verbose.util;
 
 import java.io.IOException;
+import static java.lang.invoke.MethodHandles.lookup;
 import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
 import static java.nio.channels.FileChannel.open;
@@ -26,6 +27,8 @@ import java.security.MessageDigest;
 import static java.security.MessageDigest.getInstance;
 import java.security.NoSuchAlgorithmException;
 import static java.util.concurrent.ThreadLocalRandom.current;
+import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 
 /**
  * Utilities for {@link MessageDigest} with {@code java.nio.channels} package.
@@ -34,6 +37,10 @@ import static java.util.concurrent.ThreadLocalRandom.current;
  */
 public final class MdUtils2 {
 
+    private static final Logger logger
+            = getLogger(lookup().lookupClass().getName());
+
+    // -------------------------------------------------------------------------
     private static byte[] digest1(final ReadableByteChannel channel,
                                   final String algorithm)
             throws NoSuchAlgorithmException, IOException {
@@ -70,8 +77,8 @@ public final class MdUtils2 {
         }
     }
 
+    // -------------------------------------------------------------------------
     private MdUtils2() {
         super();
     }
-
 }

@@ -16,6 +16,7 @@
 package com.github.jinahya.verbose.util;
 
 import java.io.IOException;
+import static java.lang.invoke.MethodHandles.lookup;
 import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
 import java.nio.channels.FileChannel;
@@ -28,6 +29,8 @@ import static java.nio.file.StandardOpenOption.READ;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 import static java.nio.file.StandardOpenOption.WRITE;
 import static java.util.concurrent.ThreadLocalRandom.current;
+import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 
 /**
  * I/O utilities for {@code java.nio.channels} package.
@@ -36,6 +39,10 @@ import static java.util.concurrent.ThreadLocalRandom.current;
  */
 final class IoUtils2 {
 
+    private static final Logger logger
+            = getLogger(lookup().lookupClass().getName());
+
+    // -------------------------------------------------------------------------
     private static long copy1(final ReadableByteChannel readable,
                               final WritableByteChannel writable)
             throws IOException {
@@ -147,6 +154,7 @@ final class IoUtils2 {
         }
     }
 
+    // -------------------------------------------------------------------------
     private IoUtils2() {
         super();
     }
