@@ -18,23 +18,24 @@ package com.github.jinahya.verbose.hex;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
+import java.util.function.Supplier;
 
 /**
  * A {@code ReadableByteChannel} filters another {@code ReadableByteChannel}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class ReadableFilterChannel
-        extends FilterChannel<ReadableByteChannel>
+public class ReadableFilterChannel<T extends ReadableByteChannel>
+        extends FilterChannel<T>
         implements ReadableByteChannel {
 
     /**
      * Creates a new instance of top of given channel.
      *
-     * @param channel the channel
+     * @param channelSupplier the channel
      */
-    public ReadableFilterChannel(final ReadableByteChannel channel) {
-        super(channel);
+    public ReadableFilterChannel(final Supplier<T> channelSupplier) {
+        super(channelSupplier);
     }
 
     /**
@@ -47,7 +48,6 @@ public class ReadableFilterChannel
      */
     @Override
     public int read(final ByteBuffer dst) throws IOException {
-        return channel.read(dst);
+        return channel().read(dst);
     }
-
 }

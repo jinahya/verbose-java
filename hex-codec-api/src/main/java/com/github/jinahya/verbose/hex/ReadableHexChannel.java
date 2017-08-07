@@ -20,30 +20,47 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
 import java.nio.channels.ReadableByteChannel;
+import static java.util.Objects.requireNonNull;
+import java.util.function.Supplier;
 
 /**
  * A {@code ReadableByteChannel} decodes hex characters to bytes.
  *
- * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
+ * @author Jin Kwon &lt;onacit at gmail.com&gt;
+ * @param <T> channel type parameter
+ * @param <U> decoder type parameter
  */
-public class ReadableHexChannel extends ReadableFilterChannel {
+public class ReadableHexChannel<T extends ReadableByteChannel, U extends HexDecoder>
+        extends ReadableFilterChannel<T> {
 
     /**
-     * Creates a new instance on top of given channel.
+     * Creates a new instance on top of given channel that given supplier
+     * supplies.
      *
-     * @param channel the channel from which encoded characters are read
-     * @param decoder the decoder for decoding characters into bytes.
+     * @param channelSupplier a supplier supplies the channel from which encoded
+     * characters are read
+     * @param decoderSupplier a supplier supplies the decoder for decoding
+     * characters into bytes.
      */
-    public ReadableHexChannel(final ReadableByteChannel channel,
-                              final HexDecoder decoder) {
-        super(channel);
-        this.decoder = decoder;
+    public ReadableHexChannel(final Supplier<T> channelSupplier,
+                              final Supplier<U> decoderSupplier) {
+        super(channelSupplier);
+        this.decoderSupplier = requireNonNull(
+                decoderSupplier, "decoderSupplier is null");
+    }
+
+    protected U decoder() {
+        if (decoder == null && (decoder = decoderSupplier.get()) == null) {
+            throw new RuntimeException("null decoder supplied");
+        }
+        return decoder;
     }
 
     /**
      * {@inheritDoc} The {@code read(ByteBuffer)} method of
      * {@code ReadableHexChannel} class read maximum by double number of bytes
-     * of {@code dst.remaining()} and decodes them using {@link #decoder}.
+     * of {@code dst.remaining()} and decodes them using
+     * {@link #decoderSupplier}.
      *
      * @param dst The buffer into which bytes are to be transferred
      * @return The number of bytes read, possibly zero, or -1 if the channel has
@@ -59,18 +76,19 @@ public class ReadableHexChannel extends ReadableFilterChannel {
         if ((aux.position() & 1) == 1) { // <3>
             aux.limit(aux.position() + 1);
             while (aux.hasRemaining()) {
-                if (channel.read(aux) == -1) { // unacceptable end-of-stream
+                if (super.read(aux) == -1) { // unacceptable end-of-stream
                     throw new EOFException();
                 }
             }
         }
         aux.flip();
-        return decoder.decode(aux, dst); // <4>
+        return decoder().decode(aux, dst); // <4>
     }
 
     /**
      * The decoder for decoding characters into bytes.
      */
-    protected HexDecoder decoder;
+    private final Supplier<U> decoderSupplier;
 
+    private U decoder;
 }

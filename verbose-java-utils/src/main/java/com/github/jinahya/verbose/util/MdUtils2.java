@@ -35,45 +35,53 @@ import static java.util.logging.Logger.getLogger;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public final class MdUtils2 {
+final class MdUtils2 {
 
     private static final Logger logger
             = getLogger(lookup().lookupClass().getName());
 
     // -------------------------------------------------------------------------
-    private static byte[] digest1(final ReadableByteChannel channel,
-                                  final String algorithm)
+    private static byte[] digest1(final String algorithm,
+                                  final ReadableByteChannel channel,
+                                  final ByteBuffer buffer)
             throws NoSuchAlgorithmException, IOException {
+        // @todo: validate arguments!
         final MessageDigest digest = getInstance(algorithm);
-        for (final ByteBuffer b = allocate(4096); channel.read(b) != -1;) {
-            b.flip();
-            digest.update(b); // <1>
-            b.clear();
+        while (channel.read(buffer) != -1) {
+            buffer.flip();
+            digest.update(buffer); // <1>
+            buffer.clear();
         }
         return digest.digest();
     }
 
-    static byte[] digest(final ReadableByteChannel channel,
-                         final String algorithm)
+    static byte[] digest(final String algorithm,
+                         final ReadableByteChannel channel,
+                         final ByteBuffer buffer)
             throws NoSuchAlgorithmException, IOException {
+        // @todo: validate arguments!
         switch (current().nextInt(1)) {
             default:
-                return digest1(channel, algorithm);
+                return digest1(algorithm, channel, buffer);
         }
     }
 
-    private static byte[] digest1(final Path path, final String algorithm)
+    private static byte[] digest1(final String algorithm, final Path path,
+                                  final ByteBuffer buffer)
             throws IOException, NoSuchAlgorithmException {
+        // @todo: validate arguments!
         try (ReadableByteChannel channel = open(path, READ)) {
-            return digest(channel, algorithm);
+            return digest(algorithm, channel, buffer); // <1>
         }
     }
 
-    static byte[] digest(final Path path, final String algorithm)
+    static byte[] digest(final String algorithm, final Path path,
+                         final ByteBuffer buffer)
             throws IOException, NoSuchAlgorithmException {
+        // @todo: validate arguments!
         switch (current().nextInt(1)) {
             default:
-                return digest1(path, algorithm);
+                return digest1(algorithm, path, buffer);
         }
     }
 

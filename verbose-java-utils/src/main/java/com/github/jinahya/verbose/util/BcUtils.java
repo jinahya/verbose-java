@@ -36,7 +36,6 @@ public final class BcUtils {
     private static final Logger logger
             = getLogger(lookup().lookupClass().getName());
 
-    // -------------------------------------------------------------------------
     /**
      * Creates a new proxy instance which intercepts
      * {@link WritableByteChannel#write(java.nio.ByteBuffer)} method and mimics
@@ -50,6 +49,7 @@ public final class BcUtils {
      */
     public static <T extends WritableByteChannel> T nonBlocking(
             final Class<T> type, final T channel) {
+        // @todo: validate arguments!
         final Method target; // <1>
         try {
             target = WritableByteChannel.class.getMethod(
@@ -78,7 +78,7 @@ public final class BcUtils {
 
     private static <T extends WritableByteChannel> T nonBlockingHelper(
             final Class<T> type, final WritableByteChannel channel) {
-        return BcUtils.nonBlocking(type, type.cast(channel)); // ClassCastException
+        return nonBlocking(type, type.cast(channel)); // ClassCastException
     }
 
     /**
@@ -157,7 +157,6 @@ public final class BcUtils {
         return (T) nonBlockingHelper(channel.getClass(), channel);
     }
 
-    // -------------------------------------------------------------------------
     private BcUtils() {
         super();
     }

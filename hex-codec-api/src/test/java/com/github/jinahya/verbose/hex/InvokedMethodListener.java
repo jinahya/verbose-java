@@ -15,6 +15,7 @@
  */
 package com.github.jinahya.verbose.hex;
 
+import static java.lang.invoke.MethodHandles.lookup;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 import org.testng.IInvokedMethod;
@@ -27,17 +28,17 @@ import org.testng.ITestResult;
  */
 public class InvokedMethodListener implements IInvokedMethodListener {
 
+    private static final Logger logger = getLogger(lookup().lookupClass());
+
     @Override
     public void beforeInvocation(final IInvokedMethod method,
                                  final ITestResult testResult) {
-        logger.debug("invoking {}, {}", method, testResult);
+        //logger.debug("invoking {}, {}", method, testResult);
     }
 
     @Override
     public void afterInvocation(final IInvokedMethod method,
                                 final ITestResult testResult) {
-        logger.debug("invoked {}, {}", method, testResult);
+        //logger.debug("invoked {}, {}", method, testResult);
     }
-
-    private transient final Logger logger = getLogger(getClass());
 }

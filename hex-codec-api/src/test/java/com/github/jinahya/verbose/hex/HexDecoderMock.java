@@ -15,21 +15,31 @@
  */
 package com.github.jinahya.verbose.hex;
 
-import com.google.inject.AbstractModule;
+import java.nio.BufferUnderflowException;
+import java.nio.ByteBuffer;
 
 /**
- * A module binds {@link HexDecoder} to {@link HexDecoderDemo}.
+ * A demonstrative implementation of {@link HexDecoder}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-class HexDecoderDemoModule extends AbstractModule {
+class HexDecoderMock implements HexDecoder {
 
     /**
-     * Binds injection points of {@link HexDecoder} to {@link HexDecoderDemo}
+     * {@inheritDoc}
+     *
+     * @param encoded {@inheritDoc}
+     * @return {@inheritDoc}
      */
     @Override
-    protected void configure() {
-        bind(HexDecoder.class).to(HexDecoderDemo.class);
+    public int decodeOctet(final ByteBuffer encoded) {
+        if (encoded == null) {
+            throw new NullPointerException("encoded is null");
+        }
+        if (encoded.remaining() < 2) {
+            throw new BufferUnderflowException();
+        }
+        encoded.position(encoded.position() + 2);
+        return 0;
     }
-
 }

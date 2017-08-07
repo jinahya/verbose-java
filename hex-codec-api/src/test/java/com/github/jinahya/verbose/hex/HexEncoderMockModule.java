@@ -15,20 +15,20 @@
  */
 package com.github.jinahya.verbose.hex;
 
-import java.io.IOException;
-import java.nio.ByteBuffer;
-import java.nio.channels.WritableByteChannel;
+import com.google.inject.AbstractModule;
 
-public class TypedWritableFilterChannel<T extends WritableByteChannel>
-        extends FilterChannel<T>
-        implements WritableByteChannel {
+/**
+ * A module binds {@link HexEncoder} to {@link HexEncoderMock}.
+ *
+ * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
+ */
+class HexEncoderMockModule extends AbstractModule {
 
-    public TypedWritableFilterChannel(final T channel) {
-        super(channel);
-    }
-
+    /**
+     * Binds injection points of {@link HexEncoder} to {@link HexEncoderMock}.
+     */
     @Override
-    public int write(final ByteBuffer src) throws IOException {
-        return channel.write(src);
+    protected void configure() {
+        bind(HexEncoder.class).to(HexEncoderMock.class);
     }
 }

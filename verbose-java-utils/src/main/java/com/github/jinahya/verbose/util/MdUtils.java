@@ -19,6 +19,7 @@ import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
 import static java.lang.invoke.MethodHandles.lookup;
+import java.nio.ByteBuffer;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.file.Path;
 import java.security.NoSuchAlgorithmException;
@@ -42,41 +43,49 @@ public final class MdUtils {
      *
      * @param stream the input stream
      * @param algorithm the algorithm
+     * @param buffer a buffer to use
      * @return message digest value
      * @throws NoSuchAlgorithmException if {@code algorithm} is unknown
      * @throws IOException if an I/O error occurs.
      */
-    public static byte[] digest(final InputStream stream,
-                                final String algorithm)
+    public static byte[] digest(final String algorithm,
+                                final InputStream stream, final byte[] buffer)
             throws NoSuchAlgorithmException, IOException {
+        // @todo: validate arguments!
         switch (current().nextInt(1)) {
             default:
-                return MdUtils1.digest(stream, algorithm);
+                return MdUtils1.digest(algorithm, stream, buffer);
         }
     }
 
-    public static byte[] digest(final File file, final String algorithm)
+    public static byte[] digest(final String algorithm, final File file,
+                                final byte[] buffer)
             throws IOException, NoSuchAlgorithmException {
+        // @todo: validate arguments!
         switch (current().nextInt(1)) {
             default:
-                return MdUtils1.digest(file, algorithm);
+                return MdUtils1.digest(algorithm, file, buffer);
         }
     }
 
-    public static byte[] digest(final ReadableByteChannel channel,
-                                final String algorithm)
+    public static byte[] digest(final String algorithm,
+                                final ReadableByteChannel channel,
+                                final ByteBuffer buffer)
             throws NoSuchAlgorithmException, IOException {
+        // @todo validate arguments!
         switch (current().nextInt(1)) {
             default:
-                return MdUtils2.digest(channel, algorithm);
+                return MdUtils2.digest(algorithm, channel, buffer);
         }
     }
 
-    public static byte[] digest(final Path path, final String algorithm)
+    public static byte[] digest(final String algorithm, final Path path,
+                                final ByteBuffer buffer)
             throws IOException, NoSuchAlgorithmException {
+        // @todo: validate arguments!
         switch (current().nextInt(1)) {
             default:
-                return MdUtils2.digest(path, algorithm);
+                return MdUtils2.digest(algorithm, path, buffer);
         }
     }
 

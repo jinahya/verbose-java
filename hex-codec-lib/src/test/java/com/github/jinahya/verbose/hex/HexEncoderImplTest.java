@@ -36,8 +36,8 @@ public class HexEncoderImplTest {
      */
     @Test
     public void encodeVerboseCompareRfc4648() {
-        Rfc4648TestVectors.base16(
-                (d, e) -> assertEquals(new HexEncoderImpl().encode(d), e) // <1>
+        Rfc4648TestVectors.base16((d, e) -> assertEquals( // <1>
+                new HexEncoderImpl().encode(d, US_ASCII), e)
         );
     }
 

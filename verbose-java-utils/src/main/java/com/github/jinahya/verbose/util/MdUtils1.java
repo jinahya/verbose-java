@@ -33,70 +33,58 @@ import static java.util.logging.Logger.getLogger;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public final class MdUtils1 {
+final class MdUtils1 {
 
     private static final Logger logger
             = getLogger(lookup().lookupClass().getName());
 
     // -------------------------------------------------------------------------
-    private static byte[] digest1(final InputStream input,
-                                  final String algorithm)
+    private static byte[] digest1(final String algorithm,
+                                  final InputStream input, final byte[] buffer)
             throws NoSuchAlgorithmException, IOException {
+        // @todo: validate arguments!
         final MessageDigest digest = getInstance(algorithm); // <1>
-        final byte[] buffer = new byte[4096];
-        for (int length; (length = input.read(buffer)) != -1;) {
-            digest.update(buffer, 0, length); // <2>
-        }
+        for (int length; (length = input.read(buffer)) != -1;
+             digest.update(buffer, 0, length)); // <2>
         return digest.digest(); // <3>
     }
 
-    private static byte[] digest2(InputStream input, final String algorithm)
+    private static byte[] digest2(final String algorithm, InputStream input,
+                                  final byte[] buffer)
             throws NoSuchAlgorithmException, IOException {
+        // @todo: validate arguments
         input = new DigestInputStream(input, getInstance(algorithm)); // <1>
-        for (final byte[] b = new byte[4096]; input.read(b) != -1;); // <2>
+        while (input.read(buffer) != -1); // <2>
         return ((DigestInputStream) input).getMessageDigest().digest(); // <3>
     }
 
-    /**
-     * Digests all bytes from given stream for specified algorithm.
-     *
-     * @param input the input stream
-     * @param algorithm the algorithm name
-     * @return a message digest
-     * @throws NoSuchAlgorithmException if {@code algorithm} is unknown.
-     * @throws IOException if an I/O error occurs.
-     */
-    static byte[] digest(final InputStream input, final String algorithm)
+    static byte[] digest(final String algorithm, final InputStream input,
+                         final byte[] buffer)
             throws NoSuchAlgorithmException, IOException {
         switch (current().nextInt(2)) {
             case 0:
-                return digest1(input, algorithm);
+                return digest1(algorithm, input, buffer);
             default:
-                return digest2(input, algorithm);
+                return digest2(algorithm, input, buffer);
         }
     }
 
-    private static byte[] digest1(final File file, final String algorithm)
+    private static byte[] digest1(final String algorithm, final File file,
+                                  final byte[] buffer)
             throws IOException, NoSuchAlgorithmException {
-        try (InputStream stream = new FileInputStream(file)) {
-            return digest(stream, algorithm);
+        // @todo: validate arguments
+        try (InputStream input = new FileInputStream(file)) {
+            return digest(algorithm, input, buffer); // <1>
         }
     }
 
-    /**
-     * Digests all bytes from given file for specified algorithm.
-     *
-     * @param input the input file
-     * @param algorithm the algorithm name
-     * @return a message digest
-     * @throws NoSuchAlgorithmException if {@code algorithm} is unknown.
-     * @throws IOException if an I/O error occurs.
-     */
-    static byte[] digest(final File file, final String algorithm)
+    static byte[] digest(final String algorithm, final File file,
+                         final byte[] buffer)
             throws IOException, NoSuchAlgorithmException {
+        // @todo: validate arguments
         switch (current().nextInt(1)) {
             default:
-                return digest1(file, algorithm);
+                return digest1(algorithm, file, buffer);
         }
     }
 
@@ -104,5 +92,4 @@ public final class MdUtils1 {
     private MdUtils1() {
         super();
     }
-
 }

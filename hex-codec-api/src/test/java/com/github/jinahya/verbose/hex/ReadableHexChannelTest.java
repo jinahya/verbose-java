@@ -19,18 +19,16 @@ import java.io.ByteArrayInputStream;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStream;
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
-import static java.lang.reflect.Proxy.newProxyInstance;
 import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
 import static java.nio.channels.Channels.newChannel;
 import java.nio.channels.ReadableByteChannel;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.testng.Assert.assertFalse;
-import static org.testng.Assert.assertThrows;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.Test;
+import static com.github.jinahya.verbose.util.BcUtils.nonBlocking;
+import static com.github.jinahya.verbose.util.BcUtils.nonBlocking;
 
 /**
  * A class testing {@link WritableHexChannel}.
@@ -40,78 +38,15 @@ import org.testng.annotations.Test;
 public class ReadableHexChannelTest extends AbstractHexDecoderTest {
 
     /**
-     * Creates a new proxy which intercepts the invocation of
-     * {@link ReadableByteChannel#read(java.nio.ByteBuffer)} and mimics
-     * non-blocking channel by temporarily adjusting the
-     * {@link ByteBuffer#remaining()} of the buffer.
-     *
-     * @param <T> channel type parameter
-     * @param type channel type
-     * @param channel the channel
-     * @return a new proxy
-     */
-    static <T extends ReadableByteChannel> T nonBlocking(
-            final Class<T> type, final T channel) {
-        final Method method; // <1>
-        try {
-            method = ReadableByteChannel.class.getMethod(
-                    "read", ByteBuffer.class);
-        } catch (final NoSuchMethodException nsme) {
-            throw new RuntimeException(nsme);
-        }
-        final InvocationHandler handler = (p, m, a) -> { // <1>
-            if (method.equals(m)) { // <2>
-                final ByteBuffer dst = (ByteBuffer) a[0]; // <3>
-                final int limit = dst.limit(); // <4>
-                try {
-                    dst.limit(dst.position() // <5>
-                              + current().nextInt(dst.remaining() + 1));
-                    return channel.read(dst); // <6>
-                } finally {
-                    dst.limit(limit); // <7>
-                }
-            }
-            return m.invoke(channel, a); // <8>
-        };
-        final Object proxy = newProxyInstance( // <1>
-                type.getClassLoader(), new Class<?>[]{type}, handler);
-        return type.cast(proxy); // <2>
-    }
-
-    private static <T extends ReadableByteChannel> T nonBlockingHelper(
-            final Class<T> type, final ReadableByteChannel channel) {
-        return nonBlocking(type, type.cast(channel));
-    }
-
-    /**
-     * Creates a new proxy which intercepts the invocation of
-     * {@link ReadableByteChannel#read(java.nio.ByteBuffer)} and mimics
-     * non-blocking channel by temporarily adjusting the
-     * {@link ByteBuffer#remaining()} of the buffer.
-     *
-     * @param <T> channel type parameter
-     * @param type channel type
-     * @param channel the channel
-     * @return a new proxy
-     */
-    @SuppressWarnings("unchecked")
-    static <T extends ReadableByteChannel> T nonBlocking(final T channel) {
-        return (T) nonBlockingHelper(channel.getClass(), channel);
-    }
-
-    /**
      * Tests {@link ReadableHexChannelEx#isOpen()}.
      *
      * @throws IOException if an I/O error occurs.
      */
     @Test
     public void testIsOpen() throws IOException {
-        accept(d -> assertThrows(
-                NullPointerException.class,
-                () -> new ReadableHexChannel(null, d).isOpen()));
         try (final ReadableByteChannel rhc = apply(
-                d -> new ReadableHexChannel(newChannel(
-                        new ByteArrayInputStream(new byte[0])), d))) {
+                d -> new ReadableHexChannel(() -> newChannel(
+                new ByteArrayInputStream(new byte[0])), () -> d))) {
             assertTrue(rhc.isOpen());
             rhc.close();
             assertFalse(rhc.isOpen());
@@ -127,17 +62,30 @@ public class ReadableHexChannelTest extends AbstractHexDecoderTest {
     public void testClose() throws IOException {
         {
             final ReadableByteChannel rhc
-                    = new ReadableHexChannel(null, null);
+                    = new ReadableHexChannel(() -> null, () -> null);
             rhc.close();
             rhc.close();
             rhc.close();
         }
         {
-            final ReadableByteChannel channel
-                    = newChannel(new ByteArrayInputStream(new byte[0]));
-            final HexDecoder decoder = null;
-            final ReadableByteChannel rhc
-                    = new ReadableHexChannel(channel, decoder);
+            final ReadableByteChannel rhc = new ReadableHexChannel(
+                    () -> newChannel(new ByteArrayInputStream(new byte[0])),
+                    () -> null);
+            rhc.close();
+            rhc.close();
+            rhc.close();
+        }
+        {
+            final ReadableByteChannel rhc = apply(
+                    d -> new ReadableHexChannel(() -> null, () -> d));
+            rhc.close();
+            rhc.close();
+            rhc.close();
+        }
+        {
+            final ReadableByteChannel rhc = apply(d -> new ReadableHexChannel(
+                    () -> newChannel(new ByteArrayInputStream(new byte[0])),
+                    () -> d));
             rhc.close();
             rhc.close();
             rhc.close();
@@ -151,28 +99,31 @@ public class ReadableHexChannelTest extends AbstractHexDecoderTest {
      */
     @Test
     public void testRead() throws IOException {
-        final int length = current().nextInt(128) >> 1 << 1;
-        final InputStream stream = new ByteArrayInputStream(new byte[length]);
-        final ReadableByteChannel channel = newChannel(stream);
-        try (ReadableByteChannel whc = apply(
-                d -> new ReadableHexChannel(channel, d))) {
+        try (ReadableByteChannel whc = apply(d -> new ReadableHexChannel(
+                () -> {
+                    final byte[] bytes = new byte[current().nextInt(64) << 1];
+                    return newChannel(new ByteArrayInputStream(bytes));
+                },
+                () -> d))) {
             for (final ByteBuffer dst = allocate(current().nextInt(1, 128));
                  whc.read(dst) != -1; dst.clear());
         }
     }
 
     /**
-     * Tests {@link ReadableHexChannel#read(java.nio.ByteBuffer)}.
+     * Tests {@link ReadableHexChannel#read(java.nio.ByteBuffer)} with an input
+     * source of odd number of bytes.
      *
      * @throws IOException if an I/O error occurs.
      */
     @Test(expectedExceptions = EOFException.class)
     public void testReadOddBytes() throws IOException {
-        final int length = current().nextInt(128) | 0b1;
-        final InputStream stream = new ByteArrayInputStream(new byte[length]);
-        final ReadableByteChannel channel = newChannel(stream);
-        try (ReadableHexChannel whc = apply(
-                d -> new ReadableHexChannel(channel, d))) {
+        try (ReadableByteChannel whc = apply(d -> new ReadableHexChannel(
+                () -> {
+                    final int length = current().nextInt(128) | 0b1;
+                    final byte[] bytes = new byte[length];
+                    return newChannel(new ByteArrayInputStream(bytes));
+                }, () -> d))) {
             for (final ByteBuffer dst = allocate(current().nextInt(1, 128));
                  whc.read(dst) != -1; dst.clear());
         }
@@ -186,25 +137,37 @@ public class ReadableHexChannelTest extends AbstractHexDecoderTest {
      */
     @Test
     public void testReadNonBlocking() throws IOException {
-        final int length = current().nextInt(128) >> 1 << 1;
-        final InputStream stream = new ByteArrayInputStream(new byte[length]);
-        final ReadableByteChannel channel = nonBlocking(
-                ReadableByteChannel.class, newChannel(stream));
-        try (ReadableByteChannel whc = apply(
-                d -> new ReadableHexChannel(channel, d))) {
+        try (ReadableByteChannel whc = apply(d -> new ReadableHexChannel(
+                () -> {
+                    final int length = current().nextInt(64) << 1;
+                    final byte[] bytes = new byte[length];
+                    final InputStream stream = new ByteArrayInputStream(bytes);
+                    return nonBlocking(
+                            ReadableByteChannel.class, newChannel(stream));
+                },
+                () -> d))) {
             for (final ByteBuffer dst = allocate(current().nextInt(1, 128));
                  whc.read(dst) != -1; dst.clear());
         }
     }
 
+    /**
+     * Tests {@link ReadableHexChannel#read(java.nio.ByteBuffer)} with an input
+     * source of odd number of bytes in non-blocking mode.
+     *
+     * @throws IOException if an error occurs.
+     */
     @Test(expectedExceptions = EOFException.class)
     public void testReadNonBlockingOddBytes() throws IOException {
-        final int length = current().nextInt(128) | 0b1;
-        final InputStream stream = new ByteArrayInputStream(new byte[length]);
-        final ReadableByteChannel channel = nonBlocking(
-                ReadableByteChannel.class, newChannel(stream));
-        try (ReadableByteChannel whc = apply(
-                d -> new ReadableHexChannel(channel, d))) {
+        try (ReadableByteChannel whc = apply(d -> new ReadableHexChannel(
+                () -> {
+                    final int length = current().nextInt(128) | 0b1;
+                    final byte[] bytes = new byte[length];
+                    final InputStream stream = new ByteArrayInputStream(bytes);
+                    return nonBlocking(
+                            ReadableByteChannel.class, newChannel(stream));
+                },
+                () -> d))) {
             for (final ByteBuffer dst = allocate(current().nextInt(1, 128));
                  whc.read(dst) != -1; dst.clear());
         }

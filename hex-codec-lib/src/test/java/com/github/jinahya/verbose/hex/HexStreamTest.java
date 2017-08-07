@@ -39,7 +39,7 @@ public class HexStreamTest {
             final OutputStream out = new FileOutputStream(encoded);
             final HexEncoder enc = new HexEncoderImpl();
             try (OutputStream output = new HexOutputStream(out, enc)) {
-                copy(input, output);
+                copy(input, output, new byte[current().nextInt(1, 1024)]);
                 output.flush();
             }
         }
@@ -49,15 +49,16 @@ public class HexStreamTest {
             final InputStream in = new FileInputStream(encoded);
             final HexDecoder dec = new HexDecoderImpl();
             try (InputStream input = new HexInputStream(in, dec)) {
-                copy(input, output);
+                copy(input, output, new byte[current().nextInt(1, 1024)]);
                 output.flush();
             }
         }
         assertEquals(encoded.length(), created.length() << 1);
         assertEquals(decoded.length(), encoded.length() >> 1);
+        final byte[] buffer = new byte[current().nextInt(1, 1024)];
         for (final String algorithm : asList("MD5", "SHA-1", "SHA-256")) {
-            final byte[] createdDigest = digest(created, algorithm);
-            final byte[] decodedDigest = digest(decoded, algorithm);
+            final byte[] createdDigest = digest(algorithm, created, buffer);
+            final byte[] decodedDigest = digest(algorithm, decoded, buffer);
             assertEquals(decodedDigest, createdDigest);
         }
     }

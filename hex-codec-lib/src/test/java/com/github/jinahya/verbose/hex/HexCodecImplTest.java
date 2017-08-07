@@ -2,6 +2,7 @@ package com.github.jinahya.verbose.hex;
 
 import static java.nio.ByteBuffer.wrap;
 import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import static org.apache.commons.lang3.RandomStringUtils.random;
 import static org.apache.commons.lang3.RandomStringUtils.randomAscii;
@@ -35,8 +36,8 @@ public class HexCodecImplTest {
     @Test(invocationCount = 128)
     public void encodedDecodeString() {
         final String created = random(current().nextInt(128));
-        final String encoded = new HexEncoderImpl().encode(created);
-        final String decoded = new HexDecoderImpl().decode(encoded);
+        final String encoded = new HexEncoderImpl().encode(created, UTF_8);
+        final String decoded = new HexDecoderImpl().decode(encoded, UTF_8);
         assertEquals(decoded, created);
     }
 

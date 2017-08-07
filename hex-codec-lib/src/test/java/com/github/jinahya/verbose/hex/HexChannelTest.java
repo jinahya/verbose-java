@@ -58,32 +58,31 @@ public class HexChannelTest {
             current().nextBytes(b.array());
             for (; b.hasRemaining(); c.write(b));
         }
-        final byte[] createdDigest = digest(created, algorithm);
+        final byte[] createdDigest = digest(
+                algorithm, created, allocate(current().nextInt(1, 1024)));
         final Path encoded = createTempFile(null, null);
         try (ReadableByteChannel readable
                 = open(created, READ, DELETE_ON_CLOSE)) { // <2>
             final WritableByteChannel channel = open(encoded, WRITE, DSYNC);
-            final HexEncoder encoder = new HexEncoderImpl();
-            try (WritableByteChannel writable
-                    = new WritableHexChannel(channel, encoder)) {
-                copy(readable, writable);
+            try (WritableByteChannel writable = new WritableHexChannel(
+                    () -> channel, HexEncoderImpl::new)) {
+                copy(readable, writable, allocate(current().nextInt(1, 1024)));
             }
         }
         final Path decoded = createTempFile(null, null);
         try (WritableByteChannel writable = open(decoded, WRITE, DSYNC)) {
             final ReadableByteChannel channel
                     = open(encoded, READ, DELETE_ON_CLOSE);
-            final HexDecoder decoder = new HexDecoderImpl();
             try (ReadableByteChannel readable = new ReadableHexChannel(
-                    channel, decoder)) {
-                copy(readable, writable);
+                    () -> channel, HexDecoderImpl::new)) {
+                copy(readable, writable, allocate(current().nextInt(1, 1024)));
             }
         }
-        final byte[] decodedDigest = digest(decoded, algorithm);
+        final byte[] decodedDigest = digest(
+                algorithm, decoded, allocate(current().nextInt(1, 1024)));
         assertEquals(decodedDigest, createdDigest);
         assertFalse(exists(created)); // <1>
         assertFalse(exists(encoded)); // <2>
         delete(decoded); // <3>
     }
-
 }

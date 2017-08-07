@@ -17,6 +17,9 @@ package com.github.jinahya.verbose.hex;
 
 import java.io.IOException;
 import java.nio.channels.Channel;
+import java.nio.channels.ClosedChannelException;
+import static java.util.Objects.requireNonNull;
+import java.util.function.Supplier;
 
 /**
  * An abstract channel for filtering underlying channels.
@@ -29,28 +32,30 @@ public class FilterChannel<T extends Channel> implements Channel {
     /**
      * Creates a new instance on top of given channel.
      *
-     * @param channel the channel to wrap.
+     * @param channelSupplier the channel to wrap.
      */
-    public FilterChannel(final T channel) {
+    public FilterChannel(final Supplier<T> channelSupplier) {
         super();
-        this.channel = channel;
+        this.channelSupplier = requireNonNull(
+                channelSupplier, "channelSupplier is null");
     }
 
     /**
      * Tells whether or not this channel is open. The {@code isOpen()} method of
      * {@code FilterChannel} class return the value of {@code channel.isOpen()}.
      *
-     * @return {@code true} if, and only if, the {@link #channel} is open
+     * @return {@code true} if, and only if, the {@link #channel} is not
+     * {@code null} and is open.
      */
     @Override
     public boolean isOpen() {
-        return channel.isOpen(); // <1>
+        return !closed;
     }
 
     /**
      * Closes this channel. The {@code close()} method of {@code FilterChannel}
-     * class, if {@link #channel} is not {@code null}, invokes
-     * {@link Channel#close()} on {@link #channel}.
+     * class, if {@link #channelSupplier} is not {@code null}, invokes
+     * {@link Channel#close()} on {@link #channelSupplier}.
      *
      * @throws IOException if an I/O error occurs
      */
@@ -58,11 +63,30 @@ public class FilterChannel<T extends Channel> implements Channel {
     public void close() throws IOException {
         if (channel != null) {
             channel.close();
+            channel = null;
         }
+        closed = true;
     }
 
     /**
-     * The underlying channel.
+     * Returns the underlying channel.
+     *
+     * @return the underlying channel
+     * @throws ClosedChannelException if this channel is already closed
      */
-    protected T channel;
+    protected T channel() throws ClosedChannelException {
+        if (!isOpen()) {
+            throw new ClosedChannelException();
+        }
+        if (channel == null && (channel = channelSupplier.get()) == null) {
+            throw new RuntimeException("null channel supplied");
+        }
+        return channel;
+    }
+
+    private final Supplier<T> channelSupplier;
+
+    private boolean closed;
+
+    private T channel;
 }

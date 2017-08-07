@@ -16,6 +16,8 @@
 package com.github.jinahya.verbose.hex;
 
 import com.google.inject.Inject;
+import java.util.function.BiConsumer;
+import java.util.function.BiFunction;
 import java.util.function.Consumer;
 import java.util.function.Function;
 import org.testng.annotations.Guice;
@@ -25,17 +27,8 @@ import org.testng.annotations.Guice;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-@Guice(modules = HexEncoderDemoModule.class)
-class AbstractHexEncoderTest {
-
-    /**
-     * Accepts given consumer with an instance of {@link HexEncoder}.
-     *
-     * @param consumer the consumer
-     */
-    protected void accept(final Consumer<HexEncoder> consumer) {
-        consumer.accept(encoder);
-    }
+@Guice(modules = HexEncoderMockModule.class)
+abstract class AbstractHexEncoderTest {
 
     /**
      * Applies given function with an instance of {@link HexEncoder} and returns
@@ -47,6 +40,46 @@ class AbstractHexEncoderTest {
      */
     protected <R> R apply(final Function<HexEncoder, R> function) {
         return function.apply(encoder);
+    }
+
+    /**
+     * Applies given function with an instance of {@link HexEncoder} and
+     * specified {@code u} and returns the result.
+     *
+     * @param <R> result type parameter
+     * @param <U> second argument parameter
+     * @param function the function to be applied
+     * @param u the second argument
+     * @return the result of the function
+     */
+    protected <R, U> R apply(final BiFunction<HexEncoder, U, R> function,
+                             final U u) {
+        return apply(e -> function.apply(e, u));
+    }
+
+    /**
+     * Accepts given consumer with an instance of {@link HexEncoder}.
+     *
+     * @param consumer the consumer
+     */
+    protected void accept(final Consumer<HexEncoder> consumer) {
+        apply(e -> {
+            consumer.accept(e);
+            return null;
+        });
+    }
+
+    /**
+     * Accepts given consumer with an instance of {@link HexEncoder} and
+     * specified second argument.
+     *
+     * @param <U> second argument parameter type
+     * @param consumer the consumer to be accepted
+     * @param u the second argument
+     */
+    protected <U> void accept(final BiConsumer<HexEncoder, U> consumer,
+                              final U u) {
+        accept(e -> consumer.accept(e, u));
     }
 
     @Inject

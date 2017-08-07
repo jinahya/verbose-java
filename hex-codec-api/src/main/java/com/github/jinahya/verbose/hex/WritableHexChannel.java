@@ -19,6 +19,8 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
 import java.nio.channels.WritableByteChannel;
+import static java.util.Objects.requireNonNull;
+import java.util.function.Supplier;
 
 /**
  * A {@code WritableByteChannel} writes encoded hex characters to underlying
@@ -26,18 +28,32 @@ import java.nio.channels.WritableByteChannel;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class WritableHexChannel extends WritableFilterChannel {
+public class WritableHexChannel<T extends WritableByteChannel, U extends HexEncoder>
+        extends WritableFilterChannel<T> {
 
     /**
      * Creates a new instance on top of given channel.
      *
-     * @param channel the channel into which encoded hex characters are written
-     * @param encoder the encoder to encode bytes
+     * @param channelSupplier the channel into which encoded hex characters are
+     * written
+     * @param encoderSupplier the encoder to encode bytes
      */
-    public WritableHexChannel(final WritableByteChannel channel,
-                              final HexEncoder encoder) {
-        super(channel);
-        this.encoder = encoder;
+    public WritableHexChannel(final Supplier<T> channelSupplier,
+                              final Supplier<U> encoderSupplier) {
+        super(channelSupplier);
+        this.encoderSupplier = requireNonNull(encoderSupplier);
+    }
+
+    /**
+     * Returns the encoder.
+     *
+     * @return the encoder.
+     */
+    protected U encoder() {
+        if (encoder == null && ((encoder = encoderSupplier.get()) == null)) {
+            throw new RuntimeException("null encoder supplied");
+        }
+        return encoder;
     }
 
     /**
@@ -50,7 +66,7 @@ public class WritableHexChannel extends WritableFilterChannel {
     @Override
     public int write(final ByteBuffer src) throws IOException {
         final ByteBuffer aux = allocate(src.remaining() << 1); // <1>
-        final int count = encoder.encode(src, aux); // <2>
+        final int count = encoder().encode(src, aux); // <2>
         for (aux.flip(); aux.hasRemaining();) { // <3>
             super.write(aux);
         }
@@ -60,5 +76,7 @@ public class WritableHexChannel extends WritableFilterChannel {
     /**
      * The encoder for encoding bytes into characters.
      */
-    protected HexEncoder encoder;
+    private Supplier<U> encoderSupplier;
+
+    private U encoder;
 }

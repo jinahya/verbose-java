@@ -19,7 +19,9 @@ import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.ThreadLocalRandom.current;
-import static org.apache.commons.lang3.RandomStringUtils.random;
+import org.apache.commons.text.RandomStringGenerator;
+//import static org.apache.commons.lang3.RandomStringUtils.random;
+////import static org.apache.commons.lang3.RandomStringUtils.random;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertThrows;
@@ -63,16 +65,12 @@ public class HexEncoderTest extends AbstractHexEncoderTest {
                                  () -> e.encode(null, UTF_8)));
         accept(e -> assertThrows(NullPointerException.class,
                                  () -> e.encode("", null)));
+        final RandomStringGenerator generator
+                = new RandomStringGenerator.Builder().withinRange(0, 127)
+                        .build();
         {
-            final String decoded = random(current().nextInt(128));
+            final String decoded = generator.generate(current().nextInt(128));
             final String encoded = apply(e -> e.encode(decoded, UTF_8));
-            assertNotNull(encoded);
-        }
-        accept(e -> assertThrows(NullPointerException.class,
-                                 () -> e.encode((String) null)));
-        {
-            final String decoded = random(current().nextInt(128));
-            final String encoded = apply(e -> e.encode(decoded));
             assertNotNull(encoded);
         }
     }

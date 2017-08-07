@@ -16,20 +16,24 @@
 package com.github.jinahya.verbose.hex;
 
 import com.google.inject.AbstractModule;
+import static java.lang.invoke.MethodHandles.lookup;
+import org.slf4j.Logger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
- * A module binds {@link HexEncoder} to {@link HexEncoderDemo}.
+ * A module binds {@link HexDecoder} to {@link HexDecoderMock}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-class HexEncoderDemoModule extends AbstractModule {
+class HexDecoderMockModule extends AbstractModule {
+
+    private static final Logger logger = getLogger(lookup().lookupClass());
 
     /**
-     * Binds injection points of {@link HexEncoder} to {@link HexEncoderDemo}.
+     * Binds injection points of {@link HexDecoder} to a mock instance.
      */
     @Override
     protected void configure() {
-        bind(HexEncoder.class).to(HexEncoderDemo.class);
+        bind(HexDecoder.class).to(HexDecoderMock.class);
     }
-
 }

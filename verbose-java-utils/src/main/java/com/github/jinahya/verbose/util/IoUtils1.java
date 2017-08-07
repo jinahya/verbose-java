@@ -38,59 +38,48 @@ final class IoUtils1 {
 
     // -------------------------------------------------------------------------
     private static long copy1(final InputStream input,
-                              final OutputStream output)
+                              final OutputStream output, final byte[] buffer)
             throws IOException {
+        // @todo validate arguments!
         long count = 0L;
-        final byte[] buffer = new byte[4096]; // <1>
-        for (int length; (length = input.read(buffer)) != -1;) { // <2>
-            output.write(buffer, 0, length); // <3>
-            count += length;
+        for (int length; (length = input.read(buffer)) != -1; count += length) { // <1>
+            output.write(buffer, 0, length); // <2>
         }
         return count;
     }
 
-    /**
-     * Copies all bytes from given input stream to specified output stream.
-     *
-     * @param input the input stream
-     * @param output the output stream
-     * @return the number of bytes to copied.
-     * @throws IOException if an I/O error occurs.
-     */
-    static long copy(final InputStream input, final OutputStream output)
+    static long copy(final InputStream input, final OutputStream output,
+                     final byte[] buffer)
             throws IOException {
         switch (current().nextInt(1)) {
             default:
-                return copy1(input, output);
+                return copy1(input, output, buffer);
         }
     }
 
-    private static void copy1(final File source, final File target)
+    private static void copy1(final File source, final File target,
+                              final byte[] buffer)
             throws IOException {
+        // @todo: validate arguments!
         try (InputStream input = new FileInputStream(source);
              OutputStream output = new FileOutputStream(target)) {
-            copy1(input, output);
+            copy1(input, output, buffer);
             output.flush(); // <1>
         }
     }
 
-    /**
-     * Copies all bytes from given source file to specified target file.
-     *
-     * @param input the source file
-     * @param output the target file
-     * @throws IOException if an I/O error occurs.
-     */
-    static void copy(final File source, final File target) throws IOException {
+    static void copy(final File source, final File target, final byte[] buffer)
+            throws IOException {
+        // @todo: validate arguments!
         switch (current().nextInt(1)) {
             default:
-                copy1(source, target);
+                copy1(source, target, buffer);
                 break;
         }
     }
 
+    // -------------------------------------------------------------------------
     private IoUtils1() {
         super();
     }
-
 }

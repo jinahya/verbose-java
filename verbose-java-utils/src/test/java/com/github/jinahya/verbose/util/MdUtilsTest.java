@@ -22,7 +22,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.lang.reflect.Constructor;
+import static java.lang.invoke.MethodHandles.lookup;
 import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
 import static java.nio.channels.Channels.newChannel;
@@ -34,6 +34,8 @@ import java.nio.file.Path;
 import static java.nio.file.StandardOpenOption.WRITE;
 import java.security.NoSuchAlgorithmException;
 import static java.util.concurrent.ThreadLocalRandom.current;
+import org.slf4j.Logger;
+import static org.slf4j.LoggerFactory.getLogger;
 import org.testng.annotations.DataProvider;
 import org.testng.annotations.Test;
 
@@ -44,8 +46,10 @@ import org.testng.annotations.Test;
  */
 public class MdUtilsTest {
 
+    private static final Logger logger = getLogger(lookup().lookupClass());
+
     @DataProvider
-    private Object[][] algorithms() {
+    Object[][] algorithms() {
         return new Object[][]{{"MD5"}, {"SHA-1"}, {"SHA-256"}};
     }
 
@@ -55,7 +59,8 @@ public class MdUtilsTest {
         final byte[] bytes = new byte[current().nextInt(1024)];
         current().nextBytes(bytes);
         try (InputStream stream = new ByteArrayInputStream(bytes)) {
-            final byte[] digest = digest(stream, algorithm);
+            final byte[] digest = digest(
+                    algorithm, stream, new byte[current().nextInt(1, 128)]);
         }
     }
 
@@ -69,7 +74,8 @@ public class MdUtilsTest {
             s.write(b);
             s.flush();
         }
-        final byte[] digest = digest(file, algorithm);
+        final byte[] digest = digest(
+                algorithm, file, new byte[current().nextInt(1, 128)]);
         file.delete();
     }
 
@@ -80,7 +86,8 @@ public class MdUtilsTest {
         current().nextBytes(bytes);
         try (ReadableByteChannel channel
                 = newChannel(new ByteArrayInputStream(bytes))) {
-            final byte[] digest = digest(channel, algorithm);
+            final byte[] digest = digest(
+                    algorithm, channel, allocate(current().nextInt(1, 128)));
         }
     }
 
@@ -94,17 +101,8 @@ public class MdUtilsTest {
             for (; b.hasRemaining(); c.write(b));
             c.force(false);
         }
-        final byte[] digest = digest(path, algorithm);
+        final byte[] digest = digest(
+                algorithm, path, allocate(current().nextInt(1, 128)));
         delete(path);
-    }
-
-    @Test
-    public void construct() throws ReflectiveOperationException {
-        final Constructor<MdUtils> constructor
-                = MdUtils.class.getDeclaredConstructor();
-        if (!constructor.isAccessible()) {
-            constructor.setAccessible(true);
-        }
-        final MdUtils instance = constructor.newInstance();
     }
 }

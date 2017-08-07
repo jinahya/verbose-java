@@ -15,21 +15,30 @@
  */
 package com.github.jinahya.verbose.hex;
 
-import java.io.IOException;
+import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
-import java.nio.channels.ReadableByteChannel;
 
-public class TypedReadableFilterChannel<T extends ReadableByteChannel>
-        extends FilterChannel<T>
-        implements ReadableByteChannel {
+/**
+ * A demonstrative implementation of {@link HexEncoder}.
+ *
+ * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
+ */
+class HexEncoderMock implements HexEncoder {
 
-    public TypedReadableFilterChannel(final T channel) {
-        super(channel);
-    }
-
+    /**
+     * {@inheritDoc}
+     *
+     * @param decoded {@inheritDoc}
+     * @param encoded {@inheritDoc}
+     */
     @Override
-    public int read(final ByteBuffer dst) throws IOException {
-        return channel.read(dst);
+    public void encodeOctet(final int decoded, final ByteBuffer encoded) {
+        if (encoded == null) {
+            throw new NullPointerException("encoded is null");
+        }
+        if (encoded.remaining() < 2) {
+            throw new BufferOverflowException();
+        }
+        encoded.position(encoded.position() + 2);
     }
-
 }

@@ -15,9 +15,7 @@
  */
 package com.github.jinahya.verbose.util;
 
-import static com.github.jinahya.verbose.util.BcUtils.nonBlocking;
 import java.io.IOException;
-import java.lang.reflect.Constructor;
 import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
 import java.nio.channels.ReadableByteChannel;
@@ -27,6 +25,10 @@ import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.doAnswer;
 import static org.mockito.Mockito.mock;
 import org.testng.annotations.Test;
+import static com.github.jinahya.verbose.util.BcUtils.nonBlocking;
+import static java.lang.invoke.MethodHandles.lookup;
+import org.slf4j.Logger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * Tests {@link BcUtils}.
@@ -34,6 +36,8 @@ import org.testng.annotations.Test;
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 public class BcUtilsTest {
+
+    private static final Logger logger = getLogger(lookup().lookupClass());
 
     @Test
     public static void nonBlockingWritableByteChannel() throws IOException {
@@ -59,15 +63,5 @@ public class BcUtilsTest {
         final ReadableByteChannel nonblocking
                 = nonBlocking(ReadableByteChannel.class, blocking);
         final int read = nonblocking.read(allocate(current().nextInt(128)));
-    }
-
-    @Test
-    public void construct() throws ReflectiveOperationException {
-        final Constructor<BcUtils> constructor
-                = BcUtils.class.getDeclaredConstructor();
-        if (!constructor.isAccessible()) {
-            constructor.setAccessible(true);
-        }
-        final BcUtils instance = constructor.newInstance();
     }
 }

@@ -18,13 +18,13 @@ package com.github.jinahya.verbose.util;
 import java.io.IOException;
 import static java.lang.invoke.MethodHandles.lookup;
 import java.nio.ByteBuffer;
-import static java.nio.ByteBuffer.allocate;
 import java.nio.channels.FileChannel;
 import static java.nio.channels.FileChannel.open;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import java.nio.file.Path;
 import static java.nio.file.StandardOpenOption.CREATE;
+import static java.nio.file.StandardOpenOption.DSYNC;
 import static java.nio.file.StandardOpenOption.READ;
 import static java.nio.file.StandardOpenOption.TRUNCATE_EXISTING;
 import static java.nio.file.StandardOpenOption.WRITE;
@@ -44,10 +44,11 @@ final class IoUtils2 {
 
     // -------------------------------------------------------------------------
     private static long copy1(final ReadableByteChannel readable,
-                              final WritableByteChannel writable)
+                              final WritableByteChannel writable,
+                              final ByteBuffer buffer)
             throws IOException {
+        // @todo: validate arguments!
         long count = 0L;
-        final ByteBuffer buffer = allocate(4096);
         while (readable.read(buffer) != -1) { // <1>
             buffer.flip(); // <2>
             count += writable.write(buffer); // <3>
@@ -60,10 +61,11 @@ final class IoUtils2 {
     }
 
     private static long copy2(final ReadableByteChannel readable,
-                              final WritableByteChannel writable)
+                              final WritableByteChannel writable,
+                              final ByteBuffer buffer)
             throws IOException {
+        // @todo: validate arguments!
         long count = 0L;
-        final ByteBuffer buffer = allocate(4096);
         while (readable.read(buffer) != -1) {
             buffer.flip();
             while (buffer.hasRemaining()) { // <1>
@@ -74,82 +76,109 @@ final class IoUtils2 {
         return count;
     }
 
-    /**
-     * Copies all bytes from given source channel to specified target channel.
-     *
-     * @param readable the source channel from which bytes are copied.
-     * @param writable the target channel to which bytes are copied.
-     * @return the number of bytes copied.
-     * @throws IOException if an I/O error occurs.
-     */
     static long copy(final ReadableByteChannel readable,
-                     final WritableByteChannel writable)
+                     final WritableByteChannel writable,
+                     final ByteBuffer buffer)
             throws IOException {
+        // @todo: validates arguments!
         switch (current().nextInt(2)) {
             case 0:
-                return copy1(readable, writable);
+                return copy1(readable, writable, buffer);
             default:
-                return copy2(readable, writable);
+                return copy2(readable, writable, buffer);
         }
     }
 
-    private static void copy1(final Path source, final Path target)
+    private static void copy1(final Path source, final Path target,
+                              final ByteBuffer buffer)
             throws IOException {
+        // @todo: validate arguments!
         try (FileChannel readable = open(source, READ);
              FileChannel writable = open(
                      target, CREATE, TRUNCATE_EXISTING, WRITE)) {
-            copy(readable, writable);
+            copy(readable, writable, buffer);
             writable.force(false); // <1>
         }
     }
 
-    private static void copy2(final Path source, final Path target)
+    private static void copy2(final Path source, final Path target,
+                              final ByteBuffer buffer)
             throws IOException {
-        try (FileChannel readable = open(source, READ);
-             FileChannel writable = open(
-                     target, CREATE, TRUNCATE_EXISTING, WRITE)) {
-            for (long remaining = readable.size(); remaining > 0L;) {
-                final long transferred = readable.transferTo(
-                        readable.position(), remaining, writable);
-                readable.position(readable.position() + transferred);
-                remaining -= transferred;
-            }
-            writable.force(false);
+        // @todo: validate arguments!
+        try (ReadableByteChannel readable = open(source, READ);
+             WritableByteChannel writable = open(
+                     target, CREATE, TRUNCATE_EXISTING, WRITE, DSYNC)) {
+            copy(readable, writable, buffer);
         }
+    }
+
+    private static long copy3(final FileChannel readable,
+                              final WritableByteChannel writable)
+            throws IOException {
+        // @todo: validate arguments!
+        long count = 0L;
+        for (long remaining = readable.size() - readable.position(); // <1>
+             remaining > 0L;
+             remaining = readable.size() - readable.position()) { // <4>
+            final long transferred = readable.transferTo( // <2>
+                    readable.position(), remaining, writable);
+            readable.position(readable.position() + transferred); // <3>
+            count += transferred;
+        }
+        return count;
     }
 
     private static void copy3(final Path source, final Path target)
             throws IOException {
+        // @todo: validate arguments!
         try (FileChannel readable = open(source, READ);
              FileChannel writable = open(
                      target, CREATE, TRUNCATE_EXISTING, WRITE)) {
-            for (long remaining = readable.size(); remaining > 0L;) {
-                final long transferred = writable.transferFrom(
-                        readable, writable.position(), remaining);
-                writable.position(writable.position() + transferred);
-                remaining -= transferred;
-            }
+            final long transferred = copy3(readable, writable);
             writable.force(false);
         }
     }
 
-    /**
-     * Copies all bytes from given source path to specified target path.
-     *
-     * @param source the source path from which bytes are copied.
-     * @param target the target path to which bytes are copied.
-     * @throws IOException if an I/O error occurs.
-     */
-    static void copy(final Path source, final Path target) throws IOException {
-        switch (current().nextInt(3)) {
+    private static void copy4(final FileChannel readable,
+                              final FileChannel writable)
+            throws IOException {
+        // @todo: validate arguments!
+        for (long remaining = readable.size() - readable.position();
+             remaining > 0L;
+             remaining = readable.size() - readable.position()) {
+            final long transferred = writable.transferFrom(
+                    readable, writable.position(), remaining);
+            writable.position(writable.position() + transferred);
+        }
+    }
+
+    private static void copy4(final Path source, final Path target)
+            throws IOException {
+        // @todo: validate arguments!
+        try (FileChannel readable = open(source, READ);
+             FileChannel writable = open(
+                     target, CREATE, TRUNCATE_EXISTING, WRITE)) {
+            copy4(readable, writable);
+            writable.force(false);
+        }
+    }
+
+    static void copy(final Path source, final Path target,
+                     final ByteBuffer buffer)
+            throws IOException {
+        // @todo: validate arguments!
+        switch (current().nextInt(4)) {
             case 0:
-                copy1(source, target);
+                copy1(source, target, buffer);
                 break;
             case 1:
-                copy2(source, target);
+                copy2(source, target, buffer);
+                break;
+            case 3:
+                copy3(source, target);
                 break;
             default:
-                copy3(source, target);
+                copy4(source, target);
                 break;
         }
     }
@@ -158,5 +187,4 @@ final class IoUtils2 {
     private IoUtils2() {
         super();
     }
-
 }

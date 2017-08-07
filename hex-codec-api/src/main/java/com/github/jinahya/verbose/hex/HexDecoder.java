@@ -40,6 +40,7 @@ public interface HexDecoder {
      * @return number of decoded bytes produced to {@code decoded}
      */
     default int decode(final ByteBuffer encoded, final ByteBuffer decoded) {
+        // @todo: validate arguments!
         final int position = decoded.position();
         while (encoded.remaining() >= 2 && decoded.hasRemaining()) { // <1>
             decoded.put((byte) decodeOctet(encoded));
@@ -55,6 +56,7 @@ public interface HexDecoder {
      * @return a byte buffer containing result
      */
     default ByteBuffer decode(final ByteBuffer encoded) {
+        // @todo: validate argument(s)!
         final ByteBuffer decoded = allocate(encoded.remaining() >> 1); // <1>
         decode(encoded, decoded); // <2>
         return (ByteBuffer) decoded.flip(); // <3>
@@ -69,23 +71,24 @@ public interface HexDecoder {
      * @return a decoded string
      */
     default String decode(final String encoded, final Charset charset) {
+        // @todo: validate arguments!
         final byte[] encodedBytes = encoded.getBytes(US_ASCII); // <1>
         final byte[] decodedBytes = new byte[encodedBytes.length / 2]; // <2>
         decode(wrap(encodedBytes), wrap(decodedBytes)); // <3>
         return new String(decodedBytes, charset); // <4>
     }
 
-    /**
-     * Decodes given string. This method invokes
-     * {@link #decode(java.lang.String, java.nio.charset.Charset)} method with
-     * given string and {@link StandardCharsets#UTF_8} as its arguments and
-     * returns the result.
-     *
-     * @param encoded the string to decode
-     * @return a decoded string
-     * @see #decode(java.lang.String, java.nio.charset.Charset)
-     */
-    default String decode(final String encoded) {
-        return decode(encoded, UTF_8);
-    }
+//    /**
+//     * Decodes given string. This method invokes
+//     * {@link #decode(java.lang.String, java.nio.charset.Charset)} method with
+//     * given string and {@link StandardCharsets#UTF_8} as its arguments and
+//     * returns the result.
+//     *
+//     * @param encoded the string to decode
+//     * @return a decoded string
+//     * @see #decode(java.lang.String, java.nio.charset.Charset)
+//     */
+//    default String decode(final String encoded) {
+//        return decode(encoded, UTF_8);
+//    }
 }

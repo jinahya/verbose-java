@@ -15,11 +15,14 @@
  */
 package com.github.jinahya.verbose.hex;
 
+import static java.lang.invoke.MethodHandles.lookup;
 import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.ThreadLocalRandom.current;
-import static org.apache.commons.lang3.RandomStringUtils.randomAscii;
+import org.apache.commons.text.RandomStringGenerator;
+import org.slf4j.Logger;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertNotNull;
 import static org.testng.Assert.assertThrows;
@@ -32,14 +35,17 @@ import org.testng.annotations.Test;
  */
 public class HexDecoderTest extends AbstractHexDecoderTest {
 
+    private static final Logger logger = getLogger(lookup().lookupClass());
+
     @Test
     public void decodeBuffer() {
         {
             accept(d -> assertThrows(NullPointerException.class,
                                      () -> d.decode((ByteBuffer) null)));
-            final int capacity = (current().nextInt(128) >> 1) << 1;
-            final ByteBuffer decoded = apply(d -> d.decode(allocate(capacity)));
-            assertEquals(decoded.remaining(), capacity >> 1);
+            final int capacity = current().nextInt(128);
+            final ByteBuffer encoded = allocate(capacity);
+            final ByteBuffer decoded = apply(d -> d.decode(encoded));
+            assertEquals(decoded.remaining(), capacity / 2);
         }
         {
             accept(d -> assertThrows(NullPointerException.class,
@@ -56,22 +62,17 @@ public class HexDecoderTest extends AbstractHexDecoderTest {
 
     @Test
     public void decodeString() {
-        accept(d -> assertThrows(NullPointerException.class,
-                                 () -> d.decode(null, UTF_8)));
-        accept(d -> assertThrows(NullPointerException.class,
-                                 () -> d.decode("", null)));
+        accept(d -> assertThrows(
+                NullPointerException.class, () -> d.decode(null, UTF_8)));
+        accept(d -> assertThrows(
+                NullPointerException.class, () -> d.decode("", null)));
+        final RandomStringGenerator generator
+                = new RandomStringGenerator.Builder().withinRange(0, 127)
+                        .build();
         {
-            final int count = (current().nextInt(128) >> 1) << 1;
-            final String encoded = randomAscii(count);
+            final int count = (current().nextInt(128) >> 1) << 1; // even
+            final String encoded = generator.generate(count);
             final String decoded = apply(d -> d.decode(encoded, UTF_8));
-            assertNotNull(decoded);
-        }
-        accept(d -> assertThrows(NullPointerException.class,
-                                 () -> d.decode((String) null)));
-        {
-            final int count = (current().nextInt(128) >> 1) << 1;
-            final String encoded = randomAscii(count);
-            final String decoded = apply(d -> d.decode(encoded));
             assertNotNull(decoded);
         }
     }

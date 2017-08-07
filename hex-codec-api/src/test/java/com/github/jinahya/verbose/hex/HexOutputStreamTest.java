@@ -34,5 +34,4 @@ public class HexOutputStreamTest extends AbstractHexEncoderTest {
             hos.write(current().nextInt());
         }
     }
-
 }

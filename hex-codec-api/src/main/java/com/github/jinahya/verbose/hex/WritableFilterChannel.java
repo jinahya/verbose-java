@@ -18,6 +18,7 @@ package com.github.jinahya.verbose.hex;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.channels.WritableByteChannel;
+import java.util.function.Supplier;
 
 /**
  * A {@code WritableByteChannel} for filtering another
@@ -25,17 +26,17 @@ import java.nio.channels.WritableByteChannel;
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class WritableFilterChannel
-        extends FilterChannel<WritableByteChannel>
+public class WritableFilterChannel<T extends WritableByteChannel>
+        extends FilterChannel<T>
         implements WritableByteChannel {
 
     /**
      * Creates a new instance of top of given channel.
      *
-     * @param channel the channel.
+     * @param channelSupplier the channel.
      */
-    public WritableFilterChannel(final WritableByteChannel channel) {
-        super(channel);
+    public WritableFilterChannel(final Supplier<T> channelSupplier) {
+        super(channelSupplier);
     }
 
     /**
@@ -47,6 +48,6 @@ public class WritableFilterChannel
      */
     @Override
     public int write(final ByteBuffer src) throws IOException {
-        return channel.write(src);
+        return channel().write(src);
     }
 }
