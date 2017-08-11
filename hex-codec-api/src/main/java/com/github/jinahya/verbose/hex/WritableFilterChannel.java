@@ -21,8 +21,7 @@ import java.nio.channels.WritableByteChannel;
 import java.util.function.Supplier;
 
 /**
- * A {@code WritableByteChannel} for filtering another
- * {@code WritableByteChannel}.
+ * A {@code WritableByteChannel} filters another {@code WritableByteChannel}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */

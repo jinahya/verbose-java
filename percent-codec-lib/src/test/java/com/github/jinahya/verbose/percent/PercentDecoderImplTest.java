@@ -19,12 +19,15 @@ import static com.github.jinahya.verbose.percent.UrlCodecConverter.EXAMPLE_DECOD
 import static com.github.jinahya.verbose.percent.UrlCodecConverter.EXAMPLE_ENCODED;
 import static com.github.jinahya.verbose.percent.UrlCodecConverter.toPercentEncoded;
 import java.io.UnsupportedEncodingException;
+import static java.lang.invoke.MethodHandles.lookup;
 import java.net.URLEncoder;
 import java.nio.charset.Charset;
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import javax.inject.Inject;
 import static org.apache.commons.lang3.RandomStringUtils.random;
+import org.slf4j.Logger;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
@@ -35,6 +38,8 @@ import org.testng.annotations.Test;
  */
 @Guice(modules = PercentDecoderImplModule.class)
 public class PercentDecoderImplTest {
+
+    private static final Logger logger = getLogger(lookup().lookupClass());
 
     @Test
     public void testExample() throws UnsupportedEncodingException {

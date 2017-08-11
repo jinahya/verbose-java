@@ -16,10 +16,13 @@
 package com.github.jinahya.verbose.hex;
 
 import com.google.common.io.BaseEncoding;
+import static java.lang.invoke.MethodHandles.lookup;
 import static java.nio.ByteBuffer.wrap;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import org.apache.commons.codec.binary.Hex;
+import org.slf4j.Logger;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
@@ -29,6 +32,8 @@ import org.testng.annotations.Test;
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 public class HexDecoderImplTest {
+
+    private static final Logger logger = getLogger(lookup().lookupClass());
 
     /**
      * Tests decoding using {@code RFC4648} test vectors.
@@ -45,11 +50,20 @@ public class HexDecoderImplTest {
      */
     @Test(invocationCount = 128)
     public void encodeCommonsDecodeVerbose() {
-        final byte[] created = new byte[current().nextInt(128)]; // <1>
-        current().nextBytes(created);
-        final byte[] encoded = new Hex().encode(created); // <2>
-        final byte[] decoded = new byte[encoded.length >> 1]; // <3>
-        new HexDecoderImpl().decode(wrap(encoded), wrap(decoded));
+        final byte[] created; // <1>
+        {
+            created = new byte[current().nextInt(1024)];
+            current().nextBytes(created);
+        }
+        final byte[] encoded; // <2>
+        {
+            encoded = new Hex().encode(created);
+        }
+        final byte[] decoded; // <3>
+        {
+            decoded = new byte[encoded.length >> 1];
+            new HexDecoderImpl().decode(wrap(encoded), wrap(decoded));
+        }
         assertEquals(decoded, created); // <4>
     }
 
@@ -58,13 +72,20 @@ public class HexDecoderImplTest {
      */
     @Test(invocationCount = 128)
     public void encodeGuavaDecodeVerbose() {
-        final byte[] created = new byte[current().nextInt(128)];
-        current().nextBytes(created);
-        final byte[] encoded // <1>
-                = BaseEncoding.base16().encode(created).getBytes(US_ASCII);
-        final byte[] decoded = new byte[encoded.length >> 1];
-        new HexDecoderImpl().decode(wrap(encoded), wrap(decoded));
-        assertEquals(decoded, created);
+        final byte[] created; // <1>
+        {
+            created = new byte[current().nextInt(128)];
+            current().nextBytes(created);
+        }
+        final byte[] encoded; // <2>
+        {
+            encoded = BaseEncoding.base16().encode(created).getBytes();
+        }
+        final byte[] decoded; // <3>
+        {
+            decoded = new byte[encoded.length >> 1];
+            new HexDecoderImpl().decode(wrap(encoded), wrap(decoded));
+        }
+        assertEquals(decoded, created); // <4>
     }
-
 }

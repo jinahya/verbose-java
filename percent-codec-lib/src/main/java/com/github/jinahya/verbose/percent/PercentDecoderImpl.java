@@ -18,25 +18,26 @@ package com.github.jinahya.verbose.percent;
 import com.github.jinahya.verbose.hex.HexDecoder;
 import java.nio.ByteBuffer;
 import static java.util.Objects.requireNonNull;
-import static java.util.Optional.ofNullable;
 import static java.util.ServiceLoader.load;
 import java.util.function.Supplier;
 
 /**
- * Default implementation of {@code PercentDecoder}.
+ * A class implements {@code PercentDecoder}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 public class PercentDecoderImpl implements PercentDecoder {
 
     /**
-     * Creates a new instance with given supplier of {@link HexDecoder}.
+     * Creates a new instance uses an instance of {@link HexDecoder}.
      *
-     * @param hexDecoderSupplier the supplier
+     * @param decoderSupplier the supplier supplies an instance of
+     * {@link HexDecoder}.
      */
-    public PercentDecoderImpl(final Supplier<HexDecoder> hexDecoderSupplier) {
+    public PercentDecoderImpl(final Supplier<HexDecoder> decoderSupplier) {
         super();
-        this.hexDecoderSupplier = requireNonNull(hexDecoderSupplier);
+        this.decoderSupplier = requireNonNull(
+                decoderSupplier, "decoderSupplier is null");
     }
 
     /**
@@ -53,14 +54,19 @@ public class PercentDecoderImpl implements PercentDecoder {
     public int decodeOctet(final ByteBuffer encoded) {
         final byte e = encoded.get(); // <1>
         if (e == 0x25) { // '%' <2>
-            return ofNullable(hexDecoder)
-                    .orElseGet(hexDecoderSupplier)
-                    .decodeOctet(encoded);
+            return decoder().decodeOctet(encoded); // XX
         }
         return e; // <3>
     }
 
-    private final Supplier<HexDecoder> hexDecoderSupplier; // <1>
+    protected HexDecoder decoder() {
+        if (decoder == null && (decoder = decoderSupplier.get()) == null) {
+            throw new RuntimeException("supplied decoder is null");
+        }
+        return decoder;
+    }
 
-    private transient HexDecoder hexDecoder; // <2>
+    private final Supplier<HexDecoder> decoderSupplier; // <1>
+
+    private transient HexDecoder decoder; // <2>
 }

@@ -21,6 +21,7 @@ import static com.github.jinahya.verbose.percent.UrlCodecConverter.EXAMPLE_DECOD
 import static com.github.jinahya.verbose.percent.UrlCodecConverter.EXAMPLE_ENCODED;
 import static com.github.jinahya.verbose.percent.UrlCodecConverter.toPercentEncoded;
 import java.io.UnsupportedEncodingException;
+import static java.lang.invoke.MethodHandles.lookup;
 import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
@@ -38,11 +39,14 @@ import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 
 /**
+ * Test class for {@link PercentEncoderImpl}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 @Guice(modules = PercentEncoderImplModule.class)
 public class PercentEncoderImplTest {
+
+    private static final Logger logger = getLogger(lookup().lookupClass());
 
     @Test
     public void testExample() throws UnsupportedEncodingException {
@@ -74,8 +78,6 @@ public class PercentEncoderImplTest {
                 copyOf(encoded.array(), encoded.position()));
         assertEquals(decoded, created);
     }
-
-    private transient final Logger logger = getLogger(getClass());
 
     @Inject
     private PercentEncoder encoder;

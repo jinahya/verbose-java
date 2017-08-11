@@ -49,6 +49,11 @@ public class ReadableHexChannel<T extends ReadableByteChannel, U extends HexDeco
                 decoderSupplier, "decoderSupplier is null");
     }
 
+    /**
+     * Returns the decoder.
+     *
+     * @return the decoder.
+     */
     protected U decoder() {
         if (decoder == null && (decoder = decoderSupplier.get()) == null) {
             throw new RuntimeException("null decoder supplied");
@@ -86,9 +91,12 @@ public class ReadableHexChannel<T extends ReadableByteChannel, U extends HexDeco
     }
 
     /**
-     * The decoder for decoding characters into bytes.
+     * The supplier lazily supplies the {@code decoder}.
      */
     private final Supplier<U> decoderSupplier;
 
+    /**
+     * The decoder lazily supplied from the {@code decoderSupplier}.
+     */
     private U decoder;
 }

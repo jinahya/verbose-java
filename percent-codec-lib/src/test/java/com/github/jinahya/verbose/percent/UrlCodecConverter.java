@@ -25,14 +25,14 @@ final class UrlCodecConverter {
 
     static final String EXAMPLE_ENCODED = "The+string+%C3%BC%40foo-bar";
 
-    static String toPercentEncoded(final String urlEncoded) {
-        return urlEncoded
+    static String toPercentEncoded(final String formurlEncoded) {
+        return formurlEncoded
                 .replaceAll("\\*", "%2A")
                 .replaceAll("%7E", "~")
                 .replaceAll("\\+", "%20");
     }
 
-    static String toUrlEncoded(final String percentEncoded) {
+    static String toFormurlEncoded(final String percentEncoded) {
         return percentEncoded
                 .replaceAll("%2A", "\\*")
                 .replaceAll("~", "%7E")

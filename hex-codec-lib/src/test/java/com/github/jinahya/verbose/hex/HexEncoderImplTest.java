@@ -16,11 +16,14 @@
 package com.github.jinahya.verbose.hex;
 
 import com.google.common.io.BaseEncoding;
+import static java.lang.invoke.MethodHandles.lookup;
 import static java.nio.ByteBuffer.wrap;
 import static java.nio.charset.StandardCharsets.US_ASCII;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import org.apache.commons.codec.DecoderException;
 import org.apache.commons.codec.binary.Hex;
+import org.slf4j.Logger;
+import static org.slf4j.LoggerFactory.getLogger;
 import static org.testng.Assert.assertEquals;
 import org.testng.annotations.Test;
 
@@ -31,6 +34,8 @@ import org.testng.annotations.Test;
  */
 public class HexEncoderImplTest {
 
+    private static final Logger logger = getLogger(lookup().lookupClass());
+
     /**
      * Tests encoding using {@code RFC4648} test vectors.
      */
@@ -39,6 +44,30 @@ public class HexEncoderImplTest {
         Rfc4648TestVectors.base16((d, e) -> assertEquals( // <1>
                 new HexEncoderImpl().encode(d, US_ASCII), e)
         );
+    }
+
+    /**
+     * Test encoding by comparing the result to the result of
+     * {@link Hex#encode(byte[])}.
+     */
+    @Test(invocationCount = 128)
+    public void encodeVerboseEncodeCommons() {
+        final byte[] created;
+        {
+            created = new byte[current().nextInt(10)]; // <1>
+            current().nextBytes(created);
+        }
+        final byte[] encoded1;
+        {
+            encoded1 = new String(new Hex().encode(created)) // <2>
+                    .toUpperCase().getBytes();
+        }
+        final byte[] encoded2;
+        {
+            encoded2 = new byte[created.length << 1]; // <3>
+            new HexEncoderImpl().encode(wrap(created), wrap(encoded2));
+        }
+        assertEquals(encoded2, encoded1); // <4>
     }
 
     /**
@@ -57,17 +86,47 @@ public class HexEncoderImplTest {
     }
 
     /**
+     * Test encoding by comparing the result to the result of
+     * {@link BaseEncoding#encode(byte[])}.
+     */
+    @Test(invocationCount = 128)
+    public void encodeVerboseEncodeGuava() {
+        final byte[] created; // <1>
+        {
+            created = new byte[current().nextInt(128)];
+            current().nextBytes(created);
+        }
+        final byte[] encoded1; // <2>
+        {
+            encoded1 = BaseEncoding.base16().encode(created).getBytes();
+        }
+        final byte[] encoded2; // <3>
+        {
+            encoded2 = new byte[created.length << 1];
+            new HexEncoderImpl().encode(wrap(created), wrap(encoded2));
+        }
+        assertEquals(encoded2, encoded1); // <4>
+    }
+
+    /**
      * Cross-checks {@link HexEncoderImpl} against {@link BaseEncoding}.
      */
     @Test(invocationCount = 128)
     public void encodeVerboseDecodeGuava() {
-        final byte[] created = new byte[current().nextInt(128)];
-        current().nextBytes(created);
-        final byte[] encoded = new byte[created.length << 1];
-        new HexEncoderImpl().encode(wrap(created), wrap(encoded));
-        final byte[] decoded // <1>
-                = BaseEncoding.base16().decode(new String(encoded, US_ASCII));
-        assertEquals(decoded, created);
+        final byte[] created; // <1>
+        {
+            created = new byte[current().nextInt(128)];
+            current().nextBytes(created);
+        }
+        final byte[] encoded; // <2>
+        {
+            encoded = new byte[created.length << 1];
+            new HexEncoderImpl().encode(wrap(created), wrap(encoded));
+        }
+        final byte[] decoded; // <3>
+        {
+            decoded = BaseEncoding.base16().decode(new String(encoded));
+        }
+        assertEquals(decoded, created); // <4>
     }
-
 }

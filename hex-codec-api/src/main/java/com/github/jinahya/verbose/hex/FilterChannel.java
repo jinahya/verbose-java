@@ -84,9 +84,9 @@ public class FilterChannel<T extends Channel> implements Channel {
         return channel;
     }
 
-    private final Supplier<T> channelSupplier;
+    private final Supplier<T> channelSupplier; // <1>
 
-    private boolean closed;
+    private boolean closed; // <2>
 
-    private T channel;
+    private T channel; // <3>
 }

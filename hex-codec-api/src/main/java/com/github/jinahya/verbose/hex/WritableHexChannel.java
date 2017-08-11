@@ -27,6 +27,8 @@ import java.util.function.Supplier;
  * channel.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
+ * @param <T> channel type parameter
+ * @param <U> encoder type parameter
  */
 public class WritableHexChannel<T extends WritableByteChannel, U extends HexEncoder>
         extends WritableFilterChannel<T> {
@@ -74,9 +76,12 @@ public class WritableHexChannel<T extends WritableByteChannel, U extends HexEnco
     }
 
     /**
-     * The encoder for encoding bytes into characters.
+     * The supplier lazily supplies the {@code encoder}.
      */
     private Supplier<U> encoderSupplier;
 
+    /**
+     * The encoder lazily supplied from the {@code encoderSupplier}.
+     */
     private U encoder;
 }

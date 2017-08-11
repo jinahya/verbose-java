@@ -21,7 +21,7 @@ import java.nio.BufferOverflowException;
 import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
 import java.nio.channels.WritableByteChannel;
-import static java.nio.charset.StandardCharsets.US_ASCII;
+//import static java.nio.charset.StandardCharsets.US_ASCII;
 
 /**
  * An interface for generating {@code "hello, world"} bytes.
@@ -35,7 +35,7 @@ public interface HelloWorld {
      * The number of required bytes for presenting {@code "hello, world"}
      * encoded in {@code US-ASCII} character set.
      */
-    int BYTES = "hello, world".getBytes(US_ASCII).length;
+    int BYTES = 12; //"hello, world".getBytes(US_ASCII).length;
 
     /**
      * Sets {@value #BYTES} bytes presenting {@code "hello, world"} encoded in

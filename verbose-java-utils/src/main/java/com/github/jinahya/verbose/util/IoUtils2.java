@@ -42,12 +42,28 @@ final class IoUtils2 {
     private static final Logger logger
             = getLogger(lookup().lookupClass().getName());
 
-    // -------------------------------------------------------------------------
     private static long copy1(final ReadableByteChannel readable,
                               final WritableByteChannel writable,
                               final ByteBuffer buffer)
             throws IOException {
-        // @todo: validate arguments!
+        if (readable == null) {
+            throw new NullPointerException("readable is null");
+        }
+        if (!readable.isOpen()) {
+            throw new IllegalArgumentException("readable is not open");
+        }
+        if (writable == null) {
+            throw new NullPointerException("writable is null");
+        }
+        if (!writable.isOpen()) {
+            throw new IllegalArgumentException("writable is not open");
+        }
+        if (buffer == null) {
+            throw new NullPointerException("buffer is null");
+        }
+        if (buffer.capacity() == 0) {
+            throw new IllegalArgumentException("buffer.capacity == 0");
+        }
         long count = 0L;
         while (readable.read(buffer) != -1) { // <1>
             buffer.flip(); // <2>
@@ -64,14 +80,31 @@ final class IoUtils2 {
                               final WritableByteChannel writable,
                               final ByteBuffer buffer)
             throws IOException {
-        // @todo: validate arguments!
+        if (readable == null) {
+            throw new NullPointerException("readable is null");
+        }
+        if (!readable.isOpen()) {
+            throw new IllegalArgumentException("readable is not open");
+        }
+        if (writable == null) {
+            throw new NullPointerException("writable is null");
+        }
+        if (!writable.isOpen()) {
+            throw new IllegalArgumentException("writable is not open");
+        }
+        if (buffer == null) {
+            throw new NullPointerException("buffer is null");
+        }
+        if (buffer.capacity() == 0) {
+            throw new IllegalArgumentException("buffer.capacity == 0");
+        }
         long count = 0L;
         while (readable.read(buffer) != -1) {
-            buffer.flip();
+            buffer.flip(); // limit->position, position->zero
             while (buffer.hasRemaining()) { // <1>
                 count += writable.write(buffer);
             }
-            buffer.clear();
+            buffer.clear(); // position->zero, limit->capacity
         }
         return count;
     }
@@ -80,7 +113,24 @@ final class IoUtils2 {
                      final WritableByteChannel writable,
                      final ByteBuffer buffer)
             throws IOException {
-        // @todo: validates arguments!
+        if (readable == null) {
+            throw new NullPointerException("readable is null");
+        }
+        if (!readable.isOpen()) {
+            throw new IllegalArgumentException("readable is not open");
+        }
+        if (writable == null) {
+            throw new NullPointerException("writable is null");
+        }
+        if (!writable.isOpen()) {
+            throw new IllegalArgumentException("writable is not open");
+        }
+        if (buffer == null) {
+            throw new NullPointerException("buffer is null");
+        }
+        if (buffer.capacity() == 0) {
+            throw new IllegalArgumentException("buffer.capacity == 0");
+        }
         switch (current().nextInt(2)) {
             case 0:
                 return copy1(readable, writable, buffer);
@@ -112,43 +162,15 @@ final class IoUtils2 {
         }
     }
 
-    private static long copy3(final FileChannel readable,
-                              final WritableByteChannel writable)
-            throws IOException {
-        // @todo: validate arguments!
-        long count = 0L;
-        for (long remaining = readable.size() - readable.position(); // <1>
-             remaining > 0L;
-             remaining = readable.size() - readable.position()) { // <4>
-            final long transferred = readable.transferTo( // <2>
-                    readable.position(), remaining, writable);
-            readable.position(readable.position() + transferred); // <3>
-            count += transferred;
-        }
-        return count;
-    }
-
     private static void copy3(final Path source, final Path target)
             throws IOException {
         // @todo: validate arguments!
         try (FileChannel readable = open(source, READ);
              FileChannel writable = open(
                      target, CREATE, TRUNCATE_EXISTING, WRITE)) {
-            final long transferred = copy3(readable, writable);
+            final long transferred = readable.transferTo(
+                    readable.position(), readable.size(), writable);
             writable.force(false);
-        }
-    }
-
-    private static void copy4(final FileChannel readable,
-                              final FileChannel writable)
-            throws IOException {
-        // @todo: validate arguments!
-        for (long remaining = readable.size() - readable.position();
-             remaining > 0L;
-             remaining = readable.size() - readable.position()) {
-            final long transferred = writable.transferFrom(
-                    readable, writable.position(), remaining);
-            writable.position(writable.position() + transferred);
         }
     }
 
@@ -158,7 +180,8 @@ final class IoUtils2 {
         try (FileChannel readable = open(source, READ);
              FileChannel writable = open(
                      target, CREATE, TRUNCATE_EXISTING, WRITE)) {
-            copy4(readable, writable);
+            final long transferred = writable.transferFrom(
+                    readable, writable.position(), readable.size());
             writable.force(false);
         }
     }
@@ -183,7 +206,6 @@ final class IoUtils2 {
         }
     }
 
-    // -------------------------------------------------------------------------
     private IoUtils2() {
         super();
     }

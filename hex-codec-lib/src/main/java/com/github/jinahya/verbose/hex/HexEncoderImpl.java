@@ -29,7 +29,7 @@ public class HexEncoderImpl implements HexEncoder {
             case 8:
             case 9:
                 return decoded + 48; // to '0'(48, 0x30) ~ '9'(57, 0x39) <1>
-            default: // assume 10 to 15
+            default: // ? 10 to 15
                 return decoded + 55; // to 'A'(65, 0x40) ~ 'F'(70, 0x46) <2>
         }
     }

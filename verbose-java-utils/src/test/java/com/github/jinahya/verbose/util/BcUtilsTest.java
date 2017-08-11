@@ -16,17 +16,16 @@
 package com.github.jinahya.verbose.util;
 
 import java.io.IOException;
-import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
 import java.nio.channels.ReadableByteChannel;
 import java.nio.channels.WritableByteChannel;
 import static java.util.concurrent.ThreadLocalRandom.current;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.doAnswer;
-import static org.mockito.Mockito.mock;
 import org.testng.annotations.Test;
 import static com.github.jinahya.verbose.util.BcUtils.nonBlocking;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import static java.lang.invoke.MethodHandles.lookup;
+import static java.nio.channels.Channels.newChannel;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -41,12 +40,8 @@ public class BcUtilsTest {
 
     @Test
     public static void nonBlockingWritableByteChannel() throws IOException {
-        final WritableByteChannel blocking = mock(WritableByteChannel.class);
-        doAnswer(i -> {
-            final ByteBuffer src = i.getArgument(0);
-            src.position(src.limit());
-            return null;
-        }).when(blocking).write(any(ByteBuffer.class));
+        final WritableByteChannel blocking
+                = newChannel(new ByteArrayOutputStream());
         final WritableByteChannel nonblocking
                 = nonBlocking(WritableByteChannel.class, blocking);
         final int written = nonblocking.write(allocate(current().nextInt(128)));
@@ -54,12 +49,9 @@ public class BcUtilsTest {
 
     @Test
     public static void nonBlockingReadableByteChannel() throws IOException {
-        final ReadableByteChannel blocking = mock(ReadableByteChannel.class);
-        doAnswer(i -> {
-            final ByteBuffer dst = i.getArgument(0);
-            dst.position(dst.limit());
-            return null;
-        }).when(blocking).read(any(ByteBuffer.class));
+        final ReadableByteChannel blocking
+                = newChannel(new ByteArrayInputStream(
+                        new byte[current().nextInt(1024)]));
         final ReadableByteChannel nonblocking
                 = nonBlocking(ReadableByteChannel.class, blocking);
         final int read = nonblocking.read(allocate(current().nextInt(128)));

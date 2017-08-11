@@ -48,7 +48,7 @@ public class HelloWorldImplTest {
      * {@code IndexOutOfBoundsException} when {@code offset} is negative.
      */
     @Test(expectedExceptions = IndexOutOfBoundsException.class)
-    public void expectIndexOutOfBoundsWhenOffsetIsNegative() {
+    public void expectIndexOutOfBoundsExceptionWhenOffsetIsNegative() {
         final byte[] array = new byte[0]; // <1>
         final int offset = -1;
         new HelloWorldImpl().set(array, offset);

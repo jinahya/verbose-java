@@ -16,6 +16,9 @@
 package com.github.jinahya.verbose.percent;
 
 import com.google.inject.AbstractModule;
+import static java.lang.invoke.MethodHandles.lookup;
+import org.slf4j.Logger;
+import static org.slf4j.LoggerFactory.getLogger;
 
 /**
  * A module binds {@link PercentEncoder} class to {@link PercentEncoderImpl}
@@ -25,9 +28,10 @@ import com.google.inject.AbstractModule;
  */
 class PercentEncoderImplModule extends AbstractModule {
 
+    private static final Logger logger = getLogger(lookup().lookupClass());
+
     @Override
     protected void configure() {
         bind(PercentEncoder.class).to(PercentEncoderImpl.class);
     }
-
 }

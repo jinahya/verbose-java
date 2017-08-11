@@ -49,7 +49,24 @@ public final class BcUtils {
      */
     public static <T extends WritableByteChannel> T nonBlocking(
             final Class<T> type, final T channel) {
-        // @todo: validate arguments!
+        if (type == null) {
+            throw new NullPointerException("type is null");
+        }
+        if (!type.isInterface()) {
+            throw new IllegalArgumentException(
+                    "type(" + type + ") is not an interface");
+        }
+        if (channel == null) {
+            throw new NullPointerException("channel is null");
+        }
+        if (!channel.isOpen()) {
+            throw new IllegalArgumentException("channel is not open");
+        }
+        if (!type.isInstance(channel)) {
+            throw new IllegalArgumentException(
+                    "channel(" + channel + ") is not an instance of type("
+                    + type + ")");
+        }
         final Method target; // <1>
         try {
             target = WritableByteChannel.class.getMethod(
@@ -72,7 +89,8 @@ public final class BcUtils {
             return m.invoke(channel, a); // <7>
         };
         final Object proxy = newProxyInstance( // <1>
-                type.getClassLoader(), new Class<?>[]{type}, handler);
+                channel.getClass().getClassLoader(), new Class<?>[]{type},
+                handler);
         return type.cast(proxy); // <2>
     }
 

@@ -32,7 +32,6 @@ import static java.util.concurrent.ThreadLocalRandom.current;
  */
 public final class IoUtils {
 
-    // -------------------------------------------------------------------------
     /**
      * Copies all bytes from given input stream to specified output stream using
      * specified buffer.
@@ -110,7 +109,6 @@ public final class IoUtils {
         }
     }
 
-    // -------------------------------------------------------------------------
     private IoUtils() {
         super();
     }
