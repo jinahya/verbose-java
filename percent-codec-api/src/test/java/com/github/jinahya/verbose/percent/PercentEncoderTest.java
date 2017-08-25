@@ -15,13 +15,14 @@
  */
 package com.github.jinahya.verbose.percent;
 
+import static com.github.jinahya.verbose.util.RsUtils.randomUsAscii;
+import static com.github.jinahya.verbose.util.RsUtils.randomUtf8;
 import com.google.inject.Inject;
 import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
 import static java.nio.charset.StandardCharsets.US_ASCII;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.concurrent.ThreadLocalRandom.current;
-import static org.apache.commons.lang3.RandomStringUtils.random;
-import static org.apache.commons.lang3.RandomStringUtils.randomAscii;
 import static org.testng.Assert.assertEquals;
 import static org.testng.Assert.assertTrue;
 import org.testng.annotations.Guice;
@@ -54,15 +55,15 @@ public class PercentEncoderTest {
     }
 
     @Test(invocationCount = 128)
-    public void encodeString() {
-        final String decoded = random(current().nextInt(128));
-        final String encoded = encoder.encode(decoded);
+    public void encodeStringUtf8() {
+        final String decoded = randomUtf8(current().nextInt(1024));
+        final String encoded = encoder.encode(decoded, UTF_8);
         assertTrue(encoded.length() >= decoded.length());
     }
 
     @Test(invocationCount = 128)
-    public void encodeAscii() {
-        final String decoded = randomAscii(current().nextInt(128));
+    public void encodeStringUsAscii() {
+        final String decoded = randomUsAscii(current().nextInt(1024));
         final String encoded = encoder.encode(decoded, US_ASCII);
         assertTrue(encoded.length() >= decoded.length());
     }

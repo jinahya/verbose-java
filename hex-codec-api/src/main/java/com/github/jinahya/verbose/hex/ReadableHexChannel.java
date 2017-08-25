@@ -17,11 +17,15 @@ package com.github.jinahya.verbose.hex;
 
 import java.io.EOFException;
 import java.io.IOException;
+import static java.lang.invoke.MethodHandles.lookup;
 import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
+import java.nio.channels.ClosedChannelException;
 import java.nio.channels.ReadableByteChannel;
 import static java.util.Objects.requireNonNull;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 
 /**
  * A {@code ReadableByteChannel} decodes hex characters to bytes.
@@ -33,6 +37,10 @@ import java.util.function.Supplier;
 public class ReadableHexChannel<T extends ReadableByteChannel, U extends HexDecoder>
         extends ReadableFilterChannel<T> {
 
+    private static final Logger logger
+            = getLogger(lookup().lookupClass().getName());
+
+    // -------------------------------------------------------------------------
     /**
      * Creates a new instance on top of given channel that given supplier
      * supplies.
@@ -49,18 +57,7 @@ public class ReadableHexChannel<T extends ReadableByteChannel, U extends HexDeco
                 decoderSupplier, "decoderSupplier is null");
     }
 
-    /**
-     * Returns the decoder.
-     *
-     * @return the decoder.
-     */
-    protected U decoder() {
-        if (decoder == null && (decoder = decoderSupplier.get()) == null) {
-            throw new RuntimeException("null decoder supplied");
-        }
-        return decoder;
-    }
-
+    // -------------------------------------------------------------------------
     /**
      * {@inheritDoc} The {@code read(ByteBuffer)} method of
      * {@code ReadableHexChannel} class read maximum by double number of bytes
@@ -74,6 +71,9 @@ public class ReadableHexChannel<T extends ReadableByteChannel, U extends HexDeco
      */
     @Override
     public int read(final ByteBuffer dst) throws IOException {
+        if (!isOpen()) {
+            throw new ClosedChannelException();
+        }
         final ByteBuffer aux = allocate(dst.remaining() << 1); // <1>
         if (super.read(aux) == -1) { // <2>
             return -1;
@@ -90,13 +90,25 @@ public class ReadableHexChannel<T extends ReadableByteChannel, U extends HexDeco
         return decoder().decode(aux, dst); // <4>
     }
 
+    // ----------------------------------------------------------------- decoder
     /**
-     * The supplier lazily supplies the {@code decoder}.
+     * Returns the decoder.
+     *
+     * @return the decoder.
+     * @throws IOException if an I/O error occurs.
      */
+    protected U decoder() throws IOException {
+        if (!isOpen()) {
+            throw new ClosedChannelException();
+        }
+        if (decoder == null && (decoder = decoderSupplier.get()) == null) {
+            throw new RuntimeException("null decoder supplied");
+        }
+        return decoder;
+    }
+
+    // -------------------------------------------------------------------------
     private final Supplier<U> decoderSupplier;
 
-    /**
-     * The decoder lazily supplied from the {@code decoderSupplier}.
-     */
     private U decoder;
 }

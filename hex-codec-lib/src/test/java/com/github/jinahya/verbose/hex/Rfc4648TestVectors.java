@@ -29,14 +29,19 @@ import java.util.function.BiConsumer;
  */
 final class Rfc4648TestVectors {
 
-    private static final List<String> BASE64 = asList(
+    /**
+     * An unmodifiable list of original values and encoded values. Decoded
+     * values are on even indices and encoded values are on odd indices are
+     * output values.
+     */
+    public static final List<String> BASE16 = asList(
             "", "",
-            "f", "Zg==",
-            "fo", "Zm8=",
-            "foo", "Zm9v",
-            "foob", "Zm9vYg==",
-            "fooba", "Zm9vYmE=",
-            "foobar", "Zm9vYmFy"
+            "f", "66",
+            "fo", "666F",
+            "foo", "666F6F",
+            "foob", "666F6F62",
+            "fooba", "666F6F6261",
+            "foobar", "666F6F626172"
     );
 
     private static final List<String> BASE32 = asList(
@@ -59,14 +64,14 @@ final class Rfc4648TestVectors {
             "foobar", "CPNMUOJ1E8======"
     );
 
-    private static final List<String> BASE16 = asList(
+    private static final List<String> BASE64 = asList(
             "", "",
-            "f", "66",
-            "fo", "666F",
-            "foo", "666F6F",
-            "foob", "666F6F62",
-            "fooba", "666F6F6261",
-            "foobar", "666F6F626172"
+            "f", "Zg==",
+            "fo", "Zm8=",
+            "foo", "Zm9v",
+            "foob", "Zm9vYg==",
+            "fooba", "Zm9vYmE=",
+            "foobar", "Zm9vYmFy"
     );
 
     private static void accept(final List<String> list,

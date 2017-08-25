@@ -17,6 +17,7 @@ package com.github.jinahya.verbose.hello;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.name.Names;
+import static java.lang.invoke.MethodHandles.lookup;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
@@ -27,6 +28,8 @@ import static org.slf4j.LoggerFactory.getLogger;
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 class HelloWorldGuiceModule extends AbstractModule {
+
+    private static final Logger logger = getLogger(lookup().lookupClass());
 
     @Override
     protected void configure() {
@@ -45,8 +48,5 @@ class HelloWorldGuiceModule extends AbstractModule {
         bind(HelloWorld.class)
                 .annotatedWith(QualifiedImpl.class)
                 .to(HelloWorldImpl.class);
-        logger.debug("configured");
     }
-
-    private transient final Logger logger = getLogger(getClass());
 }

@@ -16,42 +16,49 @@
 package com.github.jinahya.verbose.percent;
 
 import com.github.jinahya.verbose.hex.HexDecoder;
+import static java.lang.invoke.MethodHandles.lookup;
 import java.nio.ByteBuffer;
 import static java.util.Objects.requireNonNull;
-import static java.util.ServiceLoader.load;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 
 /**
  * A class implements {@code PercentDecoder}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
-public class PercentDecoderImpl implements PercentDecoder {
+public class PercentDecoderImpl<T extends HexDecoder>
+        implements PercentDecoder {
 
+    private static final Logger logger
+            = getLogger(lookup().lookupClass().getName());
+
+    // -------------------------------------------------------------------------
     /**
      * Creates a new instance uses an instance of {@link HexDecoder}.
      *
      * @param decoderSupplier the supplier supplies an instance of
      * {@link HexDecoder}.
      */
-    public PercentDecoderImpl(final Supplier<HexDecoder> decoderSupplier) {
+    public PercentDecoderImpl(final Supplier<T> decoderSupplier) {
         super();
         this.decoderSupplier = requireNonNull(
                 decoderSupplier, "decoderSupplier is null");
     }
 
+    // -------------------------------------------------------------------------
     /**
-     * Creates a new instance. This constructor calls
-     * {@link #PercentDecoderImpl(java.util.function.Supplier)} with a supplier
-     * which loads an instance of {@link HexDecoder} through
-     * {@link java.util.ServiceLoader}.
+     * {@inheritDoc} The {@code decodedOctet} method of
+     * {@code PercentDecoderImpl} class uses an {@link HexDecoder} that
+     * {@link #decoder()} method returns.
+     *
+     * @param encoded {@inheritDoc}
+     * @return {@inheritDoc}
      */
-    public PercentDecoderImpl() {
-        this(() -> load(HexDecoder.class).iterator().next());
-    }
-
     @Override
     public int decodeOctet(final ByteBuffer encoded) {
+        // @todo: validate arguments!
         final byte e = encoded.get(); // <1>
         if (e == 0x25) { // '%' <2>
             return decoder().decodeOctet(encoded); // XX
@@ -59,14 +66,21 @@ public class PercentDecoderImpl implements PercentDecoder {
         return e; // <3>
     }
 
-    protected HexDecoder decoder() {
+    // -------------------------------------------------------------------------
+    /**
+     * Returns a lazily instantiated instance of {@link HexDecoder}.
+     *
+     * @return an instance of {@link HexDecoder}.
+     */
+    protected T decoder() {
         if (decoder == null && (decoder = decoderSupplier.get()) == null) {
-            throw new RuntimeException("supplied decoder is null");
+            throw new RuntimeException("null decoder supplied");
         }
         return decoder;
     }
 
-    private final Supplier<HexDecoder> decoderSupplier; // <1>
+    // -------------------------------------------------------------------------
+    private final Supplier<T> decoderSupplier; // <1>
 
-    private transient HexDecoder decoder; // <2>
+    private T decoder; // <2>
 }

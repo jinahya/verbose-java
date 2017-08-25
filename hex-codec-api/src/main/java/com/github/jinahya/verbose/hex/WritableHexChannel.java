@@ -16,11 +16,15 @@
 package com.github.jinahya.verbose.hex;
 
 import java.io.IOException;
+import static java.lang.invoke.MethodHandles.lookup;
 import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
+import java.nio.channels.ClosedChannelException;
 import java.nio.channels.WritableByteChannel;
 import static java.util.Objects.requireNonNull;
 import java.util.function.Supplier;
+import java.util.logging.Logger;
+import static java.util.logging.Logger.getLogger;
 
 /**
  * A {@code WritableByteChannel} writes encoded hex characters to underlying
@@ -33,6 +37,10 @@ import java.util.function.Supplier;
 public class WritableHexChannel<T extends WritableByteChannel, U extends HexEncoder>
         extends WritableFilterChannel<T> {
 
+    private static final Logger logger
+            = getLogger(lookup().lookupClass().getName());
+
+    // -------------------------------------------------------------------------
     /**
      * Creates a new instance on top of given channel.
      *
@@ -43,21 +51,11 @@ public class WritableHexChannel<T extends WritableByteChannel, U extends HexEnco
     public WritableHexChannel(final Supplier<T> channelSupplier,
                               final Supplier<U> encoderSupplier) {
         super(channelSupplier);
-        this.encoderSupplier = requireNonNull(encoderSupplier);
+        this.encoderSupplier = requireNonNull(
+                encoderSupplier, "encoderSupplier is null");
     }
 
-    /**
-     * Returns the encoder.
-     *
-     * @return the encoder.
-     */
-    protected U encoder() {
-        if (encoder == null && ((encoder = encoderSupplier.get()) == null)) {
-            throw new RuntimeException("null encoder supplied");
-        }
-        return encoder;
-    }
-
+    // -------------------------------------------------------------------------
     /**
      * Writes a sequence of bytes to this channel from the given buffer.
      *
@@ -67,6 +65,9 @@ public class WritableHexChannel<T extends WritableByteChannel, U extends HexEnco
      */
     @Override
     public int write(final ByteBuffer src) throws IOException {
+        if (!isOpen()) {
+            throw new ClosedChannelException();
+        }
         final ByteBuffer aux = allocate(src.remaining() << 1); // <1>
         final int count = encoder().encode(src, aux); // <2>
         for (aux.flip(); aux.hasRemaining();) { // <3>
@@ -75,13 +76,25 @@ public class WritableHexChannel<T extends WritableByteChannel, U extends HexEnco
         return count;
     }
 
+    // ----------------------------------------------------------------- encoder
     /**
-     * The supplier lazily supplies the {@code encoder}.
+     * Returns the encoder.
+     *
+     * @return the encoder.
+     * @throws IOException if an I/O error occurs.
      */
+    protected U encoder() throws IOException {
+        if (!isOpen()) {
+            throw new ClosedChannelException();
+        }
+        if (encoder == null && ((encoder = encoderSupplier.get()) == null)) {
+            throw new RuntimeException("null encoder supplied");
+        }
+        return encoder;
+    }
+
+    // -------------------------------------------------------------------------
     private Supplier<U> encoderSupplier;
 
-    /**
-     * The encoder lazily supplied from the {@code encoderSupplier}.
-     */
     private U encoder;
 }

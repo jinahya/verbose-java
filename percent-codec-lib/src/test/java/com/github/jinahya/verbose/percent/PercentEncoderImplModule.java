@@ -15,8 +15,10 @@
  */
 package com.github.jinahya.verbose.percent;
 
+import com.github.jinahya.verbose.hex.HexEncoder;
 import com.google.inject.AbstractModule;
 import static java.lang.invoke.MethodHandles.lookup;
+import static java.util.ServiceLoader.load;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -30,8 +32,10 @@ class PercentEncoderImplModule extends AbstractModule {
 
     private static final Logger logger = getLogger(lookup().lookupClass());
 
+    // -------------------------------------------------------------------------
     @Override
     protected void configure() {
-        bind(PercentEncoder.class).to(PercentEncoderImpl.class);
+        bind(PercentEncoder.class).toInstance(new PercentEncoderImpl(
+                () -> load(HexEncoder.class).iterator().next()));
     }
 }

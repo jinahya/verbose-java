@@ -40,6 +40,13 @@ public class WritablePercentChannel<T extends WritableByteChannel, U extends Per
             = getLogger(lookup().lookupClass().getName());
 
     // -------------------------------------------------------------------------
+    /**
+     * Creates a new instance.
+     *
+     * @param channelSupplier a supplier for the channel to which encoded bytes
+     * are written
+     * @param encoderSupplier a supplier for the encoder for encoding
+     */
     public WritablePercentChannel(final Supplier<T> channelSupplier,
                                   final Supplier<U> encoderSupplier) {
         super();
@@ -69,6 +76,9 @@ public class WritablePercentChannel<T extends WritableByteChannel, U extends Per
 
     @Override
     public int write(final ByteBuffer src) throws IOException {
+        if (!isOpen()) {
+            throw new ClosedChannelException();
+        }
         if (src == null) {
             throw new NullPointerException("src is null");
         }
@@ -76,12 +86,12 @@ public class WritablePercentChannel<T extends WritableByteChannel, U extends Per
             return 0;
         }
         // @todo: implement.
-        throw new UnsupportedOperationException("not fully implemented yet");
+        throw new UnsupportedOperationException("not implemented yet");
     }
 
     // ----------------------------------------------------------------- channel
-    protected T channel() throws ClosedChannelException {
-        if (closed) {
+    protected T channel() throws IOException {
+        if (!isOpen()) {
             throw new ClosedChannelException();
         }
         if (channel == null && (channel = channelSupplier.get()) == null) {
@@ -91,7 +101,10 @@ public class WritablePercentChannel<T extends WritableByteChannel, U extends Per
     }
 
     // ----------------------------------------------------------------- encoder
-    protected U encoder() {
+    protected U encoder() throws IOException {
+        if (!isOpen()) {
+            throw new ClosedChannelException();
+        }
         if (encoder == null && (encoder = encoderSupplier.get()) == null) {
             throw new RuntimeException("supplied decoder is null");
         }

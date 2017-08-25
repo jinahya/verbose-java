@@ -52,19 +52,19 @@ public class HexEncoderImplTest {
      */
     @Test(invocationCount = 128)
     public void encodeVerboseEncodeCommons() {
-        final byte[] created;
+        final byte[] created; // <1>
         {
-            created = new byte[current().nextInt(10)]; // <1>
+            created = new byte[current().nextInt(1024)];
             current().nextBytes(created);
         }
-        final byte[] encoded1;
+        final byte[] encoded1; // <2>
         {
-            encoded1 = new String(new Hex().encode(created)) // <2>
-                    .toUpperCase().getBytes();
+            encoded1 = new String(new Hex().encode(created))
+                    .toUpperCase().getBytes(US_ASCII);
         }
-        final byte[] encoded2;
+        final byte[] encoded2; // <3>
         {
-            encoded2 = new byte[created.length << 1]; // <3>
+            encoded2 = new byte[created.length << 1];
             new HexEncoderImpl().encode(wrap(created), wrap(encoded2));
         }
         assertEquals(encoded2, encoded1); // <4>
@@ -77,11 +77,21 @@ public class HexEncoderImplTest {
      */
     @Test(invocationCount = 128)
     public void encodeVerboseDecodeCommons() throws DecoderException {
-        final byte[] created = new byte[current().nextInt(128)]; // <1>
-        current().nextBytes(created);
-        final byte[] encoded = new byte[created.length << 1]; // <2>
-        new HexEncoderImpl().encode(wrap(created), wrap(encoded));
-        final byte[] decoded = new Hex().decode(encoded); // <3>
+        final byte[] created; // <1>
+        {
+            created = new byte[current().nextInt(1024)];
+            current().nextBytes(created);
+        }
+        final byte[] encoded; // <2>
+        {
+            encoded = new byte[created.length << 1];
+            new HexEncoderImpl().encode(wrap(created), wrap(encoded));
+        }
+        final byte[] decoded; // <3>
+        {
+            decoded = new Hex().decode(encoded);
+
+        }
         assertEquals(decoded, created); // <4>
     }
 
@@ -93,7 +103,7 @@ public class HexEncoderImplTest {
     public void encodeVerboseEncodeGuava() {
         final byte[] created; // <1>
         {
-            created = new byte[current().nextInt(128)];
+            created = new byte[current().nextInt(1024)];
             current().nextBytes(created);
         }
         final byte[] encoded1; // <2>
@@ -115,7 +125,7 @@ public class HexEncoderImplTest {
     public void encodeVerboseDecodeGuava() {
         final byte[] created; // <1>
         {
-            created = new byte[current().nextInt(128)];
+            created = new byte[current().nextInt(1024)];
             current().nextBytes(created);
         }
         final byte[] encoded; // <2>

@@ -17,29 +17,22 @@ package com.github.jinahya.verbose.percent;
 
 import com.buck.common.codec.Codec;
 import com.buck.common.codec.CodecDecoder;
-import static com.github.jinahya.verbose.percent.UrlCodecConverter.EXAMPLE_DECODED;
-import static com.github.jinahya.verbose.percent.UrlCodecConverter.EXAMPLE_ENCODED;
-import static com.github.jinahya.verbose.percent.UrlCodecConverter.toPercentEncoded;
-import java.io.UnsupportedEncodingException;
 import static java.lang.invoke.MethodHandles.lookup;
-import java.net.URLEncoder;
 import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
 import static java.nio.ByteBuffer.wrap;
-import java.nio.charset.Charset;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import static java.util.Arrays.copyOf;
 import static java.util.concurrent.ThreadLocalRandom.current;
 import javax.inject.Inject;
-import static org.apache.commons.lang3.RandomStringUtils.random;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 import static org.testng.Assert.assertEquals;
+import static org.testng.Assert.assertTrue;
 import org.testng.annotations.Guice;
 import org.testng.annotations.Test;
 
 /**
- * Test class for {@link PercentEncoderImpl}.
+ * A test class for {@link PercentEncoderImpl}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
@@ -48,37 +41,31 @@ public class PercentEncoderImplTest {
 
     private static final Logger logger = getLogger(lookup().lookupClass());
 
-    @Test
-    public void testExample() throws UnsupportedEncodingException {
-        final String expected = toPercentEncoded(EXAMPLE_ENCODED);
-        final String actual = encoder.encode(EXAMPLE_DECODED);
-        assertEquals(actual, expected);
-    }
-
+    // -------------------------------------------------------------------------
     @Test(invocationCount = 128)
-    public void testEncodingAgainstURLEncoder()
-            throws UnsupportedEncodingException {
-        final Charset charset = UTF_8;
-        final String decoded = random(current().nextInt(128));
-        final String expected = toPercentEncoded(
-                URLEncoder.encode(decoded, charset.name()));
-        final String actual = encoder.encode(decoded, charset);
-        assertEquals(actual, expected);
-    }
-
-    @Test(invocationCount = 1)
     public void encodeVerboseDecodeRbuck() {
-        final byte[] created = new byte[current().nextInt(128)];
-        current().nextBytes(created);
-        final ByteBuffer encoded = allocate(created.length * 3);
-        final int count = encoder.encode(wrap(created), encoded);
-        final Codec codec = Codec.forName("percent-encoded");
-        final CodecDecoder decoder = codec.newDecoder();
-        final byte[] decoded = decoder.decode(
-                copyOf(encoded.array(), encoded.position()));
-        assertEquals(decoded, created);
+        final byte[] created; // <1>
+        {
+            created = new byte[current().nextInt(1024)];
+            current().nextBytes(created);
+        }
+        final byte[] encoded; // <2>
+        {
+            final ByteBuffer buffer = allocate(created.length * 3);
+            final int count = encoder.encode(wrap(created), buffer);
+            assertTrue(count >= created.length);
+            encoded = copyOf(buffer.array(), buffer.position());
+        }
+        final byte[] decoded; // <3>
+        {
+            final Codec codec = Codec.forName("percent-encoded");
+            final CodecDecoder decoder = codec.newDecoder();
+            decoded = decoder.decode(encoded);
+        }
+        assertEquals(decoded, created); // <4>
     }
 
+    // -------------------------------------------------------------------------
     @Inject
     private PercentEncoder encoder;
 }

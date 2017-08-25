@@ -19,6 +19,11 @@ import java.nio.BufferUnderflowException;
 import java.nio.ByteBuffer;
 import static java.util.concurrent.ThreadLocalRandom.current;
 
+/**
+ * A mock of {@link PercentDecoder}.
+ *
+ * @author Jin Kwon &lt;onacit at gmail.com&gt;
+ */
 class PercentDecoderMock implements PercentDecoder {
 
     @Override

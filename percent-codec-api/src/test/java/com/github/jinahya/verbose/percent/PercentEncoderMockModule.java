@@ -18,6 +18,7 @@ package com.github.jinahya.verbose.percent;
 import com.google.inject.AbstractModule;
 
 /**
+ * A module binds {@link PercentEncoder} to {@link PercentEncoderMock}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
@@ -27,5 +28,4 @@ class PercentEncoderMockModule extends AbstractModule {
     protected void configure() {
         bind(PercentEncoder.class).to(PercentEncoderMock.class);
     }
-
 }

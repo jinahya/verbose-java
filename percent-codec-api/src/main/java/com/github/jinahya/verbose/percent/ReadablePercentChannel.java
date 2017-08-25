@@ -40,6 +40,13 @@ public class ReadablePercentChannel<T extends ReadableByteChannel, U extends Per
             = getLogger(lookup().lookupClass().getName());
 
     // -------------------------------------------------------------------------
+    /**
+     * Creates a new instance with given parameters.
+     *
+     * @param channelSupplier a supplier for the chanel from which encoded bytes
+     * are read.
+     * @param decoderSupplier a supplier for the decoder.
+     */
     public ReadablePercentChannel(final Supplier<T> channelSupplier,
                                   final Supplier<U> decoderSupplier) {
         super();
@@ -69,6 +76,9 @@ public class ReadablePercentChannel<T extends ReadableByteChannel, U extends Per
 
     @Override
     public int read(final ByteBuffer dst) throws IOException {
+        if (!isOpen()) {
+            throw new ClosedChannelException();
+        }
         if (dst == null) {
             throw new NullPointerException("dst is null");
         }
@@ -76,12 +86,12 @@ public class ReadablePercentChannel<T extends ReadableByteChannel, U extends Per
             return 0;
         }
         // @todo: implement.
-        throw new UnsupportedOperationException("not fully implemented yet");
+        throw new UnsupportedOperationException("not implemented yet");
     }
 
     // ----------------------------------------------------------------- channel
     protected T channel() throws ClosedChannelException {
-        if (closed) {
+        if (!isOpen()) {
             throw new ClosedChannelException();
         }
         if (channel == null && (channel = channelSupplier.get()) == null) {
@@ -91,7 +101,10 @@ public class ReadablePercentChannel<T extends ReadableByteChannel, U extends Per
     }
 
     // ----------------------------------------------------------------- decoder
-    protected U decoder() {
+    protected U decoder() throws IOException {
+        if (!isOpen()) {
+            throw new ClosedChannelException();
+        }
         if (decoder == null && (decoder = decoderSupplier.get()) == null) {
             throw new RuntimeException("supplied channel is null");
         }

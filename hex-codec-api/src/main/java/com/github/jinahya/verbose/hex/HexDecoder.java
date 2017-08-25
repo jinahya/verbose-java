@@ -5,9 +5,7 @@ import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
 import static java.nio.ByteBuffer.wrap;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import static java.nio.charset.StandardCharsets.US_ASCII;
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * An interface for hex decoding.
@@ -74,21 +72,9 @@ public interface HexDecoder {
         // @todo: validate arguments!
         final byte[] encodedBytes = encoded.getBytes(US_ASCII); // <1>
         final byte[] decodedBytes = new byte[encodedBytes.length / 2]; // <2>
-        decode(wrap(encodedBytes), wrap(decodedBytes)); // <3>
+        final ByteBuffer encodedBuffer = wrap(encodedBytes);
+        final ByteBuffer decodedBuffer = wrap(decodedBytes);
+        decode(encodedBuffer, decodedBuffer); // <3>
         return new String(decodedBytes, charset); // <4>
     }
-
-//    /**
-//     * Decodes given string. This method invokes
-//     * {@link #decode(java.lang.String, java.nio.charset.Charset)} method with
-//     * given string and {@link StandardCharsets#UTF_8} as its arguments and
-//     * returns the result.
-//     *
-//     * @param encoded the string to decode
-//     * @return a decoded string
-//     * @see #decode(java.lang.String, java.nio.charset.Charset)
-//     */
-//    default String decode(final String encoded) {
-//        return decode(encoded, UTF_8);
-//    }
 }

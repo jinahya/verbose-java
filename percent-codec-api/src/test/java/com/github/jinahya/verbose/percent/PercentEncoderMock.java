@@ -20,7 +20,7 @@ import java.nio.ByteBuffer;
 import static java.util.concurrent.ThreadLocalRandom.current;
 
 /**
- * A class testing {@link PercentEncoder}.
+ * A mock of {@link PercentEncoder}.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
@@ -35,5 +35,4 @@ class PercentEncoderMock implements PercentEncoder {
             throw new BufferOverflowException();
         }
     }
-
 }

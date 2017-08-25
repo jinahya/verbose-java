@@ -74,12 +74,12 @@ public class HexDecoderImplTest {
     public void encodeGuavaDecodeVerbose() {
         final byte[] created; // <1>
         {
-            created = new byte[current().nextInt(128)];
+            created = new byte[current().nextInt(1024)];
             current().nextBytes(created);
         }
         final byte[] encoded; // <2>
         {
-            encoded = BaseEncoding.base16().encode(created).getBytes();
+            encoded = BaseEncoding.base16().encode(created).getBytes(US_ASCII);
         }
         final byte[] decoded; // <3>
         {

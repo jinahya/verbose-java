@@ -1,5 +1,5 @@
 /*
- * Copyright 2016 Jin Kwon &lt;jinahya_at_gmail.com&gt;.
+ * Copyright 2017 Jin Kwon &lt;onacit at gmail.com&gt;.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -15,17 +15,23 @@
  */
 package com.github.jinahya.verbose.percent;
 
-import com.google.inject.AbstractModule;
+import com.google.common.escape.Escaper;
+import com.google.common.net.PercentEscaper;
 
 /**
- * A module binds {@link PercentDecoder} to {@link PercentDecoderMock}.
  *
  * @author Jin Kwon &lt;onacit at gmail.com&gt;
  */
-class PercentDecoderMockModule extends AbstractModule {
+class PercentCodecTests {
 
-    @Override
-    protected void configure() {
-        bind(PercentDecoder.class).to(PercentDecoderMock.class);
+    static Escaper percentEscaper() {
+        return new PercentEscaper("ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+                                  + "abcdefghijklmnopqrstuvwxyz"
+                                  + "-._~",
+                                  false);
+    }
+
+    private PercentCodecTests() {
+        super();
     }
 }

@@ -45,6 +45,17 @@
       <scope>compile</scope>
     </dependency>
     <dependency>
+      <groupId>com.github.jinahya</groupId>
+      <artifactId>verbose-java-utils</artifactId>
+      <version>${project.version}</version>
+      <scope>compile</scope>
+    </dependency>
+    <dependency>
+      <groupId>com.google.guava</groupId>
+      <artifactId>guava</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
       <groupId>com.google.inject</groupId>
       <artifactId>guice</artifactId>
       <scope>test</scope>

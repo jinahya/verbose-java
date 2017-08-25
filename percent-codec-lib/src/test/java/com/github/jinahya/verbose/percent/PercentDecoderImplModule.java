@@ -15,8 +15,12 @@
  */
 package com.github.jinahya.verbose.percent;
 
+import com.github.jinahya.verbose.hex.HexDecoder;
+import com.github.jinahya.verbose.hex.HexDecoderImpl;
 import com.google.inject.AbstractModule;
 import static java.lang.invoke.MethodHandles.lookup;
+import static java.util.ServiceLoader.load;
+import javax.inject.Provider;
 import org.slf4j.Logger;
 import static org.slf4j.LoggerFactory.getLogger;
 
@@ -30,8 +34,15 @@ class PercentDecoderImplModule extends AbstractModule {
 
     private static final Logger logger = getLogger(lookup().lookupClass());
 
+    /**
+     * {@inheritDoc} The {@code configure} method of
+     * {@code PercentDecoderIplModule} class binds {@link PercentDecoder} class
+     * to a {@link Provider} provides an instance created from
+     * {@link HexDecoderImpl#newInstance}.
+     */
     @Override
     protected void configure() {
-        bind(PercentDecoder.class).to(PercentDecoderImpl.class);
+        bind(PercentDecoder.class).toInstance(new PercentDecoderImpl(
+                () -> load(HexDecoder.class).iterator().next()));
     }
 }

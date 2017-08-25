@@ -61,6 +61,9 @@ public class FilterChannel<T extends Channel> implements Channel {
      */
     @Override
     public void close() throws IOException {
+        if (closed) {
+            return;
+        }
         if (channel != null) {
             channel.close();
             channel = null;
@@ -72,13 +75,13 @@ public class FilterChannel<T extends Channel> implements Channel {
      * Returns the underlying channel.
      *
      * @return the underlying channel
-     * @throws ClosedChannelException if this channel is already closed
+     * @throws IOException if an I/O error occurs.
      */
-    protected T channel() throws ClosedChannelException {
-        if (!isOpen()) {
+    protected T channel() throws IOException {
+        if (!isOpen()) { // <1>
             throw new ClosedChannelException();
         }
-        if (channel == null && (channel = channelSupplier.get()) == null) {
+        if (channel == null && (channel = channelSupplier.get()) == null) { // <2>
             throw new RuntimeException("null channel supplied");
         }
         return channel;

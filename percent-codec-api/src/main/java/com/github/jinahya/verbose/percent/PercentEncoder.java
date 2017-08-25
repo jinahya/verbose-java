@@ -5,9 +5,7 @@ import java.nio.ByteBuffer;
 import static java.nio.ByteBuffer.allocate;
 import static java.nio.ByteBuffer.wrap;
 import java.nio.charset.Charset;
-import java.nio.charset.StandardCharsets;
 import static java.nio.charset.StandardCharsets.US_ASCII;
-import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * An interface for encoding bytes to percent-encoded characters.
@@ -80,18 +78,5 @@ public interface PercentEncoder {
         final ByteBuffer encodedBuffer = wrap(encodedBytes);
         encode(decodedBuffer, encodedBuffer); // <3>
         return new String(encodedBytes, 0, encodedBuffer.position(), US_ASCII); // <4>
-    }
-
-    /**
-     * Encodes given string. This method invokes
-     * {@link #encode(java.lang.String, java.nio.charset.Charset)} with given
-     * string and {@link StandardCharsets#UTF_8} and returns the result.
-     *
-     * @param decoded the string to encode
-     * @return an encoded string.
-     * @see #encode(java.lang.String, java.nio.charset.Charset)
-     */
-    default String encode(final String decoded) {
-        return encode(decoded, UTF_8);
     }
 }
