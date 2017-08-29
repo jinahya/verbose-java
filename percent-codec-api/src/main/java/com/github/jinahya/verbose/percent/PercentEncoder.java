@@ -68,7 +68,6 @@ public interface PercentEncoder {
      *
      * @param decoded the string to encode
      * @param charset the character set to obtain a byte array from the string.
-     *
      * @return an encoded String
      */
     default String encode(final String decoded, final Charset charset) {

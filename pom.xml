@@ -5,7 +5,7 @@
   <parent>
     <groupId>com.github.jinahya</groupId>
     <artifactId>jinahya-parent</artifactId>
-    <version>0.7.4</version>
+    <version>0.7.6</version>
   </parent>
 
   <groupId>com.github.jinahya</groupId>
@@ -22,11 +22,13 @@
     <module>hello-world-api</module>
     <module>hello-world-lib</module>
     <module>hello-world-app</module>
+    <module>verbose-java-utils</module>
     <module>hex-codec-api</module>
     <module>hex-codec-lib</module>
     <module>percent-codec-api</module>
     <module>percent-codec-lib</module>
-    <module>verbose-java-utils</module>
+    <module>base-codec-api</module>
+    <module>base-codec-lib</module>
   </modules>
 
   <scm>
@@ -54,15 +56,15 @@
     <maven.compiler.testSource>1.8</maven.compiler.testSource>
     <maven.compiler.testTarget>1.8</maven.compiler.testTarget>
     <maven.site.deploy.skip>true</maven.site.deploy.skip>
-    <maven.surefire.version>2.19.1</maven.surefire.version>
     <java.bootstrap.classes>${java.home}/lib/rt.jar</java.bootstrap.classes>
     <java.cryptographic.extension.classes>${java.home}/lib/jce.jar</java.cryptographic.extension.classes>
     <java.secure.socket.extension.classes>${java.home}/lib/jsse.jar</java.secure.socket.extension.classes>
     <github.site.noJekyll>true</github.site.noJekyll>
-    <version.com.google.dagger>2.11</version.com.google.dagger>
-    <version.com.google.inject>4.1.0</version.com.google.inject>
-    <version.com.squareup.dagger>1.2.5</version.com.squareup.dagger>
-    <version.org.glassfish.hk2>2.5.0-b43</version.org.glassfish.hk2>
+    <!--<version.com.google.dagger>2.11</version.com.google.dagger>-->
+    <!--<version.com.google.inject>4.1.0</version.com.google.inject>-->
+    <!--<version.com.squareup.dagger>1.2.5</version.com.squareup.dagger>-->
+    <version.maven-surefire>2.19.1</version.maven-surefire>
+    <version.org.glassfish.hk2>2.5.0-b45</version.org.glassfish.hk2>
     <version.org.springframework>4.3.10.RELEASE</version.org.springframework>
     <sonar.exclusions>file:**/generated-sources/**</sonar.exclusions>
   </properties>
@@ -77,17 +79,17 @@
       <dependency>
         <groupId>com.google.dagger</groupId>
         <artifactId>dagger-compiler</artifactId>
-        <version>${version.com.google.dagger}</version>
+        <version>2.11</version>
       </dependency>
       <dependency>
         <groupId>com.google.inject</groupId>
         <artifactId>guice</artifactId>
-        <version>${version.com.google.inject}</version>
+        <version>4.1.0</version>
       </dependency>
       <dependency>
         <groupId>com.squareup.dagger</groupId>
         <artifactId>dagger-compiler</artifactId>
-        <version>${version.com.squareup.dagger}</version>
+        <version>1.2.5</version>
       </dependency>
       <dependency>
         <groupId>commons-codec</groupId>
@@ -122,15 +124,15 @@
       <dependency>
         <groupId>org.glassfish.hk2</groupId>
         <artifactId>hk2-core</artifactId>
-	<version>${org.glassfish.hk2}</version>
+        <version>${version.org.glassfish.hk2}</version>
         <scope>test</scope>
       </dependency>
       <dependency>
         <groupId>org.mockito</groupId>
         <artifactId>mockito-core</artifactId>
-        <version>2.8.47</version>
+        <version>2.9.0</version>
       </dependency>
-      <dependency>      
+      <dependency>
         <groupId>org.springframework</groupId>
         <artifactId>spring-context</artifactId>
         <version>${version.org.springframework}</version>
@@ -265,7 +267,13 @@
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-surefire-plugin</artifactId>
-          <version>${maven.surefire.version}</version>
+          <version>${version.maven-surefire}</version>
+          <configuration>
+            <!-- https://issues.apache.org/jira/browse/SUREFIRE-951 -->
+            <argLine>-Dfile.encoding=${project.build.sourceEncoding}</argLine>
+            <properties>
+            </properties>
+          </configuration>
         </plugin>
         <plugin>
           <groupId>org.asciidoctor</groupId>
@@ -315,6 +323,14 @@
           <noJekyll>true</noJekyll>
           <path>${project.distributionManagement.site.url}</path>
           <merge>true</merge>
+        </configuration>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.5.3</version>
+        <configuration>
+          <autoVersionSubmodules>true</autoVersionSubmodules>
         </configuration>
       </plugin>
       <plugin>
@@ -410,7 +426,7 @@
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-surefire-report-plugin</artifactId>
-        <version>${maven.surefire.version}</version>
+        <version>${version.maven-surefire}</version>
       </plugin>
       <!--      <plugin>
         <groupId>org.codehaus.mojo</groupId>

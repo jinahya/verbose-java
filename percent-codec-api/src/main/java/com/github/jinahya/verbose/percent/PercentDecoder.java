@@ -31,7 +31,7 @@ public interface PercentDecoder {
      *
      * @param encoded the input buffer
      * @param decoded the output buffer
-     * @return number of bytes encoded that is the number of byte provided to
+     * @return number of bytes encoded that is the number of bytes provided to
      * {@code decoded}
      */
     default int decode(final ByteBuffer encoded, final ByteBuffer decoded) {
@@ -40,8 +40,7 @@ public interface PercentDecoder {
         while (decoded.hasRemaining()) { // <2>
             final int encodedPosition = encoded.position(); // <3>
             try {
-                final int octet = decodeOctet(encoded); // <4>
-                decoded.put((byte) octet);
+                decoded.put((byte) decodeOctet(encoded)); // <4>
             } catch (final BufferUnderflowException bue) { // NOSONAR
                 encoded.position(encodedPosition); // <5>
                 break;
@@ -71,7 +70,6 @@ public interface PercentDecoder {
      * @param encoded the string to decode
      * @param charset the character set to decode translated byte array into the
      * result string
-     *
      * @return a decoded String
      */
     default String decode(final String encoded, final Charset charset) {

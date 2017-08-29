@@ -58,6 +58,16 @@ public class WritablePercentChannel<T extends WritableByteChannel, U extends Per
 
     // -------------------------------------------------------------------------
     @Override
+    public String toString() {
+        return super.toString() + "{"
+               + "channelSupplier=" + channelSupplier
+               + ",encoderSupplier=" + encoderSupplier
+               + ",closed=" + closed
+               + "}";
+    }
+
+    // -------------------------------------------------------------------------
+    @Override
     public boolean isOpen() {
         return !closed;
     }
@@ -90,7 +100,13 @@ public class WritablePercentChannel<T extends WritableByteChannel, U extends Per
     }
 
     // ----------------------------------------------------------------- channel
-    protected T channel() throws IOException {
+    /**
+     * Returns an instance of {@link WritableByteChannel}.
+     *
+     * @return an instance of {@link WritableByteChannel}
+     * @throws ClosedChannelException if this channel is already closed
+     */
+    protected T channel() throws ClosedChannelException {
         if (!isOpen()) {
             throw new ClosedChannelException();
         }
@@ -101,7 +117,13 @@ public class WritablePercentChannel<T extends WritableByteChannel, U extends Per
     }
 
     // ----------------------------------------------------------------- encoder
-    protected U encoder() throws IOException {
+    /**
+     * Returns an instance of {@link PercentEncoder}.
+     *
+     * @return an instance of {@link PercentEncoder}
+     * @throws ClosedChannelException if this channel is already closed
+     */
+    protected U encoder() throws ClosedChannelException {
         if (!isOpen()) {
             throw new ClosedChannelException();
         }
@@ -120,7 +142,7 @@ public class WritablePercentChannel<T extends WritableByteChannel, U extends Per
     private boolean closed;
 
     // -------------------------------------------------------------------------
-    private transient T channel;
+    private T channel;
 
-    private transient U encoder;
+    private U encoder;
 }

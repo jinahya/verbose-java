@@ -58,6 +58,16 @@ public class ReadablePercentChannel<T extends ReadableByteChannel, U extends Per
 
     // -------------------------------------------------------------------------
     @Override
+    public String toString() {
+        return super.toString() + "{"
+               + "channelSupplier=" + channelSupplier
+               + ",decoderSupplier=" + decoderSupplier
+               + ",closed=" + closed
+               + "}";
+    }
+
+    // -------------------------------------------------------------------------
+    @Override
     public boolean isOpen() {
         return !closed;
     }
@@ -90,6 +100,14 @@ public class ReadablePercentChannel<T extends ReadableByteChannel, U extends Per
     }
 
     // ----------------------------------------------------------------- channel
+    /**
+     * Returns the {@link ReadableByteChannel} instance on which this channel is
+     * built.
+     *
+     * @return the {@link ReadableByteChannel} instance on which this channel is
+     * built.
+     * @throws ClosedChannelException if this channel is already closed.
+     */
     protected T channel() throws ClosedChannelException {
         if (!isOpen()) {
             throw new ClosedChannelException();
