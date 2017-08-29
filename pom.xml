@@ -300,11 +300,6 @@
           <artifactId>sonar-maven-plugin</artifactId>
           <version>3.0.1</version>
         </plugin>
-        <!--        <plugin>
-          <groupId>org.jacoco</groupId>
-          <artifactId>jacoco-maven-plugin</artifactId>
-          <version>${org.jacoco.version}</version>
-        </plugin>-->
         <plugin>
           <groupId>org.springframework.boot</groupId>
           <artifactId>spring-boot-maven-plugin</artifactId>
@@ -353,14 +348,16 @@
           </execution>
         </executions>
       </plugin>
-      <!--      <plugin>
-        <groupId>org.jacoco</groupId>
-        <artifactId>jacoco-maven-plugin</artifactId>
+<!--      <plugin>
+        <groupId>org.openclover</groupId>
+        <artifactId>clover-maven-plugin</artifactId>
+        <version>4.2.0</version>
+        <configuration>
+        </configuration>
         <executions>
           <execution>
-            <id>default-prepare-agent</id>
             <goals>
-              <goal>prepare-agent</goal>
+              <goal>instrument</goal>
             </goals>
           </execution>
         </executions>
