@@ -16,19 +16,24 @@
 package com.github.jinahya.verbose.hello;
 
 /**
- * A class whose {@code main} method prints out {@code hello, world} via
- * {@link System#out}.
+ * A class prints out {@code hello, world} while being initialized.
  *
  * @author Jin Kwon &lt;jinahya_at_gmail.com&gt;
  */
 public class SuccinctHelloWorld {
 
     /**
-     * Prints {@code hello, world%n} onto {@link System#out}.
+     * Prints {@code hello, world%n}.
+     */
+    static {
+        System.out.printf("hello, world%n");
+    }
+
+    /**
+     * Does nothing.
      *
-     * @param args command line arguments
+     * @param args command line arguments.
      */
     public static void main(final String... args) {
-        System.out.printf("hello, world%n");
     }
 }
